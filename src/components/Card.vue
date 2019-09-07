@@ -3,7 +3,7 @@
     'card--ready': ready
     }">
     <div class="card-detail">
-      {{ card.rank }} {{ card.suit }} {{ card.child ? 'YES' : 'NO' }}
+      {{ card.rank }} {{ card.suit }} {{ card.id.substring(0, 3) }}
     </div>
     <Container
       class="card__child"
@@ -13,12 +13,12 @@
       @drag-enter="onDragEnter"
       @drag-leave="onDragLeave"
       :should-accept-drop="shouldAcceptDrop"
+      :animation-duration="500"
       :get-child-payload="getChildPayload">
       <card
         v-if="card.child"
-        :card="card.child"
+        :card="cards.child"
         :parent-id="card.id"
-        :is-absolute="!isAbsolute"
         :has-child="card.child !== null"
       />
     </Container>
@@ -93,7 +93,6 @@ export default {
   height: 150px;
   background-color: lightblue;
   border: 1px solid #c0c0c0;
-  /* border-left: 0; */
   box-sizing: border-box;
   background-color: #fff;
   top: 20px;
@@ -101,6 +100,16 @@ export default {
   position: relative;
   border-radius: 3px;
   font: 12px Arial, Helvetica, sans-serif;
+  transition-duration: 0s !important;
+}
+
+.card.smooth-dnd-ghost {
+  margin-top: 20px;
+  margin-left: -1px;
+}
+
+.card.smooth-dnd-ghost.animated {
+  transition-duration: 250ms !important;
 }
 
 .card-detail {
@@ -134,4 +143,5 @@ export default {
   min-height: 150px;
   height: 100%;
 }
+
 </style>
