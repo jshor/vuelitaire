@@ -1,5 +1,4 @@
 import Vue from 'vue'
-import { cloneDeep } from 'lodash'
 import uuid from 'uuid/v4'
 import Foundation from '../models/Foundation'
 
@@ -54,16 +53,24 @@ const mutations = {
 
   MOVE_CARD (state, { cardId, targetId }) {
     const card = state[cardId]
-
-    Object
+    const parent = Object
       .values(state)
-      .filter(({ child }) => child && child.id === card.id)
-      .forEach(oldParent => {
-        Vue.set(state[oldParent.id], 'child', null)
-        Vue.set(state, oldParent.id, cloneDeep(oldParent)) // necessary for getter reactivity
-      })
+      .find(({ child }) => child && child.id === card.id)
+    const findGroup = cards => {
+      const last = cards[cards.length - 1]
+
+      if (last.child) {
+        return findGroup(cards.concat(last.child))
+      }
+      return cards.map(({ id }) => id)
+    }
+
+    if (findGroup([card]).includes(targetId) || parent.id === targetId) {
+      return
+    }
 
     Vue.set(state[targetId], 'child', card)
+    Vue.set(state[parent.id], 'child', null)
     Vue.set(state, '_uuid', uuid())
   }
 }

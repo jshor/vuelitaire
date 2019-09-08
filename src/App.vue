@@ -1,24 +1,17 @@
 <template>
   <div id="app">
     <space-row :spaces="tableau" />
-    <space-row :spaces="foundations" />
+    <space-row :spaces="foundations" :is-stacked="true" />
   </div>
 </template>
 
 <script>
-import { Container } from 'vue-smooth-dnd'
 import { mapGetters, mapState } from 'vuex'
-import Card from './components/Card'
 import SpaceRow from './components/SpaceRow'
-
-// import Builder from './components/Builder.vue'
 
 export default {
   name: 'app',
   components: {
-    // Builder,
-    Card,
-    Container,
     SpaceRow
   },
   computed: {
@@ -27,11 +20,6 @@ export default {
   },
   beforeCreate () {
     this.$store.dispatch('newGame')
-  },
-  methods: {
-    getChildPayload () {
-      return 'parent'
-    }
   }
 }
 </script>
