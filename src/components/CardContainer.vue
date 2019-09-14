@@ -1,11 +1,16 @@
 <template>
-  <card-draggable :is-ready="ready">
-    <highlight :descendant-count="descendants.length" />
-    <card
-      :suit="card.suit"
-      :rank="card.rank"
-    />
+  <card-draggable :is-ready="ready" :is-space="isSpace">
+    <div @click="reveal">
+      <highlight :descendant-count="descendants.length" />
+      <card
+        :suit="card.suit"
+        :rank="card.rank"
+        :revealed="card.revealed"
+        :is-space="isSpace"
+      />
+    </div>
     <Container
+      v-if="!unturned"
       class="card-container"
       orientation="horizontal"
       group-name="right"
@@ -54,17 +59,24 @@ export default {
     hasChild: {
       type: Boolean,
       default: false
+    },
+    isSpace: {
+      type: Boolean,
+      default: false
     }
   },
   computed: {
     descendants () {
       return getDescendants(this.card)
+    },
+    unturned () {
+      return this.card.child === null && !this.card.revealed
     }
   },
   methods: {
     ...mapActions(['moveCard']),
-    canAccept (id) {
-      return this.card.child === null || this.card.child.id === id.id
+    canAccept (card) {
+      return (this.card.child === null || this.card.child.id === card.id) && card.revealed
     },
     shouldAcceptDrop ({ getChildPayload }) {
       return this.canAccept(getChildPayload())
@@ -78,11 +90,13 @@ export default {
         const targetId = this.card.id
 
         if (!isDescendant(payload, targetId)) {
-          console.log('will move')
           this.moveCard({ cardId, targetId })
         }
         this.ready = false
       }
+    },
+    reveal () {
+      this.card.revealed = true
     }
   }
 }
