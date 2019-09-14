@@ -39,7 +39,6 @@ export default {
   background-color: lightblue;
   border: 1px solid #c0c0c0;
   box-sizing: border-box;
-  background-color: #fff;
   top: 20px;
   left: -1px;
   position: relative;
@@ -52,7 +51,7 @@ export default {
   box-shadow: 0px 0 3px red;
 }
 
-.card-draggable--space .card-draggable {
+.card-draggable--space > .card-draggable {
   top: -1px;
 }
 

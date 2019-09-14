@@ -75,8 +75,4 @@ export default {
 .deck__card .card-draggable {
   top: 0;
 }
-
-.deck__card .card-draggable.animated {
-  top: 0 !important;
-}
 </style>

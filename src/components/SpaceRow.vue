@@ -4,6 +4,7 @@
       v-for="space in spaces"
       :key="space.id"
       :card="space"
+      :is-space="true"
       :has-child="space.child !== null"
       :class="{ 'space-row__space--stacked': isStacked }"
       class="space-row__space"
