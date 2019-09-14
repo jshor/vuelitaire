@@ -65,12 +65,12 @@ const mutations = {
       return cards.map(({ id }) => id)
     }
 
-    if (findGroup([card]).includes(targetId) || parent.id === targetId) {
+    if (findGroup([card]).includes(targetId) || (parent && parent.id === targetId)) {
       return
     }
 
     Vue.set(state[targetId], 'child', card)
-    Vue.set(state[parent.id], 'child', null)
+    if (parent) Vue.set(state[parent.id], 'child', null)
     Vue.set(state, '_uuid', uuid())
   }
 }

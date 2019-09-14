@@ -25,6 +25,7 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
 import { Container } from 'vue-smooth-dnd'
 import Card from './Card'
 import CardContainer from './CardContainer'
@@ -61,6 +62,7 @@ export default {
     }
   },
   methods: {
+    ...mapActions(['moveCard']),
     canAccept (id) {
       return this.card.child === null || this.card.child.id === id.id
     },
@@ -76,7 +78,8 @@ export default {
         const targetId = this.card.id
 
         if (!isDescendant(payload, targetId)) {
-          this.$store.commit('MOVE_CARD', { cardId, targetId })
+          console.log('will move')
+          this.moveCard({ cardId, targetId })
         }
         this.ready = false
       }
