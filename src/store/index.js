@@ -13,15 +13,16 @@ const state = {
 const actions = {
   newGame ({ commit, state }) {
     commit('INIT_DECK')
-    commit('REGISTER_CARDS', state.deck)
-    commit('INIT_TABLEAU', state.deck)
+    commit('REGISTER_CARDS', state.deck.cards)
+    commit('INIT_TABLEAU', state.deck.cards)
     commit('INIT_FOUNDATIONS')
     // commit('REVEAL_CARDS')
   },
 
-  useCardFromDeck ({ commit }, { card, target }) {
-    commit('REMOVE_CARD_FROM_DECK', card.id)
-    commit('MOVE_CARD', { cardId: card.id, targetId: target.id })
+  moveCard ({ commit }, { cardId, targetId }) {
+    console.log('move: ', cardId, targetId)
+    commit('REMOVE_FROM_DECK', cardId)
+    commit('MOVE_CARD', { cardId, targetId })
   }
 }
 

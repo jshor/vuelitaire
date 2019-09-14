@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    <deck />
     <space-row :spaces="tableau" />
     <space-row :spaces="foundations" :is-stacked="true" />
   </div>
@@ -8,10 +9,12 @@
 <script>
 import { mapGetters, mapState } from 'vuex'
 import SpaceRow from './components/SpaceRow'
+import Deck from './components/Deck'
 
 export default {
   name: 'app',
   components: {
+    Deck,
     SpaceRow
   },
   computed: {
