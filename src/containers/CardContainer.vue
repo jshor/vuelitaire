@@ -9,7 +9,7 @@
         :is-space="isSpace"
       />
     </div>
-    <Container
+    <container
       v-if="!unturned"
       class="card-container"
       orientation="horizontal"
@@ -25,17 +25,17 @@
         :card="card.child"
         :has-child="card.child !== null"
       />
-    </Container>
+    </container>
   </card-draggable>
 </template>
 
 <script>
 import { mapActions } from 'vuex'
 import { Container } from 'vue-smooth-dnd'
-import Card from './Card'
-import CardContainer from './CardContainer'
-import CardDraggable from './CardDraggable'
-import Highlight from './Highlight'
+import Card from '@/components/Card'
+import CardContainer from '@/containers/CardContainer'
+import CardDraggable from '@/components/CardDraggable'
+import Highlight from '@/components/Highlight'
 import getDescendants from '@/utils/getDescendants'
 import isDescendant from '@/utils/isDescendant'
 

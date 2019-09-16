@@ -1,6 +1,6 @@
-import Foundation from './Foundation'
+import Space from '@/store/models/Space'
 
-export default class Card extends Foundation {
+export default class Card extends Space {
   constructor (suit, rank) {
     super()
 

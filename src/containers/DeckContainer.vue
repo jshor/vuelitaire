@@ -1,10 +1,9 @@
 <template>
   <div class="deck">
     <button @click="deal">Deal</button>
-    <div
-      class="deck__waste"
-      :class="`deck__waste--${dealCount}`">
-      <Container
+
+    <div class="deck__waste">
+      <container
         v-for="card in waste"
         :key="card.id"
         :get-child-payload="() => card"
@@ -19,7 +18,7 @@
           :card="card"
           :has-child="card.child !== null"
         />
-      </Container>
+      </container>
     </div>
   </div>
 </template>
@@ -27,18 +26,13 @@
 <script>
 import { mapState } from 'vuex'
 import { Container } from 'vue-smooth-dnd'
-import CardContainer from './CardContainer'
+import CardContainer from '@/containers/CardContainer'
 
 export default {
   name: 'Deck',
   components: {
     CardContainer,
     Container
-  },
-  data () {
-    return {
-      cache: []
-    }
   },
   computed: {
     ...mapState({
@@ -48,11 +42,11 @@ export default {
     })
   },
   methods: {
-    shouldAcceptDrop ({ id }, { getChildPayload }) {
-      return id === getChildPayload().id
-    },
     deal () {
       this.$store.commit('DEAL')
+    },
+    shouldAcceptDrop ({ id }, { getChildPayload }) {
+      return id === getChildPayload().id
     },
     padding (card) {
       const index = this.dealt.findIndex(({ id }) => id === card.id)

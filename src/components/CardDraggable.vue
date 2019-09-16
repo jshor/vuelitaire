@@ -1,10 +1,10 @@
 <template>
-  <Draggable
+  <draggable
     v-if="!isSpace"
     :class="{ 'card-draggable--ready': isReady }"
     class="card-draggable">
     <slot />
-  </Draggable>
+  </draggable>
   <div
     v-else
     class="card-draggable card-draggable--space">

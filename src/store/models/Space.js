@@ -1,6 +1,6 @@
 import uuid from 'uuid/v4'
 
-export default class Foundation { // rename to Space
+export default class Space {
   constructor (type) {
     this.id = uuid()
     this.child = null
