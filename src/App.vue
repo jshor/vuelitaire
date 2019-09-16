@@ -1,21 +1,41 @@
 <template>
   <div id="app">
-    <deck />
-    <space-row :spaces="tableau" />
-    <space-row :spaces="foundations" :is-stacked="true" />
+    <deck-container />
+    <tableau>
+      <card-container
+        v-for="space in tableau"
+        :key="space.id"
+        :card="space"
+        :is-space="true"
+        :has-child="space.child !== null"
+      />
+    </tableau>
+    <foundations>
+      <card-container
+        v-for="space in foundations"
+        :key="space.id"
+        :card="space"
+        :is-space="true"
+        :has-child="space.child !== null"
+      />
+    </foundations>
   </div>
 </template>
 
 <script>
 import { mapGetters, mapState } from 'vuex'
-import SpaceRow from './components/SpaceRow'
-import Deck from './components/Deck'
+import DeckContainer from '@/containers/DeckContainer'
+import CardContainer from '@/containers/CardContainer'
+import Foundations from '@/components/Foundations'
+import Tableau from '@/components/Tableau'
 
 export default {
   name: 'app',
   components: {
-    Deck,
-    SpaceRow
+    CardContainer,
+    DeckContainer,
+    Foundations,
+    Tableau
   },
   computed: {
     ...mapGetters(['tableau', 'foundations']),

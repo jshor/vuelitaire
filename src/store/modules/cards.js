@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import uuid from 'uuid/v4'
-import Foundation from '../models/Foundation'
+import Space from '@/store/models/Space'
+import isDescendant from '@/utils/isDescendant'
 
 const state = {}
 
@@ -26,8 +27,8 @@ const mutations = {
   },
 
   INIT_TABLEAU (state, deck) {
-    for (let i = 0; i < 7; i++) {
-      let parent = new Foundation('TABLEAU')
+    for (let i = 1; i <= 7; i++) {
+      let parent = new Space('TABLEAU')
 
       // assign the first card to the tableau row
       state[parent.id] = parent
@@ -45,7 +46,7 @@ const mutations = {
 
   INIT_FOUNDATIONS (state) {
     for (let i = 0; i < 4; i++) {
-      const space = new Foundation('FOUNDATION')
+      const space = new Space('FOUNDATION')
 
       state[space.id] = space
     }
@@ -56,21 +57,16 @@ const mutations = {
     const parent = Object
       .values(state)
       .find(({ child }) => child && child.id === card.id)
-    const findGroup = cards => {
-      const last = cards[cards.length - 1]
 
-      if (last.child) {
-        return findGroup(cards.concat(last.child))
-      }
-      return cards.map(({ id }) => id)
-    }
-
-    if (findGroup([card]).includes(targetId) || (parent && parent.id === targetId)) {
+    if (isDescendant(card, targetId) || (parent && parent.id === targetId)) {
       return
     }
 
+    if (parent) {
+      Vue.set(state[parent.id], 'child', null)
+    }
+
     Vue.set(state[targetId], 'child', card)
-    if (parent) Vue.set(state[parent.id], 'child', null)
     Vue.set(state, '_uuid', uuid())
   }
 }

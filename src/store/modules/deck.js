@@ -1,8 +1,7 @@
-
+import Vue from 'vue'
 import { shuffle } from 'lodash'
 import { Suits } from '@/constants'
-import Card from '../models/Card'
-import Vue from 'vue'
+import Card from '@/store/models/Card'
 
 const state = {
   cards: [],
