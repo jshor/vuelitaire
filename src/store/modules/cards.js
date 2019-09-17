@@ -6,12 +6,24 @@ import isDescendant from '@/utils/isDescendant'
 const state = {}
 
 const getters = {
+  /**
+   * Returns all tableau space cards.
+   *
+   * @param {Object} state
+   * @returns {Space[]}
+   */
   tableau (state) {
     return Object
       .values(state)
       .filter(({ type }) => type === 'TABLEAU')
   },
 
+  /**
+   * Returns all foundation space cards.
+   *
+   * @param {Object} state
+   * @returns {Space[]}
+   */
   foundations (state) {
     return Object
       .values(state)
@@ -20,12 +32,25 @@ const getters = {
 }
 
 const mutations = {
+  /**
+   * Takes each card in the deck and stores it in the state.
+   * Its `id` is the key and the card itself is the value.
+   *
+   * @param {Object} state
+   * @param {Card[]} deck - deck of cards
+   */
   REGISTER_CARDS (state, deck) {
     deck.forEach(card => {
       state[card.id] = card
     })
   },
 
+  /**
+   * Creates a new tableau (7 spaces, each having `index` descendant cards).
+   *
+   * @param {Object} state
+   * @param {Card[]} deck - deck of cards to populate the tableau
+   */
   INIT_TABLEAU (state, deck) {
     for (let i = 1; i <= 7; i++) {
       let parent = new Space('TABLEAU')
@@ -44,6 +69,11 @@ const mutations = {
     }
   },
 
+  /**
+   * Creates 4 new foundations.
+   *
+   * @param {Object} state
+   */
   INIT_FOUNDATIONS (state) {
     for (let i = 0; i < 4; i++) {
       const space = new Space('FOUNDATION')
@@ -52,6 +82,14 @@ const mutations = {
     }
   },
 
+  /**
+   * Moves a card having `cardId` onto a card having `targetId`.
+   *
+   * @param {Object} state
+   * @param {Object} payload
+   * @param {Object} payload.cardId - id of the moving card
+   * @param {Object} payload.targetId - id of the new parent
+   */
   MOVE_CARD (state, { cardId, targetId }) {
     const card = state[cardId]
     const parent = Object
@@ -67,7 +105,7 @@ const mutations = {
     }
 
     Vue.set(state[targetId], 'child', card)
-    Vue.set(state, '_uuid', uuid())
+    Vue.set(state, '_uuid', uuid()) // needed for reactivity
   }
 }
 

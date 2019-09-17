@@ -1,4 +1,5 @@
 module.exports = {
+  collectCoverage: true,
   moduleFileExtensions: [
     'js',
     'jsx',
@@ -17,7 +18,7 @@ module.exports = {
     'jest-serializer-vue'
   ],
   testMatch: [
-    '**/tests/unit/**/*.spec.(js|jsx|ts|tsx)|**/__tests__/*.(js|jsx|ts|tsx)'
+    '<rootDir>/src/**/*.spec.(js|jsx|ts|tsx)|**/__tests__/*.(js|jsx|ts|tsx)'
   ],
   testURL: 'http://localhost/'
 }
