@@ -4,20 +4,30 @@ import { Suits } from '@/constants'
 import Card from '@/store/models/Card'
 
 const state = {
-  cards: [],
-  waste: [],
-  dealt: [],
-  index: -1,
-  dealCount: 3
+  cards: [], // cards in the stock pile
+  waste: [], // the pile of cards dealt
+  dealt: [], // the last `dealCount` (or fewer) cards dealt
+  index: -1, // index of last card dealt
+  dealCount: 3 // number of cards to deal at a time
 }
 
 const getters = {
+  /**
+   * Returns whether or not cards can be dealt.
+   *
+   * @param {Object} state
+   */
   canDeal (state) {
-    return state.cards.length
+    return state.cards.length > 0
   }
 }
 
 const mutations = {
+  /**
+   * Creates a new deck with 4 suits of 13 ranks each.
+   *
+   * @param {Object} state
+   */
   INIT_DECK (state) {
     const createSuit = (suit) => Array(13)
       .fill(null)
@@ -33,14 +43,21 @@ const mutations = {
     shuffle(deck).forEach(card => state.cards.push(card))
   },
 
+  /**
+   * Deals `dealCount` cards into the waste and dealt piles.
+   *
+   * @param {Object} state
+   */
   DEAL (state) {
     Vue.set(state, 'dealt', [])
 
     if (state.cards.length === 0) {
+      // reset the waste pile and stock
       Vue.set(state, 'cards', state.waste.reverse())
       Vue.set(state, 'waste', [])
     } else {
       for (let i = 0; i < state.dealCount; i++) {
+        // deal as many cards as possible up to `dealCount`
         if (state.cards.length) {
           const card = state.cards.pop()
 
@@ -51,6 +68,12 @@ const mutations = {
     }
   },
 
+  /**
+   * Removes the card having the given id from the waste pile.
+   *
+   * @param {Object} state
+   * @param {String} cardId - id of card to remove
+   */
   REMOVE_FROM_DECK (state, cardId) {
     const index = state.waste.findIndex(({ id }) => id === cardId)
 

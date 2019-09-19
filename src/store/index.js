@@ -5,10 +5,7 @@ import deck from './modules/deck'
 
 Vue.use(Vuex)
 
-const state = {
-  promotions: [],
-  deckIndex: -1
-}
+const state = {}
 
 const actions = {
   newGame ({ commit, state }) {
@@ -29,10 +26,9 @@ const mutations = {
   REVEAL_CARDS (state) {
     Object
       .values(state.cards)
-      .forEach(({ id, child }) => {
-        if (!child) {
-          Vue.set(state.cards[id], 'revealed', true)
-        }
+      .filter(c => !c.child)
+      .forEach(({ id }) => {
+        Vue.set(state.cards[id], 'revealed', true)
       })
   }
 }
