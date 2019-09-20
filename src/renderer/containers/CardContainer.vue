@@ -32,12 +32,12 @@
 <script>
 import { mapActions } from 'vuex'
 import { Container } from 'vue-smooth-dnd'
-import Card from '@/components/Card'
-import CardContainer from '@/containers/CardContainer'
-import CardDraggable from '@/components/CardDraggable'
-import Highlight from '@/components/Highlight'
-import getDescendants from '@/utils/getDescendants'
-import isDescendant from '@/utils/isDescendant'
+import Card from '../components/Card'
+import CardContainer from './CardContainer'
+import CardDraggable from '../components/CardDraggable'
+import Highlight from '../components/Highlight'
+import getDescendants from '../utils/getDescendants'
+import isDescendant from '../utils/isDescendant'
 
 export default {
   name: 'CardContainer',

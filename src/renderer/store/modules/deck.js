@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import { shuffle } from 'lodash'
-import { Suits } from '@/constants'
-import Card from '@/store/models/Card'
+import { Suits } from '../../constants'
+import Card from '../models/Card'
 
 const state = {
   cards: [], // cards in the stock pile
@@ -19,6 +19,12 @@ const getters = {
    */
   canDeal (state) {
     return state.cards.length > 0
+  }
+}
+
+const actions = {
+  deal ({ commit }) {
+    commit('DEAL')
   }
 }
 
@@ -85,6 +91,7 @@ const mutations = {
 
 export default {
   getters,
+  actions,
   state,
   mutations
 }

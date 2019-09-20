@@ -1,5 +1,9 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import {
+  createPersistedState,
+  createSharedMutations
+} from 'vuex-electron'
 import cards from './modules/cards'
 import deck from './modules/deck'
 
@@ -40,5 +44,10 @@ export default new Vuex.Store({
   modules: {
     cards,
     deck
-  }
+  },
+  plugins: [
+    createPersistedState(),
+    createSharedMutations()
+  ],
+  strict: process.env.NODE_ENV !== 'production'
 })

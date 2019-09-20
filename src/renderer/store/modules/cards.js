@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import uuid from 'uuid/v4'
-import Space from '@/store/models/Space'
-import isDescendant from '@/utils/isDescendant'
+import Space from '../models/Space'
+import isDescendant from '../../utils/isDescendant'
 
 const state = {}
 

@@ -24,12 +24,12 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 import { Container } from 'vue-smooth-dnd'
-import CardContainer from '@/containers/CardContainer'
+import CardContainer from './CardContainer'
 
 export default {
-  name: 'Deck',
+  name: 'DeckContainer',
   components: {
     CardContainer,
     Container
@@ -42,9 +42,7 @@ export default {
     })
   },
   methods: {
-    deal () {
-      this.$store.commit('DEAL')
-    },
+    ...mapActions(['deal']),
     shouldAcceptDrop ({ id }, { getChildPayload }) {
       return id === getChildPayload().id
     },

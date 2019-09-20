@@ -1,4 +1,4 @@
-import Space from '@/store/models/Space'
+import Space from './Space'
 
 export default class Card extends Space {
   constructor (suit, rank) {
