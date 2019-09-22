@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import uuid from 'uuid/v4'
 import Space from '../models/Space'
-import isDescendant from '../../utils/isDescendant'
 
 const state = {}
 
@@ -28,6 +27,12 @@ const getters = {
     return Object
       .values(state)
       .filter(({ type }) => type === 'FOUNDATION')
+  }
+}
+
+const actions = {
+  revealCard ({ commit }, cardId) {
+    commit('REVEAL_CARD', cardId)
   }
 }
 
@@ -64,6 +69,7 @@ const mutations = {
         .forEach(card => {
           // assign the next card to be the child of the previous card
           Vue.set(state[parent.id], 'child', card)
+          Vue.set(state[card.id], 'isPlayed', true)
           parent = card
         })
     }
@@ -96,21 +102,22 @@ const mutations = {
       .values(state)
       .find(({ child }) => child && child.id === card.id)
 
-    if (isDescendant(card, targetId) || (parent && parent.id === targetId)) {
-      return
-    }
-
     if (parent) {
       Vue.set(state[parent.id], 'child', null)
     }
-
+    Vue.set(state[cardId], 'isPlayed', true)
     Vue.set(state[targetId], 'child', card)
     Vue.set(state, '_uuid', uuid()) // needed for reactivity
+  },
+
+  REVEAL_CARD (state, cardId) {
+    Vue.set(state[cardId], 'revealed', true)
   }
 }
 
 export default {
   state,
   getters,
+  actions,
   mutations
 }

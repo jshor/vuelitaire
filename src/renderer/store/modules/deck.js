@@ -1,15 +1,17 @@
 import Vue from 'vue'
-import { shuffle } from 'lodash'
+// import { shuffle } from 'lodash'
 import { Suits } from '../../constants'
 import Card from '../models/Card'
 
-const state = {
+const createState = () => ({
   cards: [], // cards in the stock pile
   waste: [], // the pile of cards dealt
   dealt: [], // the last `dealCount` (or fewer) cards dealt
   index: -1, // index of last card dealt
   dealCount: 3 // number of cards to deal at a time
-}
+})
+
+const state = createState()
 
 const getters = {
   /**
@@ -46,7 +48,7 @@ const mutations = {
       ...createSuit(Suits.CLUBS)
     ]
 
-    shuffle(deck).forEach(card => state.cards.push(card))
+    deck.forEach(card => state.cards.push(card))
   },
 
   /**
@@ -90,6 +92,7 @@ const mutations = {
 }
 
 export default {
+  createState,
   getters,
   actions,
   state,

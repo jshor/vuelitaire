@@ -7,6 +7,7 @@
   </draggable>
   <div
     v-else
+    :class="{ 'card-draggable--ready': isReady }"
     class="card-draggable card-draggable--space">
     <slot />
   </div>
@@ -34,34 +35,42 @@ export default {
 <style>
 .card-draggable {
   display: block;
-  width: 100px;
-  height: 150px;
-  background-color: lightblue;
-  border: 1px solid #c0c0c0;
+  width: 10vw;
+  height: 14vw;
   box-sizing: border-box;
-  top: 20px;
-  left: -1px;
   position: relative;
   border-radius: 3px;
-  font: 12px Arial, Helvetica, sans-serif;
-  transition-duration: 0ms !important;
+  box-shadow: 0;
+  transition: 0.2s box-shadow;
 }
 
-.card-draggable--ready {
-  box-shadow: 0px 0 3px red;
+.card-draggable--space {
+  width: 10vw;
+  height: 14vw;
+  /* border: 1px solid #000; */
+  box-sizing: border-box;
 }
 
-.card-draggable--space > .card-draggable {
-  top: -1px;
+.card-draggable--space::before {
+  position: absolute;
+  content: ' ';
+  display: block;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  border: 2px solid rgba(255,255,255,0.4);
+  border-radius: 3px;
 }
 
-.card-draggable.smooth-dnd-ghost.animated {
-  margin-top: 20px;
-  margin-left: -1px;
-  transition-duration: 250ms !important;
+.card-draggable.animated:not(.smooth-dnd-ghost) {
+  display: none;
 }
 
 .card-draggable.smooth-dnd-ghost > .highlight {
   display: block;
+}
+
+.card-draggable--ready {
+  box-shadow: 0px 0 30px orange;
 }
 </style>

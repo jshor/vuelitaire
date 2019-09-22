@@ -1,49 +1,15 @@
 <template>
   <div id="app">
-    <deck-container />
-    <tableau>
-      <card-container
-        v-for="space in tableau"
-        :key="space.id"
-        :card="space"
-        :is-space="true"
-        :has-child="space.child !== null"
-      />
-    </tableau>
-    <foundations>
-      <card-container
-        v-for="space in foundations"
-        :key="space.id"
-        :card="space"
-        :is-space="true"
-        :has-child="space.child !== null"
-      />
-    </foundations>
+    <game-container />
   </div>
 </template>
 
 <script>
-import { mapGetters, mapState } from 'vuex'
-import DeckContainer from '@/containers/DeckContainer'
-import CardContainer from '@/containers/CardContainer'
-import Foundations from '@/components/Foundations'
-import Tableau from '@/components/Tableau'
+import GameContainer from '@/containers/GameContainer'
 
 export default {
   name: 'app',
-  components: {
-    CardContainer,
-    DeckContainer,
-    Foundations,
-    Tableau
-  },
-  computed: {
-    ...mapGetters(['tableau', 'foundations']),
-    ...mapState(['cards'])
-  },
-  beforeCreate () {
-    this.$store.dispatch('newGame')
-  }
+  components: { GameContainer }
 }
 </script>
 
@@ -59,5 +25,7 @@ body, html {
   flex-direction: column;
   height: 100vh;
   justify-content: space-between;
+  background: rgb(3,121,19);
+  background: radial-gradient(circle, rgba(3,121,19,1) 0%, rgba(2,201,2,1) 100%);
 }
 </style>

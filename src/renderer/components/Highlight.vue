@@ -1,5 +1,5 @@
 <template>
-  <div class="highlight">
+  <div class="highlight" :class="{ 'highlight--active': active }">
     <div
       v-for="i in descendantCount - 1"
       :key="i"
@@ -16,6 +16,10 @@ export default {
     descendantCount: {
       type: Number,
       default: 0
+    },
+    active: {
+      type: Boolean,
+      default: false
     }
   }
 }
@@ -23,16 +27,20 @@ export default {
 
 <style>
 .highlight {
-  width: 100px;
+  width: 10vw;
   position: absolute;
-  box-shadow: 0px 0 10px green;
-  display: none;
-  margin-left: -1px;
+  box-sizing: border-box;
   border-radius: 3px;
+  box-shadow: 0;
+  transition: 0.2s box-shadow;
+}
+
+.highlight--active {
+  box-shadow: 0px 0 30px orange;
 }
 
 .highlight__body {
-  height: 150px;
+  height: 14vw;
 }
 
 .highlight__descendant {

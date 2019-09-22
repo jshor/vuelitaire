@@ -1,18 +1,18 @@
 <template>
   <div class="deck">
-    <button @click="deal">Deal</button>
-
-    <div class="deck__waste">
+    <div
+      v-for="card in waste"
+      :key="card.id"
+      :style="{
+        paddingLeft: `${padding(card)}px`
+      }"
+      class="deck__card">
       <container
-        v-for="card in waste"
-        :key="card.id"
         :get-child-payload="() => card"
         :should-accept-drop="shouldAcceptDrop.bind(null, card)"
         :should-animate-drop="() => false"
-        :style="{ 'padding-left': `${padding(card)}px` }"
         orientation="horizontal"
-        group-name="right"
-        class="deck__card">
+        group-name="right">
         <card-container
           :key="card.id"
           :card="card"
@@ -24,12 +24,12 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex'
+import { mapState } from 'vuex'
 import { Container } from 'vue-smooth-dnd'
-import CardContainer from './CardContainer'
+import CardContainer from '@/containers/CardContainer'
 
 export default {
-  name: 'DeckContainer',
+  name: 'Deck',
   components: {
     CardContainer,
     Container
@@ -42,7 +42,6 @@ export default {
     })
   },
   methods: {
-    ...mapActions(['deal']),
     shouldAcceptDrop ({ id }, { getChildPayload }) {
       return id === getChildPayload().id
     },
@@ -56,15 +55,7 @@ export default {
 </script>
 
 <style>
-.deck__waste {
-  position: relative;
-}
-
-.deck__card {
+.deck, .deck__card {
   position: absolute;
-}
-
-.deck__card .card-draggable {
-  top: 0;
 }
 </style>

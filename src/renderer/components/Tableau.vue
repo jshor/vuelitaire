@@ -13,15 +13,16 @@ export default {
 <style>
 .tableau {
   display: flex;
-  justify-content: center;
+  justify-content: space-around;
   align-items: center;
   width: 100%;
 }
 
-.tableau
-  > .card-draggable
-  > .card-container
-  > .card-draggable {
-  top: -1px;
+.tableau .card-container {
+  margin-top: 20px;
+}
+
+.tableau > .card-draggable > .card-container {
+  margin-top: 0;
 }
 </style>

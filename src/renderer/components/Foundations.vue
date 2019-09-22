@@ -13,15 +13,9 @@ export default {
 <style>
 .foundations {
   display: flex;
-  justify-content: center;
+  justify-content: space-around;
+  align-items: center;
   align-items: center;
   width: 100%;
-}
-
-.foundations
-  .card-draggable
-  .card-container
-  .card-draggable {
-  top: -1px;
 }
 </style>

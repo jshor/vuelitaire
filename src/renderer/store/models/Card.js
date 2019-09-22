@@ -8,5 +8,6 @@ export default class Card extends Space {
     this.rank = rank
     this.child = null
     this.revealed = false
+    this.isPlayed = false
   }
 }

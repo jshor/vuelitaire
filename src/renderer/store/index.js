@@ -1,18 +1,18 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import {
-  createPersistedState,
-  createSharedMutations
-} from 'vuex-electron'
+import uuid from 'uuid/v4'
 import cards from './modules/cards'
 import deck from './modules/deck'
 
 Vue.use(Vuex)
 
-const state = {}
+const state = {
+  gameId: uuid()
+}
 
 const actions = {
   newGame ({ commit, state }) {
+    commit('CLEAR_EXISTING_GAME')
     commit('INIT_DECK')
     commit('REGISTER_CARDS', state.deck.cards)
     commit('INIT_TABLEAU', state.deck.cards)
@@ -27,6 +27,12 @@ const actions = {
 }
 
 const mutations = {
+  CLEAR_EXISTING_GAME (state) {
+    Vue.set(state, 'cards', {})
+    Vue.set(state, 'deck', deck.createState())
+    Vue.set(state, 'gameId', uuid())
+  },
+
   REVEAL_CARDS (state) {
     Object
       .values(state.cards)
@@ -45,9 +51,5 @@ export default new Vuex.Store({
     cards,
     deck
   },
-  plugins: [
-    createPersistedState(),
-    createSharedMutations()
-  ],
   strict: process.env.NODE_ENV !== 'production'
 })

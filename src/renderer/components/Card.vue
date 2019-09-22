@@ -1,20 +1,30 @@
 <template>
-  <div class="card" ref="card" :class="{ 'card--revealed': revealed }">
+  <div @click="$emit('click')" class="card" ref="card"
+    :class="className">
     <div class="card__inner" v-if="!isSpace">
-      <div class="card__front">{{ suit }} {{ rank }}</div>
-      <div class="card__back">back</div>
+      <div class="card__front">
+        <div class="card__small">{{ symbol }} {{ rank }}</div>
+        <div class="card__big">{{ symbol }} {{ rank }}</div>
+      </div>
+      <div class="card__back"></div>
     </div>
-    <div v-else>space</div>
+    <div class="space" v-else></div>
   </div>
 </template>
 
 <script>
+import { Suits } from '@/constants'
+
 export default {
   name: 'Card',
   props: {
     suit: {
       type: String,
       default: '?'
+    },
+    cardId: {
+      type: String,
+      default: 'X'
     },
     rank: {
       type: Number,
@@ -28,6 +38,28 @@ export default {
       type: Boolean,
       default: false
     }
+  },
+  computed: {
+    className () {
+      let className = `card--${this.suit.toLowerCase()}`
+
+      if (this.revealed) {
+        className += ' card--revealed'
+      }
+      return className
+    },
+    symbol () {
+      switch (this.suit) {
+        case Suits.DIAMONDS:
+          return '◆'
+        case Suits.CLUBS:
+          return '♠'
+        case Suits.SPADES:
+          return '♠'
+        case Suits.HEARTS:
+          return '♥'
+      }
+    }
   }
 }
 </script>
@@ -35,18 +67,32 @@ export default {
 <style>
 .card {
   position: absolute;
-  width: 100px;
-  height: 150px;
+  width: 10vw;
+  height: 14vw;
   perspective: 1000px;
+}
+
+.card__big {
+  padding-top: 2rem;
+  text-align: center;
+  font-size: 2rem;
+}
+
+.card__small {
+  padding-left: 0.5rem;
+}
+
+.card--hearts,
+.card--diamonds {
+  color: red;
 }
 
 .card__inner {
   position: absolute;
   width: 100%;
   height: 100%;
-  border: 1px solid #000;
+  transition: transform 0.35s;
   box-sizing: border-box;
-  transition: transform 0.8s;
   transform-style: preserve-3d;
 }
 
@@ -55,19 +101,43 @@ export default {
 }
 
 .card__front, .card__back {
+  font: 1rem Arial, Helvetica, sans-serif;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+  border: 1px solid #000;
+  box-sizing: border-box;
+  border-radius: 3px;
   position: absolute;
   width: 100%;
   height: 100%;
   backface-visibility: hidden;
 }
 
-.card__front {
-  background-color: #bbb;
-  color: black;
+.card__back {
+  background: repeating-linear-gradient(
+    45deg,
+    #606dbc,
+    #606dbc 10px,
+    #465298 10px,
+    #465298 20px
+  );
 }
 
 .card__front {
-  background-color: lightblue;
+  background-color: #fff;
+}
+
+.card__front {
   transform: rotateY(180deg);
+}
+
+.space {
+  width: 10vw;
+  height: 14vw;
+  /* border: 1px solid #000; */
+  border-width: 5px;
+  border-style: solid;
+  box-sizing: border-box;
+  background-color: #000;
+  border-image: linear-gradient(115deg,#4fcf70,#fad648,#a767e5,#12bcfe,#44ce7b);
 }
 </style>

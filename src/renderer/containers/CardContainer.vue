@@ -1,14 +1,16 @@
 <template>
-  <card-draggable :is-ready="ready" :is-space="isSpace">
-    <div @click="reveal">
-      <highlight :descendant-count="descendants.length" />
-      <card
-        :suit="card.suit"
-        :rank="card.rank"
-        :revealed="card.revealed"
-        :is-space="isSpace"
-      />
-    </div>
+  <card-draggable
+    :is-ready="ready"
+    :is-space="isSpace">
+    <highlight :descendant-count="descendants.length" />
+    <card
+      v-if="!isSpace"
+      :suit="card.suit"
+      :rank="card.rank"
+      :revealed="card.revealed"
+      :card-id="card.id"
+      @click="revealCard(card.id)"
+    />
     <container
       v-if="!unturned"
       class="card-container"
@@ -18,8 +20,7 @@
       @drag-enter="() => ready = true"
       @drag-leave="() => ready = false"
       :get-child-payload="() => card.child"
-      :should-accept-drop="shouldAcceptDrop"
-      :should-animate-drop="shouldAnimateDrop">
+      :should-accept-drop="shouldAcceptDrop">
       <card-container
         v-if="card.child && hasChild"
         :card="card.child"
@@ -32,12 +33,12 @@
 <script>
 import { mapActions } from 'vuex'
 import { Container } from 'vue-smooth-dnd'
-import Card from '../components/Card'
+import Card from '@/components/Card'
 import CardContainer from './CardContainer'
-import CardDraggable from '../components/CardDraggable'
-import Highlight from '../components/Highlight'
-import getDescendants from '../utils/getDescendants'
-import isDescendant from '../utils/isDescendant'
+import CardDraggable from '@/components/CardDraggable'
+import Highlight from '@/components/Highlight'
+import getDescendants from '@/utils/getDescendants'
+import isDescendant from '@/utils/isDescendant'
 
 export default {
   name: 'CardContainer',
@@ -74,38 +75,55 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['moveCard']),
-    canAccept (card) {
-      return (this.card.child === null || this.card.child.id === card.id) && card.revealed
+    isAncestor (card) {
+      let parent = this.$parent
+      let ancestors = []
+
+      while (parent) {
+        if (parent.$props && parent.$props.card) {
+          if (parent.$props.card.id === card.id) {
+            return true
+          }
+          ancestors.push(parent)
+        }
+        parent = parent.$parent
+      }
+      return false
     },
     shouldAcceptDrop ({ getChildPayload }) {
-      return this.canAccept(getChildPayload())
-    },
-    shouldAnimateDrop (opts, payload) {
-      return !isDescendant(payload, this.card.id)
-    },
-    onDrop ({ payload }) {
-      if (this.ready) {
-        const cardId = payload.id
-        const targetId = this.card.id
+      const { child, revealed, isSpace, isPlayed } = this.card
+      const card = getChildPayload()
 
-        if (!isDescendant(payload, targetId)) {
-          this.moveCard({ cardId, targetId })
-        }
-        this.ready = false
+      if (!isPlayed || !card.revealed) {
+        return false
+      } else if (child) {
+        return child.id === card.id
+      } else if (isSpace) {
+        return true
+      } else {
+        return !this.isAncestor(card) && revealed
       }
     },
-    reveal () {
-      this.card.revealed = true
-    }
+    onDrop ({ payload }) {
+      if (!this.ready) return
+
+      const cardId = payload.id
+      const targetId = this.card.id
+
+      if (!isDescendant(this.card, cardId)) {
+        this.moveCard({ cardId, targetId })
+      }
+      this.ready = false
+    },
+    ...mapActions(['moveCard', 'revealCard'])
   }
 }
 </script>
 
 <style>
 .card-container {
-  width: 100px;
-  min-height: 150px;
-  height: 100%;
+  width: 10vw;
+  min-height: calc(14vw - 20px);
+  box-sizing: border-box;
 }
 </style>
