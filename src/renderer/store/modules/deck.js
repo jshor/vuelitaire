@@ -1,5 +1,5 @@
 import Vue from 'vue'
-// import { shuffle } from 'lodash'
+import { shuffle } from 'lodash'
 import { Suits } from '../../constants'
 import Card from '../models/Card'
 
@@ -48,7 +48,7 @@ const mutations = {
       ...createSuit(Suits.CLUBS)
     ]
 
-    deck.forEach(card => state.cards.push(card))
+    shuffle(deck).forEach(card => state.cards.push(card))
   },
 
   /**

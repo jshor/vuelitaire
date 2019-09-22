@@ -2,10 +2,7 @@
   <div @click="$emit('click')" class="card" ref="card"
     :class="className">
     <div class="card__inner" v-if="!isSpace">
-      <div class="card__front">
-        <div class="card__small">{{ symbol }} {{ rank }}</div>
-        <div class="card__big">{{ symbol }} {{ rank }}</div>
-      </div>
+      <div class="card__front"></div>
       <div class="card__back"></div>
     </div>
     <div class="space" v-else></div>
@@ -41,7 +38,7 @@ export default {
   },
   computed: {
     className () {
-      let className = `card--${this.suit.toLowerCase()}`
+      let className = `card--${this.suit.toLowerCase()}-${this.rank + 1}`
 
       if (this.revealed) {
         className += ' card--revealed'
@@ -53,7 +50,7 @@ export default {
         case Suits.DIAMONDS:
           return '◆'
         case Suits.CLUBS:
-          return '♠'
+          return '♣'
         case Suits.SPADES:
           return '♠'
         case Suits.HEARTS:
@@ -64,18 +61,23 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
 .card {
   position: absolute;
-  width: 10vw;
+  width: $card-width;
   height: 14vw;
   perspective: 1000px;
 }
 
+@include create-card-variants('hearts');
+@include create-card-variants('spades');
+@include create-card-variants('diamonds');
+@include create-card-variants('clubs');
+
 .card__big {
   padding-top: 2rem;
   text-align: center;
-  font-size: 2rem;
+  font-size: 1.5rem;
 }
 
 .card__small {
@@ -103,7 +105,6 @@ export default {
 .card__front, .card__back {
   font: 1rem Arial, Helvetica, sans-serif;
   box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
-  border: 1px solid #000;
   box-sizing: border-box;
   border-radius: 3px;
   position: absolute;
@@ -113,6 +114,7 @@ export default {
 }
 
 .card__back {
+  border: 1px solid #000;
   background: repeating-linear-gradient(
     45deg,
     #606dbc,
@@ -123,7 +125,8 @@ export default {
 }
 
 .card__front {
-  background-color: #fff;
+  background-size: cover;
+  // background-color: #fff;
 }
 
 .card__front {

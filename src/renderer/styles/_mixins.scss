@@ -1,0 +1,9 @@
+$ranks: 13;
+
+@mixin create-card-variants($suit) {
+  @for $rank from 1 through $ranks {
+    .card--#{$suit}-#{$rank} .card__front {
+      background-image: url('../assets/cards/#{$suit}/#{$rank}.svg');
+    }
+  }
+}
