@@ -2,34 +2,32 @@
   "comments": false,
   "env": {
     "test": {
-      "presets": ["@babel/preset-env"]
+      "presets": [
+        "@babel/preset-env"
+      ]
     },
     "main": {
       "presets": [
-        ["env", {
-          "targets": { "node": 7 }
-        }],
-        "stage-0"
-      ],
-      "plugins": ["transform-runtime"]
+        ["@babel/preset-env"]
+      ]
     },
     "renderer": {
       "presets": [
-        ["env", {
+        ["@babel/preset-env", {
           "modules": false
-        }],
-        "stage-0"
-      ],
-      "plugins": ["transform-runtime"]
+        }]
+      ]
     },
     "web": {
       "presets": [
-        ["env", {
+        ["@babel/preset-env", {
           "modules": false
-        }],
-        "stage-0"
-      ],
-      "plugins": ["transform-runtime"]
+        }]
+      ]
     }
-  }
+  },
+  "plugins": [
+    "@babel/plugin-proposal-function-bind",
+    "@babel/plugin-transform-runtime"
+  ]
 }
