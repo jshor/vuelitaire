@@ -1,6 +1,8 @@
 import Space from './Space'
-import hasOppositeColorBeforePromotion from '../../rules/hasOppositeColorBeforePromotion'
-import isSequential from '../../rules/isSequential'
+import {
+  hasOppositeColorBeforePromotion,
+  isSequential
+} from '../../gameplay'
 
 export default class Card extends Space {
   constructor (suit, rank) {

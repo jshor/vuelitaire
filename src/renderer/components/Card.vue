@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import { Suits } from '@/constants'
+import { Suits } from '../constants'
 
 export default {
   name: 'Card',

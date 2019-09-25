@@ -1,5 +1,5 @@
 import getRevealableCardHints from './getRevealableCardHints'
-import Card from '../store/models/Card'
+import Card from '../../store/models/Card'
 
 describe('Hint: getRevealableCardHints', () => {
   it('should include revealable cards', () => {

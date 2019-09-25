@@ -1,6 +1,6 @@
 import deck from './deck'
-import Card from '@/store/models/Card'
-import { Suits } from '@/constants'
+import Card from '../models/Card'
+import { Suits } from '../../constants'
 
 const {
   state: originalState,

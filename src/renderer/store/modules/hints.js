@@ -1,5 +1,7 @@
-import getMoveableCardHints from '../../hints/getMoveableCardHints'
-import getRevealableCardHints from '../../hints/getRevealableCardHints'
+import {
+  getMoveableCardHints,
+  getRevealableCardHints
+} from '../../gameplay'
 
 const state = {
   entries: [],

@@ -1,5 +1,5 @@
 import uuid from 'uuid/v4'
-import isBuildable from '../../rules/isBuildable'
+import { isBuildable } from '../../gameplay'
 
 export default class Space {
   constructor (type, rank) {

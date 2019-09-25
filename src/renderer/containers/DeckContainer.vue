@@ -26,7 +26,7 @@
 <script>
 import { mapState } from 'vuex'
 import { Container } from 'vue-smooth-dnd'
-import CardContainer from '@/containers/CardContainer'
+import CardContainer from './CardContainer'
 
 export default {
   name: 'Deck',

@@ -1,7 +1,7 @@
 import getMoveableCardHints from './getMoveableCardHints'
-import Card from '../store/models/Card'
-import Space from '../store/models/Space'
-import { Suits } from '../constants'
+import Card from '../../store/models/Card'
+import Space from '../../store/models/Space'
+import { Suits } from '../../constants'
 
 describe('Hint: getMoveableCardHints', () => {
   const cards = [

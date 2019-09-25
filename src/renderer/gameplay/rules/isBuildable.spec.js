@@ -1,5 +1,5 @@
 import isBuildable from './isBuildable'
-import Card from '../store/models/Card'
+import Card from '../../store/models/Card'
 
 describe('Rule: isBuildable', () => {
   let parent

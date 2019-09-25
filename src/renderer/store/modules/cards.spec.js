@@ -1,7 +1,7 @@
-import cards from '@/store/modules/cards'
-import Card from '@/store/models/Card'
-import Space from '@/store/models/Space'
-import getDescendants from '@/utils/getDescendants'
+import cards from './cards'
+import Card from '../models/Card'
+import Space from '../models/Space'
+import getDescendants from '../../utils/getDescendants'
 
 const { getters, mutations } = cards
 

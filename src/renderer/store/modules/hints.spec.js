@@ -6,8 +6,10 @@ const {
   mutations
 } = hints
 
-jest.mock('../../hints/getMoveableCardHints', () => () => [])
-jest.mock('../../hints/getRevealableCardHints', () => () => [])
+jest.mock('../../gameplay', () => ({
+  getMoveableCardHints: () => [],
+  getRevealableCardHints: () => []
+}))
 
 describe('Vuex hints module', () => {
   describe('getters', () => {

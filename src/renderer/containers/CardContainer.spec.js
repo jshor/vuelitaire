@@ -1,5 +1,5 @@
 import Vuex from 'vuex'
-import { mount, createLocalVue } from '@vue/test-utils'
+import { shallowMount, createLocalVue } from '@vue/test-utils'
 import CardContainer from './CardContainer'
 import Card from '../store/models/Card'
 
@@ -12,7 +12,7 @@ describe('Card Container', () => {
   let card
 
   const createWrapper = (propsData) => {
-    return mount(CardContainer, {
+    return shallowMount(CardContainer, {
       propsData,
       localVue,
       sync: false,

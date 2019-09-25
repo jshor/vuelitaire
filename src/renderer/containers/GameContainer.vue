@@ -37,10 +37,10 @@
 
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex'
-import DeckContainer from '@/containers/DeckContainer'
-import CardContainer from '@/containers/CardContainer'
-import Foundations from '@/components/Foundations'
-import Tableau from '@/components/Tableau'
+import DeckContainer from './DeckContainer'
+import CardContainer from './CardContainer'
+import Foundations from '../components/Foundations'
+import Tableau from '../components/Tableau'
 
 export default {
   name: 'app',

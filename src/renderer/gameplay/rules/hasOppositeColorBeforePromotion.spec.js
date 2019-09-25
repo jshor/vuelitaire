@@ -1,6 +1,6 @@
 import hasOppositeColorBeforePromotion from './hasOppositeColorBeforePromotion'
-import Card from '../store/models/Card'
-import { Suits } from '../constants'
+import Card from '../../store/models/Card'
+import { Suits } from '../../constants'
 
 describe('Rule: hasOppositeColorBeforePromotion', () => {
   function testRule (parentSuit, childSuit, value) {
