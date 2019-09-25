@@ -1,14 +1,15 @@
-import Space from './Space'
+import BaseModel from './BaseModel'
 import {
   hasOppositeColorBeforePromotion,
   isSequential
 } from '../../gameplay'
 
-export default class Card extends Space {
+export default class Card extends BaseModel {
   constructor (suit, rank) {
-    super('CARD', rank)
+    super()
 
     this.suit = suit
+    this.rank = rank
     this.revealed = false
     this.isPlayed = false
 

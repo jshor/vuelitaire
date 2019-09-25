@@ -1,6 +1,7 @@
 import getMoveableCardHints from './getMoveableCardHints'
 import Card from '../../store/models/Card'
-import Space from '../../store/models/Space'
+import LaneSpace from '../../store/models/LaneSpace'
+import FoundationSpace from '../../store/models/FoundationSpace'
 import { Suits } from '../../constants'
 
 describe('Hint: getMoveableCardHints', () => {
@@ -9,8 +10,8 @@ describe('Hint: getMoveableCardHints', () => {
     new Card(Suits.CLUBS, 6),
     new Card(Suits.HEARTS, 0),
     new Card(Suits.SPADES, 12),
-    new Space('TABLEAU'),
-    new Space('FOUNDATION')
+    new LaneSpace(),
+    new FoundationSpace()
   ]
   const topWasteCard = new Card(Suits.SPADES, 10)
   let hints
@@ -39,7 +40,7 @@ describe('Hint: getMoveableCardHints', () => {
     ]))
   })
 
-  it('should hint the King of Spades to be placed onto the empty tableau space', () => {
+  it('should hint the King of Spades to be placed onto the empty lane space', () => {
     expect(hints).toEqual(expect.arrayContaining([
       expect.arrayContaining([cards[3].id, cards[4].id])
     ]))

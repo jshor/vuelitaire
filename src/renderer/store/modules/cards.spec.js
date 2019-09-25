@@ -1,36 +1,37 @@
 import cards from './cards'
 import Card from '../models/Card'
-import Space from '../models/Space'
+import FoundationSpace from '../models/FoundationSpace'
+import LaneSpace from '../models/LaneSpace'
 import getDescendants from '../../utils/getDescendants'
 
 const { getters, mutations } = cards
 
 describe('Vuex cards module', () => {
   describe('getters', () => {
-    const createState = (n, type) => Array(n)
+    const createState = (n, fn) => Array(n)
       .fill(null)
-      .map(() => new Space(type))
+      .map(fn)
       .reduce((s, c) => ({ ...s, [c.id]: c }), {})
 
     describe('tableau', () => {
       it('should return an array of 7 tableau space cards', () => {
-        const state = createState(7, 'TABLEAU')
+        const state = createState(7, () => new LaneSpace())
         const tableau = getters.tableau(state)
 
         expect.assertions(8)
         expect(tableau).toHaveLength(7)
-        tableau.forEach(t => expect(t.constructor.name).toEqual('Space'))
+        tableau.forEach(t => expect(t.constructor.name).toEqual('LaneSpace'))
       })
     })
 
     describe('foundations', () => {
       it('should return an array of 4 foundation space cards', () => {
-        const state = createState(4, 'FOUNDATION')
+        const state = createState(4, () => new FoundationSpace())
         const foundations = getters.foundations(state)
 
         expect.assertions(5)
         expect(foundations).toHaveLength(4)
-        foundations.forEach(t => expect(t.constructor.name).toEqual('Space'))
+        foundations.forEach(t => expect(t.constructor.name).toEqual('FoundationSpace'))
       })
     })
   })
@@ -75,7 +76,7 @@ describe('Vuex cards module', () => {
 
         const spaces = Object
           .values(state)
-          .filter(t => t.constructor.name === 'Space')
+          .filter(t => t.constructor.name === 'LaneSpace')
 
         expect(spaces).toHaveLength(7)
       })
@@ -88,7 +89,7 @@ describe('Vuex cards module', () => {
         expect.assertions(7)
         Object
           .values(state)
-          .filter(t => t.constructor.name === 'Space')
+          .filter(t => t.constructor.name === 'LaneSpace')
           .forEach((space, index) => {
             expect(getDescendants(space)).toHaveLength(index + 2)
           })
@@ -103,7 +104,7 @@ describe('Vuex cards module', () => {
 
         const foundations = Object
           .values(state)
-          .filter(t => t.constructor.name === 'Space')
+          .filter(t => t.constructor.name === 'FoundationSpace')
 
         expect(foundations).toHaveLength(4)
       })

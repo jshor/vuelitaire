@@ -1,6 +1,6 @@
 import Vue from 'vue'
-// import uuid from 'uuid/v4'
-import Space from '../models/Space'
+import FoundationSpace from '../models/FoundationSpace'
+import LaneSpace from '../models/LaneSpace'
 
 const state = {}
 
@@ -9,24 +9,24 @@ const getters = {
    * Returns all tableau space cards.
    *
    * @param {Object} state
-   * @returns {Space[]}
+   * @returns {LaneSpace[]}
    */
   tableau (state) {
     return Object
       .values(state)
-      .filter(({ type }) => type === 'TABLEAU')
+      .filter(card => card.constructor.name === 'LaneSpace')
   },
 
   /**
    * Returns all foundation space cards.
    *
    * @param {Object} state
-   * @returns {Space[]}
+   * @returns {FoundationSpace[]}
    */
   foundations (state) {
     return Object
       .values(state)
-      .filter(({ type }) => type === 'FOUNDATION')
+      .filter(card => card.constructor.name === 'FoundationSpace')
   }
 }
 
@@ -59,7 +59,7 @@ const mutations = {
    */
   INIT_TABLEAU (state, deck) {
     for (let i = 1; i <= 7; i++) {
-      let parent = new Space('TABLEAU', 12)
+      let parent = new LaneSpace()
 
       // assign the first card to the tableau row
       state[parent.id] = parent
@@ -83,7 +83,7 @@ const mutations = {
    */
   INIT_FOUNDATIONS (state) {
     for (let i = 0; i < 4; i++) {
-      const space = new Space('FOUNDATION', 0)
+      const space = new FoundationSpace()
 
       state[space.id] = space
     }
@@ -108,7 +108,6 @@ const mutations = {
     }
     Vue.set(state[cardId], 'isPlayed', true)
     Vue.set(state[targetId], 'child', card)
-    // Vue.set(state, '_uuid', uuid()) // needed for reactivity
   },
 
   REVEAL_CARD (state, cardId) {
