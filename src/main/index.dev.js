@@ -6,6 +6,7 @@
  */
 
 /* eslint-disable */
+process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true'
 
 // Install `electron-debug` with `devtron`
 require('electron-debug')({ showDevTools: true })

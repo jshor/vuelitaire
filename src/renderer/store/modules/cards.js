@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import uuid from 'uuid/v4'
+// import uuid from 'uuid/v4'
 import Space from '../models/Space'
 
 const state = {}
@@ -58,7 +58,7 @@ const mutations = {
    */
   INIT_TABLEAU (state, deck) {
     for (let i = 1; i <= 7; i++) {
-      let parent = new Space('TABLEAU')
+      let parent = new Space('TABLEAU', 12)
 
       // assign the first card to the tableau row
       state[parent.id] = parent
@@ -82,7 +82,7 @@ const mutations = {
    */
   INIT_FOUNDATIONS (state) {
     for (let i = 0; i < 4; i++) {
-      const space = new Space('FOUNDATION')
+      const space = new Space('FOUNDATION', 0)
 
       state[space.id] = space
     }
@@ -107,7 +107,7 @@ const mutations = {
     }
     Vue.set(state[cardId], 'isPlayed', true)
     Vue.set(state[targetId], 'child', card)
-    Vue.set(state, '_uuid', uuid()) // needed for reactivity
+    // Vue.set(state, '_uuid', uuid()) // needed for reactivity
   },
 
   REVEAL_CARD (state, cardId) {

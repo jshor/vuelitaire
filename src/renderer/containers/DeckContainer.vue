@@ -4,7 +4,7 @@
       v-for="card in waste"
       :key="card.id"
       :style="{
-        paddingLeft: `${padding(card)}px`
+        paddingLeft: `${getFannedPadding(card)}px`
       }"
       class="deck__card">
       <container
@@ -37,15 +37,16 @@ export default {
   computed: {
     ...mapState({
       waste: state => state.deck.waste,
-      dealt: state => state.deck.dealt,
-      dealCount: state => state.deck.dealCount
+      dealt: state => state.deck.dealt
     })
   },
   methods: {
     shouldAcceptDrop ({ id }, { getChildPayload }) {
+      // the only time a card in the waste should accept a child is when a card is being returned
       return id === getChildPayload().id
     },
-    padding (card) {
+    getFannedPadding (card) {
+      // the top 2 cards (last n-1 cards) of the dealt pile should be horizontally fanned with padding
       const index = this.dealt.findIndex(({ id }) => id === card.id)
 
       return Math.max(index * 20, 0)

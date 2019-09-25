@@ -1,5 +1,5 @@
 import Vuex from 'vuex'
-import { shallowMount, createLocalVue } from '@vue/test-utils'
+import { mount, createLocalVue } from '@vue/test-utils'
 import CardContainer from './CardContainer'
 import Card from '../store/models/Card'
 
@@ -12,20 +12,24 @@ describe('Card Container', () => {
   let card
 
   const createWrapper = (propsData) => {
-    return shallowMount(CardContainer, {
+    return mount(CardContainer, {
       propsData,
       localVue,
       sync: false,
       store: new Vuex.Store({
         actions: {
-          moveCard: jest.fn()
+          moveCard: jest.fn(),
+          revealCard: jest.fn()
+        },
+        getters: {
+          hint: jest.fn(() => [])
         }
       })
     })
   }
 
   beforeEach(() => {
-    card = card = new Card()
+    card = new Card()
     card.child = new Card()
     card.revealed = true
 
@@ -45,39 +49,59 @@ describe('Card Container', () => {
     })
   })
 
-  describe('unturned property', () => {
+  describe('canReveal property', () => {
     it('should return true if the card isn\'t revealed and has no child', () => {
       card.child = null
       card.revealed = false
 
-      expect(CardContainer.computed.unturned.call({ card })).toEqual(true)
+      expect(CardContainer.computed.canReveal.call({ card })).toEqual(true)
     })
 
     it('should return false if the card has a child', () => {
-      expect(CardContainer.computed.unturned.call({ card })).toEqual(false)
+      expect(CardContainer.computed.canReveal.call({ card })).toEqual(false)
     })
 
     it('should return false if the card is already revealed', () => {
       card.child = null
       card.revealed = true
 
-      expect(CardContainer.computed.unturned.call({ card })).toEqual(false)
+      expect(CardContainer.computed.canReveal.call({ card })).toEqual(false)
     })
   })
 
   describe('card drop acceptance', () => {
-    it('should accept a card drop if the card has no child', () => {
-      const getChildPayload = () => card
-      card.child = null
+    it('should accept a card drop if the dropped card is the parent card\'s child', () => {
+      const getChildPayload = () => card.child
 
       expect(wrapper.vm.shouldAcceptDrop({ getChildPayload })).toEqual(true)
     })
 
-    it('should not accept a card drop if the card is not yet revealed', () => {
+    it('should not accept a card drop if the card is an ancestor of the current card', () => {
+      const parentCard = new Card()
+      const parentWrapper = createWrapper({
+        card: parentCard,
+        hasChild: true
+      })
+      wrapper = createWrapper({
+        card,
+        hasChild: true,
+        children: [parentWrapper]
+      })
       const getChildPayload = () => card
-      card.revealed = false
 
-      expect(wrapper.vm.shouldAcceptDrop({ getChildPayload })).toEqual(false)
+      expect(parentWrapper.vm.shouldAcceptDrop({ getChildPayload })).toEqual(false)
+    })
+
+    it('should accept the card if the dropped card meets the parent card\'s requirements', () => {
+      const droppedCard = new Card()
+      const getChildPayload = () => droppedCard
+
+      card.child = null
+      jest
+        .spyOn(card, 'canAcceptCard')
+        .mockReturnValue(true)
+
+      expect(wrapper.vm.shouldAcceptDrop({ getChildPayload })).toEqual(true)
     })
   })
 
@@ -89,6 +113,13 @@ describe('Card Container', () => {
     it('should not call moveCard() if the target card is not ready to accept yet', () => {
       wrapper.setData({ ready: false })
       wrapper.vm.onDrop({ payload: new Card() })
+
+      expect(wrapper.vm.moveCard).not.toHaveBeenCalled()
+    })
+
+    it('should not call moveCard() if the target card is descendant of the parent', () => {
+      wrapper.setData({ ready: true })
+      wrapper.vm.onDrop({ payload: card.child })
 
       expect(wrapper.vm.moveCard).not.toHaveBeenCalled()
     })
@@ -113,14 +144,6 @@ describe('Card Container', () => {
       wrapper.vm.onDrop({ payload })
 
       expect(wrapper.vm.ready).toEqual(false)
-    })
-  })
-
-  describe('reveal()', () => {
-    it('should set the card\'s `revealed` flag to true', () => {
-      wrapper.vm.reveal()
-
-      expect(wrapper.vm.card.revealed).toEqual(true)
     })
   })
 })

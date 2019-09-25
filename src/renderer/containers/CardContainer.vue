@@ -9,10 +9,10 @@
       :rank="card.rank"
       :revealed="card.revealed"
       :card-id="card.id"
-      @click="revealCard(card.id)"
+      @click="canReveal && revealCard(card.id)"
     />
     <container
-      v-if="!unturned"
+      v-if="!canReveal"
       class="card-container"
       orientation="horizontal"
       group-name="right"
@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 import { Container } from 'vue-smooth-dnd'
 import Card from '@/components/Card'
 import CardContainer from './CardContainer'
@@ -39,6 +39,7 @@ import CardDraggable from '@/components/CardDraggable'
 import Highlight from '@/components/Highlight'
 import getDescendants from '@/utils/getDescendants'
 import isDescendant from '@/utils/isDescendant'
+import isAncestor from '@/utils/isAncestor'
 
 export default {
   name: 'CardContainer',
@@ -70,39 +71,21 @@ export default {
     descendants () {
       return getDescendants(this.card)
     },
-    unturned () {
+    canReveal () {
       return this.card.child === null && !this.card.revealed
-    }
+    },
+    ...mapGetters(['hint'])
   },
   methods: {
-    isAncestor (card) {
-      let parent = this.$parent
-      let ancestors = []
-
-      while (parent) {
-        if (parent.$props && parent.$props.card) {
-          if (parent.$props.card.id === card.id) {
-            return true
-          }
-          ancestors.push(parent)
-        }
-        parent = parent.$parent
-      }
-      return false
-    },
     shouldAcceptDrop ({ getChildPayload }) {
-      const { child, revealed, isSpace, isPlayed } = this.card
+      const parent = this.card
       const card = getChildPayload()
 
-      if (!isPlayed || !card.revealed) {
-        return false
-      } else if (child) {
-        return child.id === card.id
-      } else if (isSpace) {
-        return true
-      } else {
-        return !this.isAncestor(card) && revealed
+      if (parent.child) {
+        // if the child card is being returned, always accept it
+        return parent.child.id === card.id
       }
+      return !isAncestor(this.$parent, card) && parent.canAcceptCard(card)
     },
     onDrop ({ payload }) {
       if (!this.ready) return
@@ -115,7 +98,10 @@ export default {
       }
       this.ready = false
     },
-    ...mapActions(['moveCard', 'revealCard'])
+    ...mapActions([
+      'moveCard',
+      'revealCard'
+    ])
   }
 }
 </script>

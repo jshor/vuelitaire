@@ -7,7 +7,7 @@ const createState = () => ({
   cards: [], // cards in the stock pile
   waste: [], // the pile of cards dealt
   dealt: [], // the last `dealCount` (or fewer) cards dealt
-  index: -1, // index of last card dealt
+  // index: -1, // index of last card dealt
   dealCount: 3 // number of cards to deal at a time
 })
 
