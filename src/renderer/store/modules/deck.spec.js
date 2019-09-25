@@ -5,10 +5,27 @@ import { Suits } from '@/constants'
 const {
   state: originalState,
   getters,
+  actions,
   mutations
 } = deck
 
 describe('Vuex deck module', () => {
+  afterEach(() => jest.resetAllMocks())
+
+  describe('actions', () => {
+    const commit = jest.fn()
+
+    describe('deal()', () => {
+      it('should commit the DEAL and CLEAR_HINTS mutations', () => {
+        actions.deal({ commit })
+
+        expect(commit).toHaveBeenCalledTimes(2)
+        expect(commit).toHaveBeenCalledWith('DEAL')
+        expect(commit).toHaveBeenCalledWith('CLEAR_HINTS')
+      })
+    })
+  })
+
   describe('getters', () => {
     describe('canDeal', () => {
       it('should return true if there are cards in the state to deal', () => {

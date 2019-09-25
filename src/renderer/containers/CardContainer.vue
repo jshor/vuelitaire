@@ -1,7 +1,8 @@
 <template>
   <card-draggable
-    :is-ready="ready"
+    :is-ready="ready || hint.includes(card.id)"
     :is-space="isSpace">
+    <!-- TODO: highlight may not be necessary -->
     <highlight :descendant-count="descendants.length" />
     <card
       v-if="!isSpace"

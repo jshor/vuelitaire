@@ -27,6 +27,7 @@ const getters = {
 const actions = {
   deal ({ commit }) {
     commit('DEAL')
+    commit('CLEAR_HINTS')
   }
 }
 

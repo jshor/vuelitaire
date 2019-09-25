@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 import uuid from 'uuid/v4'
 import cards from './modules/cards'
 import deck from './modules/deck'
+import hints from './modules/hints'
 
 Vue.use(Vuex)
 
@@ -23,6 +24,7 @@ const actions = {
   moveCard ({ commit }, { cardId, targetId }) {
     commit('REMOVE_FROM_DECK', cardId)
     commit('MOVE_CARD', { cardId, targetId })
+    commit('CLEAR_HINTS')
   }
 }
 
@@ -49,7 +51,8 @@ export default new Vuex.Store({
   mutations,
   modules: {
     cards,
-    deck
+    deck,
+    hints
   },
   strict: process.env.NODE_ENV !== 'production'
 })

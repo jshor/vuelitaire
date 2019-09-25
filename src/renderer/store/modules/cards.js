@@ -33,6 +33,7 @@ const getters = {
 const actions = {
   revealCard ({ commit }, cardId) {
     commit('REVEAL_CARD', cardId)
+    commit('CLEAR_HINTS')
   }
 }
 

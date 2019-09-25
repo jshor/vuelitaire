@@ -2,7 +2,11 @@
   <div class="game">
     <div class="game__top">
       <foundations>
-        <div class="game__spacer game__spacer--deal" @click="deal" />
+        <div
+          class="game__spacer game__spacer--deal"
+          :class="{ 'game__spacer--active': hint.includes('DEAL_CARD') }"
+          @click="deal"
+        />
         <div class="game__spacer game__spacer--deck">
           <deck-container />
         </div>
@@ -27,6 +31,7 @@
         />
       </tableau>
     </div>
+    <button @click="showHint">Hint</button>
   </div>
 </template>
 
@@ -46,14 +51,14 @@ export default {
     Tableau
   },
   computed: {
-    ...mapGetters(['tableau', 'foundations']),
+    ...mapGetters(['tableau', 'foundations', 'hint']),
     ...mapState(['cards'])
   },
   beforeCreate () {
     this.$store.dispatch('newGame')
   },
   methods: {
-    ...mapActions(['newGame', 'deal']),
+    ...mapActions(['newGame', 'deal', 'showHint']),
     nuevoJuego () {
       this.newGame()
       console.log('will force update')
@@ -94,6 +99,10 @@ export default {
     #465298 10px,
     #465298 20px
   );
+}
+
+.game__spacer--active {
+  box-shadow: 0px 0 30px orange;
 }
 
 .game__spacer--deck {
