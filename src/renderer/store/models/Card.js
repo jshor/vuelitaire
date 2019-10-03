@@ -1,6 +1,7 @@
 import BaseModel from './BaseModel'
 import {
-  hasOppositeColorBeforePromotion,
+  hasAlternatingColorBeforePromotion,
+  hasSameSuitAfterPromotion,
   isSequential
 } from '../../gameplay'
 
@@ -13,7 +14,12 @@ export default class Card extends BaseModel {
     this.revealed = false
     this.isPlayed = false
 
-    this.rules.push(hasOppositeColorBeforePromotion)
+    this.rules.push(hasAlternatingColorBeforePromotion)
+    this.rules.push(hasSameSuitAfterPromotion)
     this.rules.push(isSequential)
+  }
+
+  toString () {
+    return `${this.rank + 1} of ${this.suit}`
   }
 }

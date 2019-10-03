@@ -1,14 +1,14 @@
-import hasOppositeColorBeforePromotion from './hasOppositeColorBeforePromotion'
+import hasAlternatingColor from './hasAlternatingColor'
 import Card from '../../store/models/Card'
 import { Suits } from '../../constants'
 
-describe('Rule: hasOppositeColorBeforePromotion', () => {
+describe('Rule: hasAlternatingColor', () => {
   function testRule (parentSuit, childSuit, value) {
     it(`should return true if the child card's suit is ${parentSuit} and the parent's suit is ${childSuit}`, () => {
       const parent = new Card(parentSuit)
       const child = new Card(childSuit)
 
-      expect(hasOppositeColorBeforePromotion(parent, child)).toEqual(value)
+      expect(hasAlternatingColor(parent, child)).toEqual(value)
     })
   }
 

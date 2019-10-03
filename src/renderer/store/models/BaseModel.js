@@ -5,6 +5,7 @@ export default class Space {
   constructor () {
     this.id = uuid()
     this.child = null
+    this.promoted = false
     this.isPlayed = true
     this.revealed = true
     this.rules = [isBuildable]
@@ -18,5 +19,9 @@ export default class Space {
     return this.rules.reduce((result, rule) => {
       return rule(this, card) && result
     }, true)
+  }
+
+  toString () {
+    return `${this.constructor.name}`
   }
 }

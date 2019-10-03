@@ -31,10 +31,6 @@ const getters = {
 }
 
 const actions = {
-  revealCard ({ commit }, cardId) {
-    commit('REVEAL_CARD', cardId)
-    commit('CLEAR_HINTS')
-  }
 }
 
 const mutations = {
@@ -105,13 +101,12 @@ const mutations = {
 
     if (parent) {
       Vue.set(state[parent.id], 'child', null)
+      Vue.set(state[parent.id], 'revealed', true)
     }
+
+    Vue.set(state[cardId], 'promoted', state[targetId].promoted)
     Vue.set(state[cardId], 'isPlayed', true)
     Vue.set(state[targetId], 'child', card)
-  },
-
-  REVEAL_CARD (state, cardId) {
-    Vue.set(state[cardId], 'revealed', true)
   }
 }
 

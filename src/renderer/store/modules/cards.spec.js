@@ -2,7 +2,7 @@ import cards from './cards'
 import Card from '../models/Card'
 import FoundationSpace from '../models/FoundationSpace'
 import LaneSpace from '../models/LaneSpace'
-import getDescendants from '../../utils/getDescendants'
+import getLineage from '../../utils/getLineage'
 
 const { getters, mutations } = cards
 
@@ -91,7 +91,7 @@ describe('Vuex cards module', () => {
           .values(state)
           .filter(t => t.constructor.name === 'LaneSpace')
           .forEach((space, index) => {
-            expect(getDescendants(space)).toHaveLength(index + 2)
+            expect(getLineage(space)).toHaveLength(index + 2)
           })
       })
     })

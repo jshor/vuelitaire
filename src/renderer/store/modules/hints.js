@@ -1,17 +1,14 @@
 import {
   getMoveableCardHints,
-  getRevealableCardHints
+  getLaneCreationHints,
+  getDestructuringLaneHints,
+  getDeckHints,
+  getWorryBackHints
 } from '../../gameplay'
 
 const state = {
   entries: [],
   index: -1
-}
-
-const getters = {
-  hint (state) {
-    return state.entries[state.index] || []
-  }
 }
 
 const actions = {
@@ -20,18 +17,24 @@ const actions = {
       // if we have no hints for this state yet, generate them
       dispatch('generateHints')
     }
+
+    // TODO: show electron dialog if there are still no hints
+
     commit('SHOW_NEXT_HINT')
   },
 
   generateHints ({ rootState, commit }) {
-    const cards = Object.values(rootState.cards)
-    const topWasteCard = rootState.deck.waste.slice(-1)
+    const allCards = Object.values(rootState.cards)
+    const playableCards = allCards
+      .filter(card => card.isPlayable() && !card.promoted)
+      .concat(rootState.deck.waste.slice(-1))
 
     commit('SET_HINTS', [
-      ...getRevealableCardHints(cards),
-      ...getMoveableCardHints(cards, topWasteCard),
-      // the last hint in the list will always be to deal
-      'DEAL_CARD'
+      ...getMoveableCardHints(allCards, playableCards),
+      ...getLaneCreationHints(allCards, playableCards),
+      ...getDeckHints(allCards, rootState.deck),
+      ...getDestructuringLaneHints(allCards),
+      ...getWorryBackHints(allCards, rootState.deck)
     ])
   }
 }
@@ -39,11 +42,6 @@ const actions = {
 const mutations = {
   'SET_HINTS' (state, hints) {
     hints.forEach(hint => state.entries.push(hint))
-  },
-
-  'CLEAR_HINTS' (state) {
-    state.entries = []
-    state.index = -1
   },
 
   'SHOW_NEXT_HINT' (state) {
@@ -58,7 +56,6 @@ const mutations = {
 
 export default {
   state,
-  getters,
   actions,
   mutations
 }

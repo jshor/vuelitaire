@@ -38,7 +38,7 @@ import Card from '@/components/Card'
 import CardContainer from './CardContainer'
 import CardDraggable from '@/components/CardDraggable'
 import Highlight from '@/components/Highlight'
-import getDescendants from '@/utils/getDescendants'
+import getLineage from '@/utils/getLineage'
 import isDescendant from '@/utils/isDescendant'
 import isAncestor from '@/utils/isAncestor'
 
@@ -70,7 +70,7 @@ export default {
   },
   computed: {
     descendants () {
-      return getDescendants(this.card)
+      return getLineage(this.card)
     },
     canReveal () {
       return this.card.child === null && !this.card.revealed

@@ -1,37 +1,19 @@
 import hints from './hints'
 
 const {
-  getters,
   actions,
   mutations
 } = hints
 
 jest.mock('../../gameplay', () => ({
   getMoveableCardHints: () => [],
-  getRevealableCardHints: () => []
+  getLaneCreationHints: () => [],
+  getDestructuringLaneHints: () => [],
+  getDeckHints: () => [],
+  getWorryBackHints: () => []
 }))
 
 describe('Vuex hints module', () => {
-  describe('getters', () => {
-    describe('hint()', () => {
-      it('should return the (index)th element in the entries', () => {
-        const state = {
-          entries: [[1, 2]],
-          index: 0
-        }
-        expect(getters.hint(state)).toEqual(state.entries[0])
-      })
-
-      it('should an empty array if the entry is not available', () => {
-        const state = {
-          entries: [],
-          index: 1
-        }
-        expect(getters.hint(state)).toEqual([])
-      })
-    })
-  })
-
   describe('actions', () => {
     const dispatch = jest.fn()
     const commit = jest.fn()
@@ -72,7 +54,7 @@ describe('Vuex hints module', () => {
         actions.generateHints({ rootState, commit })
 
         expect(commit).toHaveBeenCalledTimes(1)
-        expect(commit).toHaveBeenCalledWith('SET_HINTS', expect.arrayContaining(['DEAL_CARD']))
+        expect(commit).toHaveBeenCalledWith('SET_HINTS', expect.any(Array))
       })
     })
   })
@@ -86,20 +68,6 @@ describe('Vuex hints module', () => {
         mutations['SET_HINTS'](state, hints)
 
         expect(state.entries).toEqual(hints)
-      })
-    })
-
-    describe('CLEAR_HINTS', () => {
-      it('should clear the current hint entries and index', () => {
-        const state = {
-          entries: [[1, 2], [3, 4]],
-          index: 1
-        }
-
-        mutations['CLEAR_HINTS'](state)
-
-        expect(state.entries).toHaveLength(0)
-        expect(state.index).toEqual(-1)
       })
     })
 

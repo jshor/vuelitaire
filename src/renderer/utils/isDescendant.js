@@ -1,7 +1,7 @@
-import getDescendants from './getDescendants'
+import getLineage from './getLineage'
 
 export default function isDescendant (card, targetId) {
-  return getDescendants(card)
+  return getLineage(card)
     .map(({ id }) => id)
     .includes(targetId)
 }

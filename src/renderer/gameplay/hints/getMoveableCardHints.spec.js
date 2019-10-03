@@ -5,15 +5,22 @@ import FoundationSpace from '../../store/models/FoundationSpace'
 import { Suits } from '../../constants'
 
 describe('Hint: getMoveableCardHints', () => {
+  const sixOfDiamonds = new Card(Suits.DIAMONDS, 5)
+  const sevenOfClubs = new Card(Suits.CLUBS, 6)
+  const sevenOfSpades = new Card(Suits.SPADES, 6)
+  const aceOfHearts = new Card(Suits.HEARTS, 0)
+  const kingOfSpades = new Card(Suits.SPADES, 12)
+  const laneSpace = new LaneSpace()
+  const foundationSpace = new FoundationSpace()
   const cards = [
-    new Card(Suits.DIAMONDS, 5),
-    new Card(Suits.CLUBS, 6),
-    new Card(Suits.HEARTS, 0),
-    new Card(Suits.SPADES, 12),
-    new LaneSpace(),
-    new FoundationSpace()
+    sixOfDiamonds,
+    sevenOfClubs,
+    sevenOfSpades,
+    aceOfHearts,
+    kingOfSpades,
+    laneSpace,
+    foundationSpace
   ]
-  const topWasteCard = new Card(Suits.SPADES, 10)
   let hints
 
   cards.forEach(card => {
@@ -21,28 +28,22 @@ describe('Hint: getMoveableCardHints', () => {
   })
 
   beforeEach(() => {
-    hints = getMoveableCardHints(cards, topWasteCard)
+    hints = getMoveableCardHints(cards, cards)
   })
 
   it('should generate exactly three hints', () => {
     expect(hints).toHaveLength(3)
   })
 
-  it('should hint the 5 of Diamonds to be placed onto the 6 of Clubs', () => {
+  it('should hint the 6 of Diamonds to be placed onto the 7 of Clubs', () => {
     expect(hints).toEqual(expect.arrayContaining([
-      expect.arrayContaining([cards[0].id, cards[1].id])
+      expect.arrayContaining([sixOfDiamonds.id, sevenOfClubs.id])
     ]))
   })
 
   it('should hint the Ace of Hearts to be placed onto the empty foundation space', () => {
     expect(hints).toEqual(expect.arrayContaining([
-      expect.arrayContaining([cards[2].id, cards[5].id])
-    ]))
-  })
-
-  it('should hint the King of Spades to be placed onto the empty lane space', () => {
-    expect(hints).toEqual(expect.arrayContaining([
-      expect.arrayContaining([cards[3].id, cards[4].id])
+      expect.arrayContaining([aceOfHearts.id, foundationSpace.id])
     ]))
   })
 })

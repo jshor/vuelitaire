@@ -1,4 +1,4 @@
-export default function getDescendants (card) {
+export default function getLineage (card) {
   const findChildren = cards => {
     const last = cards[cards.length - 1]
 
