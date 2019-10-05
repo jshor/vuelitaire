@@ -31,7 +31,9 @@
         />
       </tableau>
     </div>
+    <button @click="undo" :disabled="!canUndo">Undo</button>
     <button @click="showHint">Hint</button>
+    <button @click="newGame">New Game</button>
   </div>
 </template>
 
@@ -51,19 +53,16 @@ export default {
     Tableau
   },
   computed: {
-    ...mapGetters(['tableau', 'foundations', 'hint']),
-    ...mapState(['cards'])
+    ...mapGetters(['tableau', 'foundations', 'hint', 'canUndo']),
+    ...mapState({
+      cards: state => state.game.cards
+    })
   },
   beforeCreate () {
     this.$store.dispatch('newGame')
   },
   methods: {
-    ...mapActions(['newGame', 'deal', 'showHint']),
-    nuevoJuego () {
-      this.newGame()
-      console.log('will force update')
-      // this.$forceUpdate()
-    }
+    ...mapActions(['newGame', 'deal', 'showHint', 'undo'])
   }
 }
 </script>

@@ -1,6 +1,6 @@
 import deck from './deck'
-import Card from '../models/Card'
-import { Suits } from '../../constants'
+import Card from '../../models/Card'
+import { Suits } from '../../../constants'
 
 const {
   state: originalState,
@@ -16,10 +16,11 @@ describe('Vuex deck module', () => {
     const commit = jest.fn()
 
     describe('deal()', () => {
-      it('should commit the DEAL and CLEAR_HINTS mutations', () => {
+      it('should commit the RECORD_REVERTIBLE_STATE, DEAL and CLEAR_HINTS mutations', () => {
         actions.deal({ commit })
 
-        expect(commit).toHaveBeenCalledTimes(2)
+        expect(commit).toHaveBeenCalledTimes(3)
+        expect(commit).toHaveBeenCalledWith('RECORD_REVERTIBLE_STATE')
         expect(commit).toHaveBeenCalledWith('DEAL')
         expect(commit).toHaveBeenCalledWith('CLEAR_HINTS')
       })

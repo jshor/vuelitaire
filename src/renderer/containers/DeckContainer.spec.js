@@ -20,9 +20,11 @@ describe('Deck Container', () => {
       sync: false,
       store: new Vuex.Store({
         state: {
-          deck: {
-            waste: dealt,
-            dealt
+          game: {
+            deck: {
+              waste: dealt,
+              dealt
+            }
           }
         }
       })

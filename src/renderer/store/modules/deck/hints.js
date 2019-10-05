@@ -4,7 +4,7 @@ import {
   getDestructuringLaneHints,
   getDeckHints,
   getWorryBackHints
-} from '../../gameplay'
+} from '../../../gameplay'
 
 const state = {
   entries: [],
@@ -24,10 +24,11 @@ const actions = {
   },
 
   generateHints ({ rootState, commit }) {
-    const allCards = Object.values(rootState.cards)
+    const { cards, waste } = rootState.deck
+    const allCards = Object.values(cards)
     const playableCards = allCards
       .filter(card => card.isPlayable() && !card.promoted)
-      .concat(rootState.deck.waste.slice(-1))
+      .concat(waste.slice(-1))
 
     commit('SET_HINTS', [
       ...getMoveableCardHints(allCards, playableCards),
@@ -40,6 +41,11 @@ const actions = {
 }
 
 const mutations = {
+  CLEAR_HINTS (state) {
+    state.entries = []
+    state.index = -1
+  },
+
   'SET_HINTS' (state, hints) {
     hints.forEach(hint => state.entries.push(hint))
   },
@@ -55,6 +61,7 @@ const mutations = {
 }
 
 export default {
+  namespaced: true,
   state,
   actions,
   mutations

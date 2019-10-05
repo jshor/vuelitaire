@@ -5,7 +5,7 @@ const {
   mutations
 } = hints
 
-jest.mock('../../gameplay', () => ({
+jest.mock('../../../gameplay', () => ({
   getMoveableCardHints: () => [],
   getLaneCreationHints: () => [],
   getDestructuringLaneHints: () => [],
@@ -46,9 +46,11 @@ describe('Vuex hints module', () => {
     describe('generateHints()', () => {
       it('should generate a list of hints and add them to the entries, including the default one', () => {
         const rootState = {
-          cards: {},
-          deck: {
-            waste: []
+          game: {
+            cards: {},
+            deck: {
+              waste: []
+            }
           }
         }
         actions.generateHints({ rootState, commit })
@@ -60,6 +62,20 @@ describe('Vuex hints module', () => {
   })
 
   describe('mutations', () => {
+    describe('CLEAR_HINTS', () => {
+      it('should clear the current hint entries and index', () => {
+        const state = {
+          entries: [[1, 2], [3, 4]],
+          index: 1
+        }
+
+        mutations['CLEAR_HINTS'](state)
+
+        expect(state.entries).toHaveLength(0)
+        expect(state.index).toEqual(-1)
+      })
+    })
+
     describe('SET_HINTS', () => {
       it('should apply the given hints to the state entries', () => {
         const hints = [[1, 2], [3, 4]]

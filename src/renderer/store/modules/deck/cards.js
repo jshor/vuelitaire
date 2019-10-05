@@ -1,6 +1,5 @@
 import Vue from 'vue'
-import FoundationSpace from '../models/FoundationSpace'
-import LaneSpace from '../models/LaneSpace'
+import FoundationSpace from '../../models/FoundationSpace'
 
 const state = {}
 
@@ -30,46 +29,21 @@ const getters = {
   }
 }
 
-const actions = {
-}
+const actions = {}
 
 const mutations = {
   /**
-   * Takes each card in the deck and stores it in the state.
-   * Its `id` is the key and the card itself is the value.
+   * Reveals all the cards in the stock and top cards in the tableau.
    *
    * @param {Object} state
-   * @param {Card[]} deck - deck of cards
    */
-  REGISTER_CARDS (state, deck) {
-    deck.forEach(card => {
-      state[card.id] = card
-    })
-  },
-
-  /**
-   * Creates a new tableau (7 spaces, each having `index` descendant cards).
-   *
-   * @param {Object} state
-   * @param {Card[]} deck - deck of cards to populate the tableau
-   */
-  INIT_TABLEAU (state, deck) {
-    for (let i = 1; i <= 7; i++) {
-      let parent = new LaneSpace()
-
-      // assign the first card to the tableau row
-      state[parent.id] = parent
-
-      // move the last n cards from the deck to the tableau
-      deck
-        .splice(deck.length - i, i)
-        .forEach(card => {
-          // assign the next card to be the child of the previous card
-          Vue.set(state[parent.id], 'child', card)
-          Vue.set(state[card.id], 'isPlayed', true)
-          parent = card
-        })
-    }
+  REVEAL_CARDS (state) {
+    Object
+      .values(state)
+      .filter(c => !c.child)
+      .forEach(({ id }) => {
+        Vue.set(state[id], 'revealed', true)
+      })
   },
 
   /**
@@ -111,6 +85,7 @@ const mutations = {
 }
 
 export default {
+  namespaced: true,
   state,
   getters,
   actions,

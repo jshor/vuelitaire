@@ -1,54 +1,65 @@
 import Vue from 'vue'
 import uuid from 'uuid/v4'
 import deck from './deck'
+import hints from './deck/hints'
+import { cloneDeep } from 'lodash'
 
 const state = {
-  gameId: uuid()
+  gameId: uuid(),
+  revertibleStates: []
 }
 
 const getters = {
   hint (state) {
     return state.hints.entries[state.hints.index] || []
+  },
+
+  canUndo (state) {
+    return state.revertibleStates.length > 0
   }
 }
 
 const actions = {
-  newGame ({ commit, state }) {
-    commit('CLEAR_EXISTING_GAME')
-    commit('INIT_DECK')
-    commit('REGISTER_CARDS', state.deck.cards)
-    commit('INIT_TABLEAU', state.deck.cards)
-    commit('INIT_FOUNDATIONS')
-    commit('REVEAL_CARDS')
+  newGame ({ commit }) {
+    commit('CLEAR_GAME')
+    commit('deck/INIT_DECK')
+    commit('deck/INIT_TABLEAU')
+    commit('deck/cards/INIT_FOUNDATIONS')
+    commit('deck/cards/REVEAL_CARDS')
   },
 
   moveCard ({ commit }, { cardId, targetId }) {
-    commit('REMOVE_FROM_DECK', cardId)
-    commit('MOVE_CARD', { cardId, targetId })
-    commit('CLEAR_HINTS')
-    commit('SELECT_CARD', null)
+    commit('RECORD_REVERTIBLE_STATE')
+    commit('deck/cards/MOVE_CARD', { cardId, targetId })
+    commit('deck/REMOVE_FROM_DECK', cardId)
+    commit('hints/CLEAR_HINTS')
+  },
+
+  deal ({ commit }) {
+    commit('RECORD_REVERTIBLE_STATE')
+    commit('deck/DEAL')
+    commit('hints/CLEAR_HINTS')
+  },
+
+  undo ({ commit }) {
+    commit('REVERT_TO_PREV_STATE')
+    commit('hints/CLEAR_HINTS')
   }
 }
 
 const mutations = {
-  CLEAR_HINTS (state) {
-    state.hints.entries = []
-    state.hints.index = -1
-  },
-
-  CLEAR_EXISTING_GAME (state) {
-    Vue.set(state, 'cards', {})
+  CLEAR_GAME (state) {
     Vue.set(state, 'deck', deck.createState())
+    Vue.set(state.deck, 'cards', {})
     Vue.set(state, 'gameId', uuid())
   },
 
-  REVEAL_CARDS (state) {
-    Object
-      .values(state.cards)
-      .filter(c => !c.child)
-      .forEach(({ id }) => {
-        Vue.set(state.cards[id], 'revealed', true)
-      })
+  RECORD_REVERTIBLE_STATE (state) {
+    state.revertibleStates.push(cloneDeep(state.deck))
+  },
+
+  REVERT_TO_PREV_STATE (state) {
+    Vue.set(state, 'deck', state.revertibleStates.pop())
   }
 }
 
@@ -56,5 +67,9 @@ export default {
   state,
   getters,
   actions,
-  mutations
+  mutations,
+  modules: {
+    deck,
+    hints
+  }
 }

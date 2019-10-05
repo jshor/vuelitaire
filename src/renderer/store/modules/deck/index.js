@@ -1,13 +1,15 @@
 import Vue from 'vue'
+// import uuid from 'uuid/v4'
 import { shuffle } from 'lodash'
-import { Suits } from '../../constants'
-import Card from '../models/Card'
+import { Suits } from '../../../constants'
+import Card from '../../models/Card'
+import LaneSpace from '../../models/LaneSpace'
+import cards from './cards'
 
 const createState = () => ({
-  cards: [], // cards in the stock pile
+  stock: [], // cards in the stock pile
   waste: [], // the pile of cards dealt
   dealt: [], // the last `dealCount` (or fewer) cards dealt
-  // index: -1, // index of last card dealt
   dealCount: 3 // number of cards to deal at a time
 })
 
@@ -20,16 +22,11 @@ const getters = {
    * @param {Object} state
    */
   canDeal (state) {
-    return state.cards.length > 0
+    return state.stock.length > 0
   }
 }
 
-const actions = {
-  deal ({ commit }) {
-    commit('DEAL')
-    commit('CLEAR_HINTS')
-  }
-}
+const actions = {}
 
 const mutations = {
   /**
@@ -49,7 +46,36 @@ const mutations = {
       ...createSuit(Suits.CLUBS)
     ]
 
-    shuffle(deck).forEach(card => state.cards.push(card))
+    shuffle(deck).forEach(card => {
+      state.stock.push(card)
+      state.cards[card.id] = card
+    })
+  },
+
+  /**
+   * Creates a new tableau (7 spaces, each having `index` descendant cards).
+   *
+   * @param {Object} state
+   * @param {Card[]} deck - deck of cards to populate the tableau
+   */
+  INIT_TABLEAU (state) {
+    for (let i = 1; i <= 7; i++) {
+      let parent = new LaneSpace()
+
+      // assign the first card to the tableau row
+      state.cards[parent.id] = parent
+
+      // move the last n cards from the stock pile to the tableau
+      state
+        .stock
+        .splice(state.stock - i, i)
+        .forEach(card => {
+          // assign the next card to be the child of the previous card
+          Vue.set(state.cards[parent.id], 'child', card)
+          Vue.set(state.cards[card.id], 'isPlayed', true)
+          parent = card
+        })
+    }
   },
 
   /**
@@ -60,15 +86,15 @@ const mutations = {
   DEAL (state) {
     Vue.set(state, 'dealt', [])
 
-    if (state.cards.length === 0) {
+    if (state.stock.length === 0) {
       // reset the waste pile and stock
-      Vue.set(state, 'cards', state.waste.reverse())
+      Vue.set(state, 'stock', state.waste.reverse())
       Vue.set(state, 'waste', [])
     } else {
       for (let i = 0; i < state.dealCount; i++) {
         // deal as many cards as possible up to `dealCount`
-        if (state.cards.length) {
-          const card = state.cards.pop()
+        if (state.stock.length) {
+          const card = state.stock.pop()
 
           state.waste.push(card)
           state.dealt.push(card)
@@ -85,17 +111,24 @@ const mutations = {
    */
   REMOVE_FROM_DECK (state, cardId) {
     const index = state.waste.findIndex(({ id }) => id === cardId)
+    const indexo = state.dealt.findIndex(({ id }) => id === cardId)
 
     if (~index) {
       state.waste.splice(index, 1)
+    }
+
+    if (~indexo) {
+      state.dealt.splice(indexo, 1)
     }
   }
 }
 
 export default {
+  namespaced: true,
   createState,
+  state,
   getters,
   actions,
-  state,
-  mutations
+  mutations,
+  modules: { cards }
 }

@@ -1,8 +1,8 @@
 import cards from './cards'
-import Card from '../models/Card'
-import FoundationSpace from '../models/FoundationSpace'
-import LaneSpace from '../models/LaneSpace'
-import getLineage from '../../utils/getLineage'
+import Card from '../../models/Card'
+import FoundationSpace from '../../models/FoundationSpace'
+import LaneSpace from '../../models/LaneSpace'
+import getLineage from '../../../utils/getLineage'
 
 const { getters, mutations } = cards
 

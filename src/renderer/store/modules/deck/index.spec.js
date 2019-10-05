@@ -1,14 +1,14 @@
-import root from './root'
-import Card from '../models/Card'
+import game from '.'
+import Card from '../../models/Card'
 import deck from './deck'
 
 const {
   getters,
   actions,
   mutations
-} = root
+} = game
 
-describe('Vuex root module', () => {
+describe('Vuex Game module', () => {
   describe('getters', () => {
     describe('hint()', () => {
       it('should return the (index)th element in the entries', () => {
@@ -107,22 +107,6 @@ describe('Vuex root module', () => {
 
         expect(state.gameId).not.toEqual('original-game-id')
         expect(typeof state.gameId).toBe('string')
-      })
-    })
-
-    describe('CLEAR_HINTS', () => {
-      it('should clear the current hint entries and index', () => {
-        const state = {
-          hints: {
-            entries: [[1, 2], [3, 4]],
-            index: 1
-          }
-        }
-
-        mutations['CLEAR_HINTS'](state)
-
-        expect(state.hints.entries).toHaveLength(0)
-        expect(state.hints.index).toEqual(-1)
       })
     })
 

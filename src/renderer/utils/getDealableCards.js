@@ -1,6 +1,6 @@
-export default function getDealableCards ({ cards, waste, dealCount }) {
+export default function getDealableCards ({ stock, waste, dealCount }) {
   const deckCards = [
-    ...cards,
+    ...stock,
     ...waste.concat().reverse()
   ].reverse()
 

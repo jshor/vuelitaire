@@ -36,8 +36,8 @@ export default {
   },
   computed: {
     ...mapState({
-      waste: state => state.deck.waste,
-      dealt: state => state.deck.dealt
+      waste: state => state.game.deck.waste,
+      dealt: state => state.game.deck.dealt
     })
   },
   methods: {
