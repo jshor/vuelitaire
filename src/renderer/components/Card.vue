@@ -1,27 +1,29 @@
 <template>
-  <div @click="$emit('click')" class="card" ref="card"
-    :class="className">
+  <div
+    :class="{
+      [`card--${this.suit.toLowerCase()}-${this.rank + 1}`]: true,
+      ['card--revealed']: revealed,
+      ['card--error']: error,
+      ['card--dealing']: animationIndex
+    }"
+    :style="style"
+    class="card"
+    ref="card">
     <div class="card__inner" v-if="!isSpace">
-      <div class="card__front"></div>
       <div class="card__back"></div>
+      <div class="card__front"></div>
     </div>
     <div class="space" v-else></div>
   </div>
 </template>
 
 <script>
-import { Suits } from '../constants'
-
 export default {
   name: 'Card',
   props: {
     suit: {
       type: String,
       default: '?'
-    },
-    cardId: {
-      type: String,
-      default: 'X'
     },
     rank: {
       type: Number,
@@ -34,28 +36,33 @@ export default {
     isSpace: {
       type: Boolean,
       default: false
+    },
+    error: {
+      type: Boolean,
+      default: false
+    },
+    animationIndex: {
+      type: Number,
+      default: 0
     }
   },
-  computed: {
-    className () {
-      let className = `card--${this.suit.toLowerCase()}-${this.rank + 1}`
+  data () {
+    return {
+      style: {}
+    }
+  },
+  mounted () {
+    const { left: bx, top: by } = this.$refs
+      .card
+      .getBoundingClientRect()
+    const { left: ax, top: ay } = document
+      .querySelector('[data-id="DEAL_CARD"]')
+      .getBoundingClientRect()
 
-      if (this.revealed) {
-        className += ' card--revealed'
-      }
-      return className
-    },
-    symbol () {
-      switch (this.suit) {
-        case Suits.DIAMONDS:
-          return '◆'
-        case Suits.CLUBS:
-          return '♣'
-        case Suits.SPADES:
-          return '♠'
-        case Suits.HEARTS:
-          return '♥'
-      }
+    this.style = {
+      '--left': `${ax - bx}px`,
+      '--top': `${ay - by}px`,
+      '--index': this.animationIndex
     }
   }
 }
@@ -67,6 +74,36 @@ export default {
   width: $card-width;
   height: 14vw;
   perspective: 1000px;
+  transition: 250ms margin;
+
+  // transform: translate(var(--left), var(--top));
+}
+
+.card--dealing {
+  animation-delay: calc(var(--index) * 50ms);
+  animation-duration: 100ms;
+  animation-fill-mode: forwards;
+  animation-name: dealing;
+  opacity: 0;
+}
+
+@keyframes dealing {
+  from {
+    opacity: 1;
+    transform: translate(var(--left), var(--top));
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.card--error {
+  animation: shake 250ms cubic-bezier(.36,.07,.19,.97) forwards;
+}
+
+.card--ghost {
+  display: none;
 }
 
 @include create-card-variants('hearts');
@@ -93,13 +130,21 @@ export default {
   position: absolute;
   width: 100%;
   height: 100%;
-  transition: transform 0.35s;
+  transition: transform 0.25s;
   box-sizing: border-box;
   transform-style: preserve-3d;
 }
 
+.card__inner--moving {
+  z-index: 100000000000000;
+}
+
 .card--revealed .card__inner {
   transform: rotateY(180deg);
+}
+
+.card--revealed .card-container {
+  border: 1px solid red;
 }
 
 .card__front, .card__back {
@@ -142,5 +187,23 @@ export default {
   box-sizing: border-box;
   background-color: #000;
   border-image: linear-gradient(115deg,#4fcf70,#fad648,#a767e5,#12bcfe,#44ce7b);
+}
+
+@keyframes shake {
+  10%, 90% {
+    transform: translate3d(-1px, 0, 0);
+  }
+
+  20%, 80% {
+    transform: translate3d(2px, 0, 0);
+  }
+
+  30%, 50%, 70% {
+    transform: translate3d(-4px, 0, 0);
+  }
+
+  40%, 60% {
+    transform: translate3d(4px, 0, 0);
+  }
 }
 </style>

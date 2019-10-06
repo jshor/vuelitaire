@@ -6,7 +6,7 @@ describe('Hint: getDeckHints', () => {
   const aceOfSpades = new Card(Suits.SPADES, 0)
   const twoOfHearts = new Card(Suits.HEARTS, 1)
   const sixOfSpades = new Card(Suits.SPADES, 6)
-  const cards = [
+  const stock = [
     aceOfSpades,
     twoOfHearts,
     sixOfSpades
@@ -21,31 +21,31 @@ describe('Hint: getDeckHints', () => {
 
   it('should return the DEAL_CARD hint for a moveable card within the deck', () => {
     const deck = {
-      cards,
+      stock,
       waste: [aceOfSpades],
       dealCount: 1
     }
 
-    expect(getDeckHints(cards, deck)).toEqual(['DEAL_CARD'])
+    expect(getDeckHints(stock, deck)).toEqual(['DEAL_CARD'])
   })
 
   it('should return an empty array if there are no cards in the waste pile', () => {
     const deck = {
-      cards: [],
+      stock: [],
       waste: [],
       dealCount: 1
     }
 
-    expect(getDeckHints(cards, deck)).toEqual([])
+    expect(getDeckHints(stock, deck)).toEqual([])
   })
 
   it('should return an empty array if there are no cards that can be moved from the dealt pile', () => {
     const deck = {
-      cards: [],
+      stock: [],
       waste: [sixOfSpades],
       dealCount: 1
     }
 
-    expect(getDeckHints(cards, deck)).toEqual([])
+    expect(getDeckHints(stock, deck)).toEqual([])
   })
 })

@@ -7,3 +7,15 @@ $ranks: 13;
     }
   }
 }
+
+@mixin fanning-deck-card($modifier, $padding) {
+  @keyframes fanning-#{$modifier} {
+    from {
+      padding-left: 0;
+    }
+    to {
+      padding-left: $padding;
+      margin-left: 0px;
+    }
+  }
+}

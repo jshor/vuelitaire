@@ -16,6 +16,7 @@ export default function getWorryBackHints (cards, deck) {
     .map(card => getLineage(card).slice(-2).shift()) // get the second-to-last card
     .filter(card => !card.revealed || card.constructor.name === 'LaneSpace')
     .map(card => card.child)
+    .filter(card => card)
 
   // get all cards that can be used for moving
   const moveableCards = getDealableCards(deck).concat(untouchedTopCards)

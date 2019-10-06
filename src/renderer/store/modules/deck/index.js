@@ -1,5 +1,4 @@
 import Vue from 'vue'
-// import uuid from 'uuid/v4'
 import { shuffle } from 'lodash'
 import { Suits } from '../../../constants'
 import Card from '../../models/Card'
@@ -7,10 +6,11 @@ import LaneSpace from '../../models/LaneSpace'
 import cards from './cards'
 
 const createState = () => ({
+  move: null,
   stock: [], // cards in the stock pile
   waste: [], // the pile of cards dealt
   dealt: [], // the last `dealCount` (or fewer) cards dealt
-  dealCount: 3 // number of cards to deal at a time
+  dealCount: 1 // number of cards to deal at a time
 })
 
 const state = createState()
@@ -39,14 +39,15 @@ const mutations = {
       .fill(null)
       .map((l, rank) => new Card(suit, rank))
 
-    const deck = [
+    const stock = [
       ...createSuit(Suits.SPADES),
       ...createSuit(Suits.HEARTS),
       ...createSuit(Suits.DIAMONDS),
       ...createSuit(Suits.CLUBS)
     ]
 
-    shuffle(deck).forEach(card => {
+    shuffle(stock).forEach((card, index) => {
+      card.animationIndex = index
       state.stock.push(card)
       state.cards[card.id] = card
     })
@@ -59,10 +60,10 @@ const mutations = {
    * @param {Card[]} deck - deck of cards to populate the tableau
    */
   INIT_TABLEAU (state) {
-    for (let i = 1; i <= 7; i++) {
+    for (let i = 7; i > 0; i--) {
       let parent = new LaneSpace()
 
-      // assign the first card to the tableau row
+      // assign the first lane space card to the tableau row
       state.cards[parent.id] = parent
 
       // move the last n cards from the stock pile to the tableau
@@ -110,16 +111,35 @@ const mutations = {
    * @param {String} cardId - id of card to remove
    */
   REMOVE_FROM_DECK (state, cardId) {
-    const index = state.waste.findIndex(({ id }) => id === cardId)
-    const indexo = state.dealt.findIndex(({ id }) => id === cardId)
+    const wasteIndex = state.waste.findIndex(({ id }) => id === cardId)
+    const dealtIndex = state.dealt.findIndex(({ id }) => id === cardId)
 
-    if (~index) {
-      state.waste.splice(index, 1)
+    if (~wasteIndex) {
+      state.waste.splice(wasteIndex, 1)
     }
 
-    if (~indexo) {
-      state.dealt.splice(indexo, 1)
+    if (~dealtIndex) {
+      state.dealt.splice(dealtIndex, 1)
     }
+  },
+
+  /**
+   * Sets information about a move from one card to allow animations during undo.
+   * If there is no parent card present for a moving card, assume it came from the dealt pile.
+   *
+   * @param {Object} state
+   * @param {Pair} move
+   */
+  SET_MOVE (state, move = null) {
+    if (move) {
+      const parent = Object
+        .values(state.cards)
+        .filter(card => card.child)
+        .find(card => card.child.id === move.cardId)
+
+      move.parentId = parent ? parent.id : 'DEAL_CARD'
+    }
+    state.move = move
   }
 }
 

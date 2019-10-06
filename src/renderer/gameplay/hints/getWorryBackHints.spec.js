@@ -51,7 +51,7 @@ describe('Hint: getWorryBackHints', () => {
         ...cards,
         untouchedTopCard
       ], {
-        cards: [],
+        stock: [],
         waste: [],
         dealt: [],
         dealCount: 1
@@ -72,7 +72,7 @@ describe('Hint: getWorryBackHints', () => {
         ...cards,
         unplayedCard
       ], {
-        cards: [],
+        stock: [],
         waste: [unplayedCard],
         dealt: [],
         dealCount: 1
@@ -93,7 +93,7 @@ describe('Hint: getWorryBackHints', () => {
         ...cards,
         unplayedCard
       ], {
-        cards: [unplayedCard],
+        stock: [unplayedCard],
         waste: [],
         dealt: [],
         dealCount: 1

@@ -1,14 +1,18 @@
 <template>
   <draggable
     v-if="!isSpace"
-    :class="{ 'card-draggable--ready': isReady }"
-    class="card-draggable">
+    :class="{ 'card-draggable--ready': isHighlighted }"
+    :data-id="cardId"
+    class="card-draggable"
+    ref="card">
     <slot />
   </draggable>
   <div
     v-else
-    :class="{ 'card-draggable--ready': isReady }"
-    class="card-draggable card-draggable--space">
+    :class="{ 'card-draggable--ready': isHighlighted }"
+    :data-id="cardId"
+    class="card-draggable card-draggable--space"
+    ref="card">
     <slot />
   </div>
 </template>
@@ -24,9 +28,17 @@ export default {
       type: Boolean,
       default: false
     },
-    isReady: {
+    isHighlighted: {
       type: Boolean,
       default: false
+    },
+    cardId: {
+      type: String,
+      default: null
+    },
+    targetId: {
+      type: String,
+      default: null
     }
   }
 }
@@ -42,6 +54,13 @@ export default {
   border-radius: 3px;
   box-shadow: 0;
   transition: 0.2s box-shadow;
+  left: 0;
+  top: 0;
+}
+
+.card-draggable--animated {
+  transition-duration: 250ms;
+  transition-property: top, left;
 }
 
 .card-draggable--space {
@@ -72,5 +91,17 @@ export default {
 
 .card-draggable--ready {
   box-shadow: 0px 0 30px orange;
+}
+
+.card-draggable--ready .card__front,
+.card-draggable--ready .card__back {
+  box-shadow: inset 0px 0 30px orange;
+}
+
+.card-draggable--ready::before {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  box-shadow: inset 0px 0 30px orange;
 }
 </style>

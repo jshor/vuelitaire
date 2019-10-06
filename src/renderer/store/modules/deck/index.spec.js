@@ -1,134 +1,222 @@
-import game from '.'
+import deck from '.'
 import Card from '../../models/Card'
-import deck from './deck'
+import Pair from '../../models/Pair'
+import { Suits } from '../../../constants'
+import getLineage from '../../../utils/getLineage'
 
 const {
+  state,
   getters,
-  actions,
   mutations
-} = game
+} = deck
 
-describe('Vuex Game module', () => {
+const originalState = {
+  cards: {},
+  ...state
+}
+
+describe('Vuex Deck module', () => {
   describe('getters', () => {
-    describe('hint()', () => {
-      it('should return the (index)th element in the entries', () => {
+    describe('canDeal', () => {
+      it('should return true if there are cards in the state to deal', () => {
         const state = {
-          hints: {
-            entries: [[1, 2]],
-            index: 0
-          }
+          stock: [new Card()]
         }
-        expect(getters.hint(state)).toEqual(state.hints.entries[0])
+
+        expect(getters.canDeal(state)).toEqual(true)
       })
 
-      it('should an empty array if the entry is not available', () => {
+      it('should return true if there no more cards left to deal', () => {
         const state = {
-          hints: {
-            entries: [],
-            index: 0
-          }
+          stock: []
         }
-        expect(getters.hint(state)).toEqual([])
-      })
-    })
-  })
 
-  describe('actions', () => {
-    const commit = jest.fn()
-
-    describe('newGame()', () => {
-      const card = new Card()
-      const cards = {
-        [card.id]: card
-      }
-      const state = {
-        deck: { cards }
-      }
-
-      beforeEach(() => {
-        actions.newGame({ commit, state })
-      })
-
-      it('should clear the existing game', () => {
-        expect(commit).toHaveBeenCalledWith('CLEAR_EXISTING_GAME')
-      })
-
-      it('should initialize a deck of cards', () => {
-        expect(commit).toHaveBeenCalledWith('INIT_DECK')
-      })
-
-      it('should register the deck of cards', () => {
-        expect(commit).toHaveBeenCalledWith('REGISTER_CARDS', cards)
-      })
-
-      it('should initialize the tableau with the deck of cards', () => {
-        expect(commit).toHaveBeenCalledWith('INIT_TABLEAU', cards)
-      })
-
-      it('should initialize the foundation spaces', () => {
-        expect(commit).toHaveBeenCalledWith('INIT_FOUNDATIONS')
-      })
-
-      it('should reveal the topmost cards of the tableau', () => {
-        expect(commit).toHaveBeenCalledWith('REVEAL_CARDS')
+        expect(getters.canDeal(state)).toEqual(false)
       })
     })
   })
 
   describe('mutations', () => {
-    describe('CLEAR_EXISTING_GAME', () => {
-      const card = new Card()
-      const state = {}
-
-      beforeEach(() => {
-        state.cards = {
-          [card.id]: card
+    describe('INIT_DECK', () => {
+      it('should create a 52 deck of cards with 4 suits', () => {
+        const state = {
+          stock: [],
+          cards: {}
         }
-        state.deck = {
-          cards: [card]
-        }
-        state.gameId = 'original-game-id'
-      })
+        const suitOfType = type => state
+          .stock
+          .filter(({ suit }) => suit === type)
 
-      it('should clear the cards', () => {
-        mutations['CLEAR_EXISTING_GAME'](state)
+        mutations.INIT_DECK(state)
 
-        expect(state.cards).toEqual({})
-      })
-
-      it('should reset the deck store module to its original state', () => {
-        mutations['CLEAR_EXISTING_GAME'](state)
-
-        expect(state.deck).toEqual(deck.createState())
-      })
-
-      it('should set a new game id', () => {
-        mutations['CLEAR_EXISTING_GAME'](state)
-
-        expect(state.gameId).not.toEqual('original-game-id')
-        expect(typeof state.gameId).toBe('string')
+        expect(suitOfType(Suits.SPADES)).toHaveLength(13)
+        expect(suitOfType(Suits.HEARTS)).toHaveLength(13)
+        expect(suitOfType(Suits.DIAMONDS)).toHaveLength(13)
+        expect(suitOfType(Suits.CLUBS)).toHaveLength(13)
       })
     })
 
-    describe('REVEAL_CARDS', () => {
-      it('should set all childless cards in the state to be revealed', () => {
-        const a = new Card()
-        const b = new Card()
-        const c = new Card()
+    describe('INIT_TABLEAU', () => {
+      let state = {}
+
+      beforeEach(() => {
+        state = {
+          stock: [],
+          cards: {}
+        }
+        mutations.INIT_DECK(state)
+      })
+
+      it('should apply 7 space cards to the state', () => {
+        mutations.INIT_TABLEAU(state)
+
+        const spaces = Object
+          .values(state.cards)
+          .filter(t => t.constructor.name === 'LaneSpace')
+
+        expect(spaces).toHaveLength(7)
+      })
+
+      it('should create a hierarchy of (n + 2) cards for each nth index, for n = 7 ~ 1', () => {
+        mutations.INIT_TABLEAU(state)
+
+        expect.assertions(7)
+        Object
+          .values(state.cards)
+          .filter(t => t.constructor.name === 'LaneSpace')
+          .reverse()
+          .forEach((space, index) => {
+            expect(getLineage(space)).toHaveLength(index + 2)
+          })
+      })
+    })
+
+    describe('DEAL', () => {
+      let state
+
+      beforeEach(() => {
+        state = { ...originalState }
+        mutations.INIT_DECK(state)
+      })
+
+      it('should set both the waste and dealt piles to contain `dealCount` cards after dealing once', () => {
+        mutations.DEAL(state)
+
+        expect(state.dealt).toHaveLength(state.dealCount)
+        expect(state.waste).toHaveLength(state.dealCount)
+      })
+
+      it('should append `dealCount` cards to the waste pile after dealing again', () => {
+        mutations.DEAL(state)
+
+        expect(state.dealt).toHaveLength(state.dealCount)
+        expect(state.waste).toHaveLength(state.dealCount * 2)
+      })
+
+      it('should deal one card if only one remains in the stock pile', () => {
+        state.stock = state.stock.slice(0, 3)
+        state.waste = []
+
+        mutations.DEAL(state)
+
+        expect(state.dealt).toHaveLength(1)
+        expect(state.waste).toHaveLength(1)
+      })
+
+      describe('when there are no more cards left to deal', () => {
+        let waste
+
+        beforeEach(() => {
+          waste = state.stock
+          state.waste = waste
+          state.stock = []
+        })
+
+        it('should reuse the reversed waste pile as the cards stock pile', () => {
+          mutations.DEAL(state)
+
+          expect(state.stock).toEqual(waste.reverse())
+        })
+
+        it('should clear the waste and dealt piles', () => {
+          mutations.DEAL(state)
+
+          expect(state.waste).toHaveLength(0)
+          expect(state.dealt).toHaveLength(0)
+        })
+      })
+    })
+
+    describe('REMOVE_FROM_DECK', () => {
+      it('should remove the given card from the waste pile if it exists', () => {
+        const card = new Card()
         const state = {
-          cards: {
-            [a.id]: a,
-            [b.id]: b
-          }
+          waste: [card],
+          dealt: [card]
         }
 
-        b.child = c
+        mutations.REMOVE_FROM_DECK(state, card.id)
 
-        mutations['REVEAL_CARDS'](state)
+        expect(state.waste).not.toContain(card)
+        expect(state.dealt).not.toContain([card])
+      })
 
-        expect(a.revealed).toEqual(true)
-        expect(b.revealed).toEqual(false)
-        expect(a.revealed).toEqual(true)
+      it('should not mutate the state if the card having the given id doesn\'t exist', () => {
+        const card = new Card()
+        const state = {
+          waste: [card],
+          dealt: [card]
+        }
+
+        mutations.REMOVE_FROM_DECK(state, '????')
+
+        expect(state.waste).toEqual([card])
+        expect(state.dealt).toEqual([card])
+      })
+    })
+
+    describe('SET_MOVE', () => {
+      const parentCard = new Card()
+      const movingCard = new Card()
+      const targetCard = new Card()
+      const move = new Pair(movingCard.id, targetCard.id)
+      let state
+
+      beforeEach(() => {
+        state = {
+          cards: {
+            [parentCard.id]: parentCard,
+            [movingCard.id]: movingCard,
+            [targetCard.id]: targetCard
+          }
+        }
+      })
+
+      describe('when the move is set', () => {
+        it('should set the parent id, if one exists', () => {
+          parentCard.child = movingCard
+          mutations.SET_MOVE(state, move)
+
+          expect(state.move).toEqual(move)
+          expect(state.move.parentId).toEqual(parentCard.id)
+        })
+
+        it('should set the parent id to `DEAL_CARD`', () => {
+          parentCard.child = null
+          mutations.SET_MOVE(state, move)
+
+          expect(state.move).toEqual(move)
+          expect(state.move.parentId).toEqual('DEAL_CARD')
+        })
+      })
+    })
+
+    describe('when the move is set', () => {
+      it('should not mutate `move`', () => {
+        state.move = null
+        mutations.SET_MOVE(state)
+
+        expect(state.move).toBeNull()
       })
     })
   })

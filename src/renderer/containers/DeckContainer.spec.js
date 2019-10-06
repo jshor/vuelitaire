@@ -19,9 +19,10 @@ describe('Deck Container', () => {
       localVue,
       sync: false,
       store: new Vuex.Store({
-        state: {
-          game: {
-            deck: {
+        modules: {
+          deck: {
+            namespaced: true,
+            state: {
               waste: dealt,
               dealt
             }
@@ -47,17 +48,21 @@ describe('Deck Container', () => {
     })
   })
 
-  describe('getFannedPadding()', () => {
-    it('should return 40 pixels for the nth card', () => {
-      expect(wrapper.vm.getFannedPadding(cardC)).toEqual(40)
+  describe('isNth()', () => {
+    it('should return true if the card is the last in the dealt hand', () => {
+      expect(wrapper.vm.isNth(cardC, 2)).toEqual(true)
     })
 
-    it('should return 40 pixels for the (n-1)th card', () => {
-      expect(wrapper.vm.getFannedPadding(cardB)).toEqual(20)
+    it('should return true if the card is the middle in the dealt hand', () => {
+      expect(wrapper.vm.isNth(cardB, 1)).toEqual(true)
     })
 
-    it('should return 0 pixels for the (n-2)th card', () => {
-      expect(wrapper.vm.getFannedPadding(cardA)).toEqual(0)
+    it('should return false if the card is not equal to `n`', () => {
+      expect(wrapper.vm.isNth(cardA, 1)).toEqual(false)
+    })
+
+    it('should return false if the card is not in the dealt hand', () => {
+      expect(wrapper.vm.isNth(new Card(), 1)).toEqual(false)
     })
   })
 })

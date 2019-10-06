@@ -2,7 +2,6 @@ import cards from './cards'
 import Card from '../../models/Card'
 import FoundationSpace from '../../models/FoundationSpace'
 import LaneSpace from '../../models/LaneSpace'
-import getLineage from '../../../utils/getLineage'
 
 const { getters, mutations } = cards
 
@@ -37,62 +36,23 @@ describe('Vuex cards module', () => {
   })
 
   describe('mutations', () => {
-    describe('REGISTER_CARDS', () => {
-      it('should register all cards in the given deck', () => {
-        const deck = Array(52)
-          .fill(null)
-          .map(() => new Card())
-        const state = {}
+    describe('REVEAL_CARDS', () => {
+      it('should set all childless cards in the state to be revealed', () => {
+        const a = new Card()
+        const b = new Card()
+        const c = new Card()
+        const state = {
+          [a.id]: a,
+          [b.id]: b
+        }
 
-        mutations.REGISTER_CARDS(state, deck)
+        b.child = c
 
-        expect(Object.keys(state)).toHaveLength(52)
-        deck.forEach(c => {
-          expect(state).toHaveProperty(c.id)
-          expect(state[c.id]).toEqual(c)
-        })
-      })
-    })
+        mutations['REVEAL_CARDS'](state)
 
-    describe('INIT_TABLEAU', () => {
-      let deck = []
-
-      beforeEach(() => {
-        // create a deck of 52 cards
-        deck = Array(52)
-          .fill(null)
-          .map(() => new Card())
-      })
-
-      const createState = d => d.reduce((state, c) => ({
-        ...state,
-        [c.id]: c
-      }), {})
-
-      it('should apply 7 space cards to the state', () => {
-        const state = createState(deck)
-
-        mutations.INIT_TABLEAU(state, deck)
-
-        const spaces = Object
-          .values(state)
-          .filter(t => t.constructor.name === 'LaneSpace')
-
-        expect(spaces).toHaveLength(7)
-      })
-
-      it('should create a hierarchy of (n + 2) cards for each nth index', () => {
-        const state = createState(deck)
-
-        mutations.INIT_TABLEAU(state, deck)
-
-        expect.assertions(7)
-        Object
-          .values(state)
-          .filter(t => t.constructor.name === 'LaneSpace')
-          .forEach((space, index) => {
-            expect(getLineage(space)).toHaveLength(index + 2)
-          })
+        expect(a.revealed).toEqual(true)
+        expect(b.revealed).toEqual(false)
+        expect(a.revealed).toEqual(true)
       })
     })
 

@@ -13,6 +13,7 @@ export default class Card extends BaseModel {
     this.rank = rank
     this.revealed = false
     this.isPlayed = false
+    this.animationIndex = 0
 
     this.rules.push(hasAlternatingColorBeforePromotion)
     this.rules.push(hasSameSuitAfterPromotion)

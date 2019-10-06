@@ -1,10 +1,13 @@
 <template>
-  <div class="game">
+  <div class="game" @click="clearSelection">
     <div class="game__top">
       <foundations>
         <div
+          data-id="DEAL_CARD"
           class="game__spacer game__spacer--deal"
-          :class="{ 'game__spacer--active': hint.includes('DEAL_CARD') }"
+          :class="{
+            'game__spacer--active': highlightedCards.includes('DEAL_CARD')
+          }"
           @click="deal"
         />
         <div class="game__spacer game__spacer--deck">
@@ -31,6 +34,12 @@
         />
       </tableau>
     </div>
+
+    <animated-card
+      :card-id="animation.cardId"
+      :target-id="animation.targetId"
+    />
+
     <button @click="undo" :disabled="!canUndo">Undo</button>
     <button @click="showHint">Hint</button>
     <button @click="newGame">New Game</button>
@@ -43,26 +52,43 @@ import DeckContainer from './DeckContainer'
 import CardContainer from './CardContainer'
 import Foundations from '../components/Foundations'
 import Tableau from '../components/Tableau'
+import AnimatedCard from '../components/AnimatedCard'
 
 export default {
   name: 'app',
   components: {
+    AnimatedCard,
     CardContainer,
     DeckContainer,
     Foundations,
     Tableau
   },
   computed: {
-    ...mapGetters(['tableau', 'foundations', 'hint', 'canUndo']),
+    ...mapGetters('deck/cards', [
+      'tableau',
+      'foundations'
+    ]),
+    ...mapGetters([
+      'highlightedCards',
+      'canUndo'
+    ]),
     ...mapState({
-      cards: state => state.game.cards
+      animation: state => state.animation
     })
   },
   beforeCreate () {
     this.$store.dispatch('newGame')
   },
   methods: {
-    ...mapActions(['newGame', 'deal', 'showHint', 'undo'])
+    ...mapActions('hints', [
+      'showHint'
+    ]),
+    ...mapActions([
+      'deal',
+      'newGame',
+      'undo',
+      'clearSelection'
+    ])
   }
 }
 </script>
@@ -89,6 +115,7 @@ export default {
 }
 
 .game__spacer--deal {
+  z-index: 1000;
   border: 1px solid #000;
   border-radius: 3px;
   background: repeating-linear-gradient(

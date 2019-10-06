@@ -46,6 +46,14 @@ const mutations = {
       })
   },
 
+  CLEAR_ANIMATION_INDICES (state) {
+    Object
+      .values(state)
+      .forEach(({ id }) => {
+        state[id].animationIndex = 0
+      })
+  },
+
   /**
    * Creates 4 new foundations.
    *

@@ -4,7 +4,7 @@ import {
   getDestructuringLaneHints,
   getDeckHints,
   getWorryBackHints
-} from '../../../gameplay'
+} from '../../gameplay'
 
 const state = {
   entries: [],
@@ -30,13 +30,20 @@ const actions = {
       .filter(card => card.isPlayable() && !card.promoted)
       .concat(waste.slice(-1))
 
-    commit('SET_HINTS', [
+    // generate basic hints
+    const hints = [
       ...getMoveableCardHints(allCards, playableCards),
       ...getLaneCreationHints(allCards, playableCards),
-      ...getDeckHints(allCards, rootState.deck),
-      ...getDestructuringLaneHints(allCards),
-      ...getWorryBackHints(allCards, rootState.deck)
-    ])
+      ...getDeckHints(allCards, rootState.deck)
+    ]
+
+    // if there were no hints available, try the "desperate" hints
+    if (hints.length === 0) {
+      hints.push(getDestructuringLaneHints(allCards))
+      hints.push(getWorryBackHints(allCards, rootState.deck))
+    }
+
+    commit('SET_HINTS', hints)
   }
 }
 

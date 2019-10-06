@@ -19,10 +19,10 @@ describe('Card Container', () => {
       store: new Vuex.Store({
         actions: {
           moveCard: jest.fn(),
-          revealCard: jest.fn()
+          setSelection: jest.fn()
         },
         getters: {
-          hint: jest.fn(() => [])
+          highlightedCards: jest.fn(() => [])
         }
       })
     })
@@ -144,6 +144,105 @@ describe('Card Container', () => {
       wrapper.vm.onDrop({ payload })
 
       expect(wrapper.vm.ready).toEqual(false)
+    })
+  })
+
+  describe('selectCard()', () => {
+    const card = new Card()
+    const child = new Card()
+
+    beforeEach(() => {
+      card.child = child
+      card.revealed = true
+      child.revealed = true
+    })
+
+    it('should not call autoplayCard() or setSelection() if the card is not ready', () => {
+      wrapper.setData({ ready: true })
+      jest.spyOn(wrapper.vm, 'autoplayCard')
+      jest.spyOn(wrapper.vm, 'setSelection')
+
+      wrapper.vm.selectCard()
+
+      expect(wrapper.vm.autoplayCard).not.toHaveBeenCalled()
+      expect(wrapper.vm.setSelection).not.toHaveBeenCalled()
+    })
+
+    it('should not call autoplayCard() or setSelection() if the card is not ready', () => {
+      wrapper.setData({ ready: true })
+      jest.spyOn(wrapper.vm, 'autoplayCard')
+      jest.spyOn(wrapper.vm, 'setSelection')
+
+      wrapper.vm.selectCard()
+
+      expect(wrapper.vm.autoplayCard).not.toHaveBeenCalled()
+      expect(wrapper.vm.setSelection).not.toHaveBeenCalled()
+    })
+
+    describe('when the card is double-clicked', () => {
+      it('should call autoplayCard() with the card\'s child if it has one', () => {
+        wrapper = createWrapper({
+          card,
+          hasChild: true,
+          isSpace: false
+        })
+        jest.spyOn(wrapper.vm, 'autoplayCard')
+
+        wrapper.setData({ ready: false })
+        wrapper.vm.selectCard(true)
+
+        expect(wrapper.vm.autoplayCard).toHaveBeenCalledTimes(1)
+        expect(wrapper.vm.autoplayCard).toHaveBeenCalledWith(child)
+      })
+
+      it('should call autoplayCard() with the card itself if it does not have a child', () => {
+        card.child = null
+        wrapper = createWrapper({
+          card,
+          hasChild: false,
+          isSpace: false
+        })
+        jest.spyOn(wrapper.vm, 'autoplayCard')
+
+        wrapper.setData({ ready: false })
+        wrapper.vm.selectCard(true)
+
+        expect(wrapper.vm.autoplayCard).toHaveBeenCalledTimes(1)
+        expect(wrapper.vm.autoplayCard).toHaveBeenCalledWith(card)
+      })
+    })
+
+    describe('when the card is clicked once', () => {
+      it('should call selectCard() with the card\'s child if it has one', () => {
+        wrapper = createWrapper({
+          card,
+          hasChild: true,
+          isSpace: false
+        })
+        jest.spyOn(wrapper.vm, 'setSelection')
+
+        wrapper.setData({ ready: false })
+        wrapper.vm.selectCard(false)
+
+        expect(wrapper.vm.setSelection).toHaveBeenCalledTimes(1)
+        expect(wrapper.vm.setSelection).toHaveBeenCalledWith(child)
+      })
+
+      it('should call selectCard() with the card itself if it does not have a child', () => {
+        card.child = null
+        wrapper = createWrapper({
+          card,
+          hasChild: false,
+          isSpace: false
+        })
+        jest.spyOn(wrapper.vm, 'setSelection')
+
+        wrapper.setData({ ready: false })
+        wrapper.vm.selectCard(false)
+
+        expect(wrapper.vm.setSelection).toHaveBeenCalledTimes(1)
+        expect(wrapper.vm.setSelection).toHaveBeenCalledWith(card)
+      })
     })
   })
 })

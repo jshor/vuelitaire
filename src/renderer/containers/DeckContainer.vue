@@ -3,9 +3,11 @@
     <div
       v-for="card in waste"
       :key="card.id"
-      :style="{
-        paddingLeft: `${getFannedPadding(card)}px`
+      :class="{
+        'deck__card--second': isNth(card, 1),
+        'deck__card--third': isNth(card, 2)
       }"
+      style="margin-left: -30px"
       class="deck__card">
       <container
         :get-child-payload="() => card"
@@ -35,28 +37,41 @@ export default {
     Container
   },
   computed: {
-    ...mapState({
-      waste: state => state.game.deck.waste,
-      dealt: state => state.game.deck.dealt
-    })
+    ...mapState('deck', [
+      'waste',
+      'dealt'
+    ])
   },
   methods: {
     shouldAcceptDrop ({ id }, { getChildPayload }) {
       // the only time a card in the waste should accept a child is when a card is being returned
       return id === getChildPayload().id
     },
-    getFannedPadding (card) {
-      // the top 2 cards (last n-1 cards) of the dealt pile should be horizontally fanned with padding
-      const index = this.dealt.findIndex(({ id }) => id === card.id)
-
-      return Math.max(index * 20, 0)
+    isNth (card, n) {
+      return this.dealt.findIndex(({ id }) => id === card.id) === n
     }
   }
 }
 </script>
 
-<style>
+<style lang="scss">
 .deck, .deck__card {
   position: absolute;
 }
+
+.deck__card {
+  animation: fanning-first 250ms forwards;
+}
+
+.deck__card--second {
+  animation: fanning-second 250ms forwards;
+}
+
+.deck__card--third {
+  animation: fanning-third 250ms forwards;
+}
+
+@include fanning-deck-card('first', 0px);
+@include fanning-deck-card('second', 20px);
+@include fanning-deck-card('third', 40px);
 </style>
