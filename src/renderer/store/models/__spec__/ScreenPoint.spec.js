@@ -1,4 +1,4 @@
-import ScreenPoint from './ScreenPoint'
+import ScreenPoint from '../ScreenPoint'
 
 describe('ScreenPoint model', () => {
   it('should set the left and top params', () => {

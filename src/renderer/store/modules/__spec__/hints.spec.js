@@ -1,11 +1,11 @@
-import hints from './hints'
+import hints from '../hints'
 
 const {
   actions,
   mutations
 } = hints
 
-jest.mock('../../gameplay', () => ({
+jest.mock('../../../gameplay', () => ({
   getMoveableCardHints: () => [],
   getLaneCreationHints: () => [],
   getDestructuringLaneHints: () => [],

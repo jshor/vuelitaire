@@ -1,5 +1,5 @@
-import animation from './animation'
-import Pair from '../models/Pair'
+import animation from '../animation'
+import Pair from '../../models/Pair'
 
 const {
   actions,

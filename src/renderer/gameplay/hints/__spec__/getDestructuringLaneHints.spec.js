@@ -1,7 +1,7 @@
-import getDestructuringLaneHints from './getDestructuringLaneHints'
-import Card from '../../store/models/Card'
-import FoundationSpace from '../../store/models/FoundationSpace'
-import { Suits } from '../../constants'
+import getDestructuringLaneHints from '../getDestructuringLaneHints'
+import Card from '../../../store/models/Card'
+import FoundationSpace from '../../../store/models/FoundationSpace'
+import { Suits } from '../../../constants'
 
 function makePlayable (cards) {
   cards.forEach(card => {

@@ -1,8 +1,8 @@
-import Card from '../../store/models/Card'
-import LaneSpace from '../../store/models/LaneSpace'
-import { Suits } from '../../constants'
-import getWorryBackHints from './getWorryBackHints'
-import FoundationSpace from '../../store/models/FoundationSpace'
+import Card from '../../../store/models/Card'
+import LaneSpace from '../../../store/models/LaneSpace'
+import { Suits } from '../../../constants'
+import getWorryBackHints from '../getWorryBackHints'
+import FoundationSpace from '../../../store/models/FoundationSpace'
 
 describe('Hint: getWorryBackHints', () => {
   const laneSpace1 = new LaneSpace()

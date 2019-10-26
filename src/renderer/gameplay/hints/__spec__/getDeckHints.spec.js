@@ -1,6 +1,6 @@
-import Card from '../../store/models/Card'
-import { Suits } from '../../constants'
-import getDeckHints from './getDeckHints'
+import Card from '../../../store/models/Card'
+import { Suits } from '../../../constants'
+import getDeckHints from '../getDeckHints'
 
 describe('Hint: getDeckHints', () => {
   const aceOfSpades = new Card(Suits.SPADES, 0)

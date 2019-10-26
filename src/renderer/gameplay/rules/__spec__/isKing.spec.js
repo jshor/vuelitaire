@@ -1,6 +1,6 @@
-import isKing from './isKing'
-import Card from '../../store/models/Card'
-import { Suits } from '../../constants'
+import isKing from '../isKing'
+import Card from '../../../store/models/Card'
+import { Suits } from '../../../constants'
 
 describe('Rule: isKing', () => {
   const parent = null

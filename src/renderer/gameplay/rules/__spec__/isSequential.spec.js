@@ -1,6 +1,6 @@
-import isSequential from './isSequential'
-import Card from '../../store/models/Card'
-import { Suits } from '../../constants'
+import isSequential from '../isSequential'
+import Card from '../../../store/models/Card'
+import { Suits } from '../../../constants'
 
 describe('Rule: isSequential', () => {
   it('should return true if the parent card is exactly one rank above the child card', () => {

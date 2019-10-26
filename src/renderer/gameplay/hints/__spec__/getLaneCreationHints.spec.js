@@ -1,7 +1,7 @@
-import Card from '../../store/models/Card'
-import LaneSpace from '../../store/models/LaneSpace'
-import { Suits } from '../../constants'
-import getLaneCreationHints from './getLaneCreationHints'
+import Card from '../../../store/models/Card'
+import LaneSpace from '../../../store/models/LaneSpace'
+import { Suits } from '../../../constants'
+import getLaneCreationHints from '../getLaneCreationHints'
 
 describe('Lane creation', () => {
   it('should return multiple hints if multiple kings can be moved to a space', () => {

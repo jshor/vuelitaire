@@ -1,8 +1,8 @@
-import getMoveableCardHints from './getMoveableCardHints'
-import Card from '../../store/models/Card'
-import LaneSpace from '../../store/models/LaneSpace'
-import FoundationSpace from '../../store/models/FoundationSpace'
-import { Suits } from '../../constants'
+import getMoveableCardHints from '../getMoveableCardHints'
+import Card from '../../../store/models/Card'
+import LaneSpace from '../../../store/models/LaneSpace'
+import FoundationSpace from '../../../store/models/FoundationSpace'
+import { Suits } from '../../../constants'
 
 describe('Hint: getMoveableCardHints', () => {
   const sixOfDiamonds = new Card(Suits.DIAMONDS, 5)

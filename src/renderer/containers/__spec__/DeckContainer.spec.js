@@ -1,7 +1,7 @@
 import Vuex from 'vuex'
 import { shallowMount, createLocalVue } from '@vue/test-utils'
-import DeckContainer from './DeckContainer'
-import Card from '../store/models/Card'
+import DeckContainer from '../DeckContainer'
+import Card from '../../store/models/Card'
 
 const localVue = createLocalVue()
 

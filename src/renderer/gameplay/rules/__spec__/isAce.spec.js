@@ -1,6 +1,6 @@
-import isAce from './isAce'
-import Card from '../../store/models/Card'
-import { Suits } from '../../constants'
+import isAce from '../isAce'
+import Card from '../../../store/models/Card'
+import { Suits } from '../../../constants'
 
 describe('Rule: isSequential', () => {
   const parent = null

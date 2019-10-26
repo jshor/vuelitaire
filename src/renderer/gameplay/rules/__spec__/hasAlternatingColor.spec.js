@@ -1,6 +1,6 @@
-import hasAlternatingColor from './hasAlternatingColor'
-import Card from '../../store/models/Card'
-import { Suits } from '../../constants'
+import hasAlternatingColor from '../hasAlternatingColor'
+import Card from '../../../store/models/Card'
+import { Suits } from '../../../constants'
 
 describe('Rule: hasAlternatingColor', () => {
   function testRule (parentSuit, childSuit, value) {

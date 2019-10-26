@@ -1,8 +1,8 @@
-import deck from '.'
-import Card from '../../models/Card'
-import Pair from '../../models/Pair'
-import { Suits } from '../../../constants'
-import getLineage from '../../../utils/getLineage'
+import deck from '..'
+import Card from '../../../models/Card'
+import Pair from '../../../models/Pair'
+import { Suits } from '../../../../constants'
+import getLineage from '../../../../utils/getLineage'
 
 const {
   state,

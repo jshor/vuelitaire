@@ -1,8 +1,8 @@
-import root from './root'
-import deck from './deck'
-import Card from '../models/Card'
-import Pair from '../models/Pair'
-import { Suits } from '../../constants'
+import root from '../root'
+import deck from '../deck'
+import Card from '../../models/Card'
+import Pair from '../../models/Pair'
+import { Suits } from '../../../constants'
 
 const {
   getters,
