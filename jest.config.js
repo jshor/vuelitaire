@@ -1,11 +1,13 @@
 module.exports = {
   collectCoverage: true,
+  coverageDirectory: '<rootDir>/test/coverage',
   moduleFileExtensions: [
     'js',
     'jsx',
     'json',
     'vue'
   ],
+  setupFiles: ['<rootDir>/test/setup.js'],
   transform: {
     '^.+\\.vue$': 'vue-jest',
     '.+\\.(css|styl|less|sass|scss|svg|png|jpg|ttf|woff|woff2)$': 'jest-transform-stub',
