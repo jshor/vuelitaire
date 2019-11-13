@@ -1,5 +1,5 @@
 export default function isBuildable (parent, child) {
-  if (child.constructor.name !== 'Card') {
+  if (child.type !== 'Card') {
     return false
   }
   if (parent.child || parent.id === child.id) {

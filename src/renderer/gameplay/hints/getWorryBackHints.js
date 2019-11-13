@@ -12,9 +12,9 @@ import hasAlternatingColor from '../rules/hasAlternatingColor'
 export default function getWorryBackHints (cards, deck) {
   // compute all tableaux top cards that haven't been touched by the user yet
   const untouchedTopCards = cards
-    .filter(card => card.constructor.name === 'LaneSpace')
+    .filter(card => card.type === 'LaneSpace')
     .map(card => getLineage(card).slice(-2).shift()) // get the second-to-last card
-    .filter(card => !card.revealed || card.constructor.name === 'LaneSpace')
+    .filter(card => !card.revealed || card.type === 'LaneSpace')
     .map(card => card.child)
     .filter(card => card)
 
@@ -23,7 +23,7 @@ export default function getWorryBackHints (cards, deck) {
 
   const promotedCards = cards
     // start with finding the Foundation spaces
-    .filter(card => card.constructor.name === 'FoundationSpace')
+    .filter(card => card.type === 'FoundationSpace')
     // then get the top (visible) card of each foundation pile
     .map(card => getLineage(card).pop())
 

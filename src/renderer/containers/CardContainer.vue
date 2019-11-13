@@ -23,8 +23,8 @@
         group-name="right"
         non-drag-area-selector=".card:not(.card--revealed)"
         @drop="onDrop"
-        @drag-enter="() => ready = true"
-        @drag-leave="() => ready = false"
+        @drag-enter="onDragEnter"
+        @drag-leave="onDragLeave"
         :get-child-payload="() => card.child"
         :should-accept-drop="shouldAcceptDrop">
         <card-container
@@ -37,30 +37,24 @@
   </card-draggable>
 </template>
 
-<script>
-import { mapActions, mapGetters } from 'vuex'
+<script lang="ts">
+import Vue from 'vue'
+import Component from 'vue-class-component'
 import { Container } from 'vue-smooth-dnd'
-import Card from '@/components/Card'
-import CardContainer from './CardContainer'
-import CardDraggable from '@/components/CardDraggable'
-import getDescendants from '@/utils/getLineage'
-import isDescendant from '@/utils/isDescendant'
-import isAncestor from '@/utils/isAncestor'
+import { mapActions, mapGetters } from 'vuex'
 
-export default {
-  name: 'CardContainer',
-  components: {
-    Card,
-    CardDraggable,
-    CardContainer,
-    Container
-  },
-  data () {
-    return { ready: false, error: false }
-  },
+import Card from '../components/Card.vue'
+import CardDraggable from '../components/CardDraggable.vue'
+import BaseModel from '../store/models/BaseModel'
+import Pair from '../store/models/Pair'
+import getDescendants from '../utils/getLineage'
+import isAncestor from '../utils/isAncestor'
+import isDescendant from '../utils/isDescendant'
+
+@Component({
   props: {
     card: {
-      type: Object,
+      type: Object as () => BaseModel,
       default: null
     },
     hasChild: {
@@ -73,62 +67,101 @@ export default {
     }
   },
   computed: {
-    descendants () {
-      return getDescendants(this.card)
-    },
-    canReveal () {
-      return this.card.child === null && !this.card.revealed
-    },
-    isHighlighted () {
-      return (this.ready || this.highlightedCards.includes(this.card.id)) && this.card.revealed
-    },
     ...mapGetters([
       'highlightedCards'
     ])
   },
+  components: {
+    Card,
+    CardDraggable,
+    CardContainer,
+    Container
+  },
   methods: {
-    shouldAcceptDrop ({ getChildPayload }) {
-      const parent = this.card
-      const card = getChildPayload()
-
-      if (parent.child) {
-        // if the child card is being returned, always accept it
-        return parent.child.id === card.id
-      }
-      return !isAncestor(this.$parent, card) && parent.canAcceptCard(card)
-    },
-    onDrop ({ payload }) {
-      if (!this.ready) return
-
-      const cardId = payload.id
-      const targetId = this.card.id
-
-      if (!isDescendant(this.card, cardId)) {
-        this.moveCard({ cardId, targetId })
-      }
-      this.ready = false
-    },
-    selectCard (autoplay) {
-      const card = this.card.child || this.card
-
-      if (!this.ready && card.revealed) {
-        if (autoplay) {
-          this.autoplayCard(card)
-        } else {
-          this.setSelection(card)
-        }
-      }
-    },
-    autoplayCard () {
-      this.ready = false
-      this.error = true
-    },
     ...mapActions([
       'moveCard',
       'setSelection'
     ])
   }
+})
+class CardContainer extends Vue {
+  public name: string = 'CardContainer'
+
+  public card: BaseModel
+
+  public hasChild: boolean
+
+  public isSpace: boolean
+
+  public highlightedCards: string[]
+
+  public ready: boolean = false
+
+  public error: boolean = false
+
+  public moveCard: (pair: Pair) => Promise<void>
+
+  public setSelection: (card: BaseModel) => Promise<void>
+
+  get descendants (): BaseModel[] {
+    return getDescendants(this.card)
+  }
+
+  get canReveal (): boolean {
+    return this.card.child === null && !this.card.revealed
+  }
+
+  get isHighlighted (): boolean {
+    return (this.ready || this.highlightedCards.includes(this.card.id)) && this.card.revealed
+  }
+
+  public shouldAcceptDrop ({ getChildPayload }: { getChildPayload: () => BaseModel }) {
+    const parent: BaseModel = this.card
+    const card: BaseModel = getChildPayload()
+
+    if (parent.child) {
+      // if the child card is being returned, always accept it
+      return parent.child.id === card.id
+    }
+    return !isAncestor(this.$parent, card) && parent.canAcceptCard(card)
+  }
+
+  public onDragEnter (): void {
+    this.ready = true
+  }
+
+  public onDragLeave (): void {
+    this.ready = false
+  }
+
+  public onDrop ({ payload }: { payload: any }) {
+    if (!this.ready) { return }
+
+    if (!isDescendant(this.card, payload.id)) {
+      this.moveCard(new Pair(payload.id, this.card.id))
+    }
+    this.ready = false
+  }
+
+  public selectCard (autoplay: boolean): void {
+    const card: BaseModel = this.card.child || this.card
+
+    if (!this.ready && card.revealed) {
+      if (autoplay) {
+        this.autoplayCard(card)
+      } else {
+        this.setSelection(card)
+      }
+    }
+  }
+
+  public autoplayCard (card: BaseModel): void {
+    this.ready = false
+    this.error = true
+  }
 }
+
+export default CardContainer
 </script>
 
 <style>

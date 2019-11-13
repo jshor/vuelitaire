@@ -25,13 +25,16 @@
   </div>
 </template>
 
-<script>
-import { mapState } from 'vuex'
+<script lang="ts">
+import Vue from 'vue'
+import Component from 'vue-class-component'
 import { Container } from 'vue-smooth-dnd'
-import CardContainer from './CardContainer'
+import { mapState } from 'vuex'
 
-export default {
-  name: 'Deck',
+import BaseModel from '../store/models/BaseModel'
+import CardContainer from './CardContainer.vue'
+
+@Component({
   components: {
     CardContainer,
     Container
@@ -41,17 +44,22 @@ export default {
       'waste',
       'dealt'
     ])
-  },
-  methods: {
-    shouldAcceptDrop ({ id }, { getChildPayload }) {
-      // the only time a card in the waste should accept a child is when a card is being returned
-      return id === getChildPayload().id
-    },
-    isNth (card, n) {
-      return this.dealt.findIndex(({ id }) => id === card.id) === n
-    }
+  }
+})
+class DeckContainer extends Vue {
+  public dealt: BaseModel[]
+
+  public shouldAcceptDrop ({ id }: BaseModel, { getChildPayload }): boolean {
+    // the only time a card in the waste should accept a child is when a card is being returned
+    return id === getChildPayload().id
+  }
+
+  public isNth (card: BaseModel, n: number): boolean {
+    return this.dealt.findIndex(({ id }: BaseModel) => id === card.id) === n
   }
 }
+
+export default DeckContainer
 </script>
 
 <style lang="scss">

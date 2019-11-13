@@ -1,8 +1,9 @@
-import root from '../root'
-import deck from '../deck'
+import { Suits } from '../../../constants'
 import Card from '../../models/Card'
 import Pair from '../../models/Pair'
-import { Suits } from '../../../constants'
+import deck, { DeckState } from '../deck'
+import { HintsState } from '../hints'
+import root, { RootState } from '../root'
 
 const {
   getters,
@@ -17,31 +18,30 @@ describe('Root Vuex module', () => {
     describe('highlightedCards()', () => {
       describe('when no card is selected', () => {
         it('should return the selected card id as the only highlighted card', () => {
-          const selectedCard = new Card()
-          const state = { selectedCard }
+          const selectedCard: Card = new Card()
+          const state: RootState = new RootState()
+
+          state.hints = new HintsState()
+          state.selectedCard = selectedCard
 
           expect(getters.highlightedCards(state)).toEqual([selectedCard.id])
         })
 
         it('should return the (index)th element in the entries', () => {
-          const state = {
-            selectedCard: null,
-            hints: {
-              entries: [[1, 2]],
-              index: 0
-            }
-          }
+          const state: RootState = new RootState()
+
+          state.hints = new HintsState()
+          state.hints.entries = [['card-1', 'card-2']]
+          state.hints.index = 0
+
           expect(getters.highlightedCards(state)).toEqual(state.hints.entries[0])
         })
 
         it('should an empty array if the entry is not available', () => {
-          const state = {
-            selectedCard: null,
-            hints: {
-              entries: [],
-              index: 0
-            }
-          }
+          const state: RootState = new RootState()
+
+          state.hints = new HintsState()
+
           expect(getters.highlightedCards(state)).toEqual([])
         })
       })
@@ -121,8 +121,8 @@ describe('Root Vuex module', () => {
     describe('setSelection()', () => {
       describe('when a card is already selected', () => {
         it('should change the selection to the target if it cannot accept the previously-selected card', async () => {
-          const aceOfSpades = new Card(Suits.SPADES, 0)
-          const threeOfHearts = new Card(Suits.HEARTS, 0)
+          const aceOfSpades: Card = new Card(Suits.SPADES, 0)
+          const threeOfHearts: Card = new Card(Suits.HEARTS, 0)
           const state = {
             selectedCard: aceOfSpades
           }
@@ -135,9 +135,9 @@ describe('Root Vuex module', () => {
           expect(commit).toHaveBeenCalledWith('SELECT_CARD', threeOfHearts)
         })
 
-        it('should place the previously-selected card onto the given target and clean up the selection state', async () => {
-          const aceOfSpades = new Card(Suits.SPADES, 0)
-          const twoOfHearts = new Card(Suits.HEARTS, 0)
+        it('should place the previously-selected card onto the given target', async () => {
+          const aceOfSpades: Card = new Card(Suits.SPADES, 0)
+          const twoOfHearts: Card = new Card(Suits.HEARTS, 0)
           const state = {
             selectedCard: aceOfSpades
           }
@@ -145,7 +145,7 @@ describe('Root Vuex module', () => {
 
           await actions.setSelection({ commit, dispatch, state }, twoOfHearts)
 
-          const payload = new Pair(aceOfSpades.id, twoOfHearts.id)
+          const payload: Pair = new Pair(aceOfSpades.id, twoOfHearts.id)
 
           expect(commit).toHaveBeenCalledTimes(1)
           expect(commit).toHaveBeenCalledWith('SELECT_CARD', null)
@@ -157,10 +157,8 @@ describe('Root Vuex module', () => {
 
       describe('when a card is not selected', () => {
         it('should only select the given target card', async () => {
-          const card = new Card()
-          const state = {
-            selectedCard: null
-          }
+          const card: Card = new Card()
+          const state: RootState = new RootState()
 
           await actions.setSelection({ commit, dispatch, state }, card)
 
@@ -172,21 +170,20 @@ describe('Root Vuex module', () => {
   })
 
   describe('CLEAR_GAME', () => {
-    const card = new Card()
-    const state = {}
+    const card: Card = new Card()
+    const state: RootState = new RootState()
 
     beforeEach(() => {
-      state.cards = {
+      state.deck = new DeckState()
+      state.deck.cards = {
         [card.id]: card
       }
-      state.deck = {
-        stock: [card]
-      }
+      state.deck.stock = [card]
       state.gameId = 'original-game-id'
     })
 
     it('should reset the deck store module to its original state', () => {
-      mutations['CLEAR_GAME'](state)
+      mutations.CLEAR_GAME(state)
 
       expect(state.deck).toEqual({
         ...deck.createState(),
@@ -195,7 +192,7 @@ describe('Root Vuex module', () => {
     })
 
     it('should set a new game id', () => {
-      mutations['CLEAR_GAME'](state)
+      mutations.CLEAR_GAME(state)
 
       expect(state.gameId).not.toEqual('original-game-id')
       expect(typeof state.gameId).toBe('string')

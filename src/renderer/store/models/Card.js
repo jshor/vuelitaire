@@ -18,6 +18,7 @@ export default class Card extends BaseModel {
     this.rules.push(hasAlternatingColorBeforePromotion)
     this.rules.push(hasSameSuitAfterPromotion)
     this.rules.push(isSequential)
+    this.type = 'Card'
   }
 
   toString () {

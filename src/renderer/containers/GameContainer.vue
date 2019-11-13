@@ -1,5 +1,9 @@
 <template>
   <div class="game" @click="clearSelection">
+    <div
+      v-if="animation.inProgress"
+      class="animation-cover"
+    />
     <div class="game__top">
       <foundations>
         <div
@@ -46,23 +50,21 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue'
+import Component from 'vue-class-component'
 import { mapActions, mapGetters, mapState } from 'vuex'
-import DeckContainer from './DeckContainer'
-import CardContainer from './CardContainer'
-import Foundations from '../components/Foundations'
-import Tableau from '../components/Tableau'
-import AnimatedCard from '../components/AnimatedCard'
 
-export default {
-  name: 'app',
-  components: {
-    AnimatedCard,
-    CardContainer,
-    DeckContainer,
-    Foundations,
-    Tableau
-  },
+import AnimatedCard from '../components/AnimatedCard.vue'
+import Foundations from '../components/Foundations.vue'
+import Tableau from '../components/Tableau.vue'
+import CardContainer from './CardContainer.vue'
+import DeckContainer from './DeckContainer.vue'
+
+import BaseModel from '../store/models/BaseModel'
+import { AnimationState } from '../store/modules/animation'
+
+@Component({
   computed: {
     ...mapGetters('deck/cards', [
       'tableau',
@@ -72,12 +74,9 @@ export default {
       'highlightedCards',
       'canUndo'
     ]),
-    ...mapState({
-      animation: state => state.animation
-    })
-  },
-  beforeCreate () {
-    this.$store.dispatch('newGame')
+    ...mapState([
+      'animation'
+    ])
   },
   methods: {
     ...mapActions('hints', [
@@ -89,11 +88,41 @@ export default {
       'undo',
       'clearSelection'
     ])
+  },
+  components: {
+    AnimatedCard,
+    CardContainer,
+    DeckContainer,
+    Foundations,
+    Tableau
   }
+})
+class GameContainer extends Vue {
+  public tableau: BaseModel[]
+
+  public foundations: BaseModel[]
+
+  public highlightedCards: string[]
+
+  public canUndo: boolean
+
+  public animation: AnimationState
+
+  public newGame: () => Promise<void>
 }
+
+export default GameContainer
 </script>
 
 <style>
+.animation-cover {
+  z-index: 1000;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+}
 .game {
   display: flex;
   flex-direction: column;

@@ -1,5 +1,5 @@
-import animation from '../animation'
 import Pair from '../../models/Pair'
+import animation, { AnimationState } from '../animation'
 
 const {
   actions,
@@ -20,7 +20,7 @@ describe('Vuex animation module', () => {
         const move = new Pair('some-card-id', 'some-target-id')
 
         move.parentId = 'some-parent-id'
-        actions.reverse({ dispatch }, { move })
+        actions.reverse({ dispatch }, move)
 
         expect(dispatch).toHaveBeenCalledTimes(1)
         expect(dispatch).toHaveBeenCalledWith('move', expect.objectContaining({
@@ -28,19 +28,13 @@ describe('Vuex animation module', () => {
           targetId: 'some-parent-id'
         }))
       })
-
-      it('should not dispatch if the pair if the move is empty', () => {
-        actions.reverse({ dispatch }, { move: null })
-
-        expect(dispatch).not.toHaveBeenCalled()
-      })
     })
 
     describe('move()', () => {
-      const move = new Pair('some-card-id', 'some-target-id')
+      const move: Pair = new Pair('some-card-id', 'some-target-id')
 
       it('should reset the animation to an empty pair after the specified time', (done) => {
-        const promise = actions.move({ commit }, move)
+        const promise: Promise<void> = actions.move({ commit }, move)
 
         expect.assertions(5)
         expect(commit).toHaveBeenCalledWith('SET_IN_PROGRESS', true)
@@ -60,14 +54,11 @@ describe('Vuex animation module', () => {
   describe('mutations', () => {
     describe('SET_ANIMATION', () => {
       it('should set the state\'s cardId and targetId with the ones in the given pair', () => {
-        const cardId = 'some-card-id'
-        const targetId = 'some-target-id'
-        const state = {
-          cardId: null,
-          targetId: null
-        }
+        const cardId: string = 'some-card-id'
+        const targetId: string = 'some-target-id'
+        const state: AnimationState = new AnimationState()
 
-        mutations['SET_ANIMATION'](state, new Pair(cardId, targetId))
+        mutations.SET_ANIMATION(state, new Pair(cardId, targetId))
 
         expect(state.cardId).toEqual(cardId)
         expect(state.targetId).toEqual(targetId)

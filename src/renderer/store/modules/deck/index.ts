@@ -1,27 +1,32 @@
+import { shuffle, values } from 'lodash'
 import Vue from 'vue'
-import { shuffle } from 'lodash'
 import { Suits } from '../../../constants'
+import BaseModel from '../../models/BaseModel'
 import Card from '../../models/Card'
 import LaneSpace from '../../models/LaneSpace'
-import cards from './cards'
+import Pair from '../../models/Pair'
+import cards, { CardsState } from './cards'
 
-const createState = () => ({
-  move: null,
-  stock: [], // cards in the stock pile
-  waste: [], // the pile of cards dealt
-  dealt: [], // the last `dealCount` (or fewer) cards dealt
-  dealCount: 1 // number of cards to deal at a time
-})
+export class DeckState {
+  public cards: CardsState = {}
+  public move: Pair = null
+  public stock: BaseModel[] = [] // cards in the stock pile
+  public waste: BaseModel[] = [] // the pile of cards dealt
+  public dealt: BaseModel[] = [] // the last `dealCount` (or fewer) cards dealt
+  public dealCount: number = 1 // number of cards to deal at a time
+}
 
-const state = createState()
+const createState = () => new DeckState()
+
+const state: DeckState = new DeckState()
 
 const getters = {
   /**
    * Returns whether or not cards can be dealt.
    *
-   * @param {Object} state
+   * @param {DeckState} state
    */
-  canDeal (state) {
+  canDeal (state: DeckState): boolean {
     return state.stock.length > 0
   }
 }
@@ -32,22 +37,21 @@ const mutations = {
   /**
    * Creates a new deck with 4 suits of 13 ranks each.
    *
-   * @param {Object} state
+   * @param {DeckState} state
    */
-  INIT_DECK (state) {
-    const createSuit = (suit) => Array(13)
+  INIT_DECK (state: DeckState): void {
+    const createSuit = (suit): Card[] => Array(13) // TODO: enum suits
       .fill(null)
-      .map((l, rank) => new Card(suit, rank))
+      .map((l, rank: number): Card => new Card(suit, rank)) // TODO: enum ranks
 
-    const stock = [
+    const stock: Card[] = [
       ...createSuit(Suits.SPADES),
       ...createSuit(Suits.HEARTS),
       ...createSuit(Suits.DIAMONDS),
       ...createSuit(Suits.CLUBS)
     ]
 
-    shuffle(stock).forEach((card, index) => {
-      card.animationIndex = index
+    shuffle(stock).forEach((card: Card): void => {
       state.stock.push(card)
       state.cards[card.id] = card
     })
@@ -56,12 +60,13 @@ const mutations = {
   /**
    * Creates a new tableau (7 spaces, each having `index` descendant cards).
    *
-   * @param {Object} state
-   * @param {Card[]} deck - deck of cards to populate the tableau
+   * @param {DeckState} state
    */
-  INIT_TABLEAU (state) {
-    for (let i = 7; i > 0; i--) {
-      let parent = new LaneSpace()
+  INIT_TABLEAU (state: DeckState): void {
+    let index = 0
+
+    for (let i: number = 7; i > 0; i--) {
+      let parent: BaseModel = new LaneSpace()
 
       // assign the first lane space card to the tableau row
       state.cards[parent.id] = parent
@@ -69,11 +74,13 @@ const mutations = {
       // move the last n cards from the stock pile to the tableau
       state
         .stock
-        .splice(state.stock - i, i)
-        .forEach(card => {
+        .splice(state.stock.length - i, i)
+        .forEach((card: BaseModel): void => {
           // assign the next card to be the child of the previous card
           Vue.set(state.cards[parent.id], 'child', card)
           Vue.set(state.cards[card.id], 'isPlayed', true)
+          Vue.set(state.cards[card.id], 'animationIndex', ++index)
+
           parent = card
         })
     }
@@ -84,7 +91,7 @@ const mutations = {
    *
    * @param {Object} state
    */
-  DEAL (state) {
+  DEAL (state: DeckState): void {
     Vue.set(state, 'dealt', [])
 
     if (state.stock.length === 0) {
@@ -92,10 +99,10 @@ const mutations = {
       Vue.set(state, 'stock', state.waste.reverse())
       Vue.set(state, 'waste', [])
     } else {
-      for (let i = 0; i < state.dealCount; i++) {
+      for (let i: number = 0; i < state.dealCount; i++) {
         // deal as many cards as possible up to `dealCount`
         if (state.stock.length) {
-          const card = state.stock.pop()
+          const card: BaseModel = state.stock.pop()
 
           state.waste.push(card)
           state.dealt.push(card)
@@ -107,18 +114,22 @@ const mutations = {
   /**
    * Removes the card having the given id from the waste pile.
    *
-   * @param {Object} state
+   * @param {DeckState} state
    * @param {String} cardId - id of card to remove
    */
-  REMOVE_FROM_DECK (state, cardId) {
-    const wasteIndex = state.waste.findIndex(({ id }) => id === cardId)
-    const dealtIndex = state.dealt.findIndex(({ id }) => id === cardId)
+  REMOVE_FROM_DECK (state: DeckState, cardId: string): void {
+    const wasteIndex: number = state
+      .waste
+      .findIndex(({ id }: Card): boolean => id === cardId)
+    const dealtIndex: number = state
+      .dealt
+      .findIndex(({ id }: Card): boolean => id === cardId)
 
-    if (~wasteIndex) {
+    if (wasteIndex > 0) {
       state.waste.splice(wasteIndex, 1)
     }
 
-    if (~dealtIndex) {
+    if (dealtIndex > 0) {
       state.dealt.splice(dealtIndex, 1)
     }
   },
@@ -127,15 +138,14 @@ const mutations = {
    * Sets information about a move from one card to allow animations during undo.
    * If there is no parent card present for a moving card, assume it came from the dealt pile.
    *
-   * @param {Object} state
+   * @param {DeckState} state
    * @param {Pair} move
    */
-  SET_MOVE (state, move = null) {
+  SET_MOVE (state: DeckState, move: Pair = null): void {
     if (move) {
-      const parent = Object
-        .values(state.cards)
-        .filter(card => card.child)
-        .find(card => card.child.id === move.cardId)
+      const parent = values(state.cards)
+        .filter((card: BaseModel) => card.child)
+        .find((card: BaseModel) => card.child.id === move.cardId)
 
       move.parentId = parent ? parent.id : 'DEAL_CARD'
     }

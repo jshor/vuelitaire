@@ -8,6 +8,8 @@ export default class Space {
     this.promoted = false
     this.isPlayed = true
     this.revealed = true
+    this.type = null
+    this.animationIndex = 0
     this.rules = [isBuildable]
   }
 
@@ -22,6 +24,6 @@ export default class Space {
   }
 
   toString () {
-    return `${this.constructor.name}`
+    return `${this.type}`
   }
 }

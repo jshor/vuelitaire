@@ -6,5 +6,6 @@ export default class LaneSpace extends BaseModel {
     super()
 
     this.rules.push(isKing)
+    this.type = 'LaneSpace'
   }
 }

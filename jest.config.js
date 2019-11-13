@@ -3,7 +3,7 @@ module.exports = {
   coverageDirectory: '<rootDir>/test/coverage',
   moduleFileExtensions: [
     'js',
-    'jsx',
+    'ts',
     'json',
     'vue'
   ],
@@ -11,7 +11,8 @@ module.exports = {
   transform: {
     '^.+\\.vue$': 'vue-jest',
     '.+\\.(css|styl|less|sass|scss|svg|png|jpg|ttf|woff|woff2)$': 'jest-transform-stub',
-    '^.+\\.jsx?$': 'babel-jest'
+    '^.+\\.js$': 'babel-jest',
+    '^.+\\.ts$': 'ts-jest'
   },
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/renderer/$1'
@@ -20,7 +21,7 @@ module.exports = {
     'jest-serializer-vue'
   ],
   testMatch: [
-    '<rootDir>/src/renderer/**/*.spec.(js|jsx|ts|tsx)|**/__tests__/*.(js|jsx|ts|tsx)'
+    '<rootDir>/src/renderer/**/*.spec.(js|ts)|**/__tests__/*.(js|ts)'
   ],
   testURL: 'http://localhost/'
 }

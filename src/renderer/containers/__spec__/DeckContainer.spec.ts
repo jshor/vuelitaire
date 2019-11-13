@@ -1,17 +1,17 @@
+import { createLocalVue, shallowMount } from '@vue/test-utils'
 import Vuex from 'vuex'
-import { shallowMount, createLocalVue } from '@vue/test-utils'
-import DeckContainer from '../DeckContainer'
 import Card from '../../store/models/Card'
+import DeckContainer from '../DeckContainer.vue'
 
 const localVue = createLocalVue()
 
 localVue.use(Vuex)
 
 describe('Deck Container', () => {
-  const cardA = new Card()
-  const cardB = new Card()
-  const cardC = new Card()
-  const dealt = [cardA, cardB, cardC]
+  const cardA: Card = new Card()
+  const cardB: Card = new Card()
+  const cardC: Card = new Card()
+  const dealt: Card[] = [cardA, cardB, cardC]
   let wrapper
 
   beforeEach(() => {
@@ -34,14 +34,14 @@ describe('Deck Container', () => {
 
   describe('shouldAcceptDrop()', () => {
     it('should return true when the dropped card is the card in the container', () => {
-      const card = new Card()
+      const card: Card = new Card()
       const getChildPayload = () => card
 
       expect(wrapper.vm.shouldAcceptDrop(card, { getChildPayload })).toEqual(true)
     })
 
     it('should return false when a foreign card is dropped', () => {
-      const card = new Card()
+      const card: Card = new Card()
       const getChildPayload = () => new Card()
 
       expect(wrapper.vm.shouldAcceptDrop(card, { getChildPayload })).toEqual(false)

@@ -9,7 +9,7 @@ import getLineage from '../../utils/getLineage'
 export default function getDestructuringLaneHints (cards) {
   return cards
     // start with finding the Foundation spaces
-    .filter(card => card.constructor.name === 'FoundationSpace')
+    .filter(card => card.type === 'FoundationSpace')
     // then get the top (visible) card of each foundation pile
     .map(card => getLineage(card).pop())
     // select the card with the next rank to be placed onto the top of each Foundation pile

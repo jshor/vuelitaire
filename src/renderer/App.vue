@@ -4,8 +4,8 @@
   </div>
 </template>
 
-<script>
-import GameContainer from './containers/GameContainer'
+<script lang="ts">
+import GameContainer from './containers/GameContainer.vue'
 
 export default {
   name: 'app',

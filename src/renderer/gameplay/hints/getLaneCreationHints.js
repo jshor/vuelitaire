@@ -1,7 +1,7 @@
 
 export default function getLaneCreationHints (allCards, playableCards) {
   const openSpaces = allCards.filter(card => {
-    return card.constructor.name === 'LaneSpace' && !card.child
+    return card.type === 'LaneSpace' && !card.child
   })
   const availableKings = playableCards.filter(card => card.rank === 12 && !card.child)
 

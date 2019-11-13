@@ -7,5 +7,6 @@ export default class FoundationSpace extends BaseModel {
 
     this.promoted = true
     this.rules.push(isAce)
+    this.type = 'FoundationSpace'
   }
 }
