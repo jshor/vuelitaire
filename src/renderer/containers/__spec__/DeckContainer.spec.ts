@@ -1,16 +1,17 @@
 import { createLocalVue, shallowMount } from '@vue/test-utils'
 import Vuex from 'vuex'
-import Card from '../../store/models/Card'
+import Card from '../../models/Card'
 import DeckContainer from '../DeckContainer.vue'
+import { Suits } from '../../constants'
 
 const localVue = createLocalVue()
 
 localVue.use(Vuex)
 
 describe('Deck Container', () => {
-  const cardA: Card = new Card()
-  const cardB: Card = new Card()
-  const cardC: Card = new Card()
+  const cardA: Card = new Card(Suits.DIAMONDS, 1)
+  const cardB: Card = new Card(Suits.DIAMONDS, 1)
+  const cardC: Card = new Card(Suits.DIAMONDS, 1)
   const dealt: Card[] = [cardA, cardB, cardC]
   let wrapper
 
@@ -34,15 +35,15 @@ describe('Deck Container', () => {
 
   describe('shouldAcceptDrop()', () => {
     it('should return true when the dropped card is the card in the container', () => {
-      const card: Card = new Card()
+      const card: Card = new Card(Suits.DIAMONDS, 1)
       const getChildPayload = () => card
 
       expect(wrapper.vm.shouldAcceptDrop(card, { getChildPayload })).toEqual(true)
     })
 
     it('should return false when a foreign card is dropped', () => {
-      const card: Card = new Card()
-      const getChildPayload = () => new Card()
+      const card: Card = new Card(Suits.DIAMONDS, 1)
+      const getChildPayload = () => new Card(Suits.DIAMONDS, 1)
 
       expect(wrapper.vm.shouldAcceptDrop(card, { getChildPayload })).toEqual(false)
     })
@@ -62,7 +63,7 @@ describe('Deck Container', () => {
     })
 
     it('should return false if the card is not in the dealt hand', () => {
-      expect(wrapper.vm.isNth(new Card(), 1)).toEqual(false)
+      expect(wrapper.vm.isNth(new Card(Suits.DIAMONDS, 1), 1)).toEqual(false)
     })
   })
 })

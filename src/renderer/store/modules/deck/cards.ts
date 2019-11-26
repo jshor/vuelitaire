@@ -1,15 +1,17 @@
 import { values } from 'lodash'
 import Vue from 'vue'
-import BaseModel from '../../models/BaseModel'
-import FoundationSpace from '../../models/FoundationSpace'
-import LaneSpace from '../../models/LaneSpace'
-import Pair from '../../models/Pair'
+import ICard from '../../../types/interfaces/ICard'
+import FoundationSpace from '../../../models/FoundationSpace'
+import LaneSpace from '../../../models/LaneSpace'
+import Pair from '../../../models/Pair'
 
 interface ICardsMap {
-  [id: string]: BaseModel
+  [id: string]: ICard
 }
 
-export class CardsState implements ICardsMap {}
+export class CardsState implements ICardsMap {
+  [id: string]: ICard
+}
 
 const state: CardsState = {}
 
@@ -18,8 +20,8 @@ const getters = {
    * Returns all tableau space cards.
    */
   tableau (state: CardsState): LaneSpace[] {
-    return values(state).filter((card: BaseModel): boolean => {
-      return card.type === 'LaneSpace'
+    return values(state).filter((card: ICard): boolean => {
+      return card instanceof LaneSpace
     })
   },
 
@@ -27,8 +29,8 @@ const getters = {
    * Returns all foundation space cards.
    */
   foundations (state: CardsState): FoundationSpace[] {
-    return values(state).filter((card: BaseModel): boolean => {
-      return card.type === 'FoundationSpace'
+    return values(state).filter((card: ICard): boolean => {
+      return card instanceof FoundationSpace
     })
   }
 }
@@ -41,8 +43,8 @@ const mutations = {
    */
   REVEAL_CARDS (state: CardsState): void {
     values(state)
-      .filter(({ child }: BaseModel): boolean => !child)
-      .forEach(({ id }: BaseModel): void => {
+      .filter(({ child }: ICard): boolean => !child)
+      .forEach(({ id }: ICard): void => {
         Vue.set(state[id], 'revealed', true)
       })
   },
@@ -58,7 +60,7 @@ const mutations = {
    */
   CLEAR_ANIMATION_INDICES (state: CardsState): void {
     values(state)
-      .forEach(({ id }: BaseModel): void => {
+      .forEach(({ id }: ICard): void => {
         state[id].animationIndex = 0
       })
   },
@@ -78,9 +80,9 @@ const mutations = {
    * From the given pair, moves a card having `cardId` onto a card having `targetId`.
    */
   MOVE_CARD (state: CardsState, { cardId, targetId }: Pair): void {
-    const card: BaseModel = state[cardId]
-    const parent: BaseModel = values(state)
-      .find(({ child }: BaseModel): boolean => {
+    const card: ICard = state[cardId]
+    const parent: ICard = values(state)
+      .find(({ child }: ICard): boolean => {
         return child && child.id === card.id
       })
 

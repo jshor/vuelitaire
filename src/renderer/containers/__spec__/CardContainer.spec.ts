@@ -1,9 +1,10 @@
 import { createLocalVue, shallowMount } from '@vue/test-utils'
 import Vuex from 'vuex'
-import BaseModel from '../../store/models/BaseModel'
-import Card from '../../store/models/Card'
-import Pair from '../../store/models/Pair'
+import ICard from '../../types/interfaces/ICard'
+import Card from '../../models/Card'
+import Pair from '../../models/Pair'
 import CardContainer from '../CardContainer.vue'
+import { Suits } from '../../constants'
 
 const localVue = createLocalVue()
 
@@ -31,8 +32,8 @@ describe('Card Container', () => {
   }
 
   beforeEach(() => {
-    card = new Card()
-    card.child = new Card()
+    card = new Card(Suits.DIAMONDS, 1)
+    card.child = new Card(Suits.DIAMONDS, 1)
     card.revealed = true
 
     wrapper = createWrapper({
@@ -88,7 +89,7 @@ describe('Card Container', () => {
     })
 
     // it('should not accept a card drop if the card is an ancestor of the current card', () => {
-    //   const parentCard = new Card()
+    //   const parentCard = new Card(Suits.DIAMONDS, 1)
     //   const parentWrapper = createWrapper({
     //     card: parentCard,
     //     hasChild: true
@@ -104,7 +105,7 @@ describe('Card Container', () => {
     // })
 
     it('should accept the card if the dropped card meets the parent card\'s requirements', () => {
-      const droppedCard = new Card()
+      const droppedCard = new Card(Suits.DIAMONDS, 1)
       const getChildPayload = () => droppedCard
 
       card.child = null
@@ -123,7 +124,7 @@ describe('Card Container', () => {
 
     it('should not call moveCard() if the target card is not ready to accept yet', () => {
       wrapper.setData({ ready: false })
-      wrapper.vm.onDrop({ payload: new Card() })
+      wrapper.vm.onDrop({ payload: new Card(Suits.DIAMONDS, 1) })
 
       expect(wrapper.vm.moveCard).not.toHaveBeenCalled()
     })
@@ -136,7 +137,7 @@ describe('Card Container', () => {
     })
 
     it('should move the card', () => {
-      const payload: BaseModel = new Card()
+      const payload: ICard = new Card(Suits.DIAMONDS, 1)
 
       wrapper.setData({ ready: true })
       wrapper.vm.onDrop({ payload })
@@ -146,7 +147,7 @@ describe('Card Container', () => {
     })
 
     it('should reset the `ready` flag', () => {
-      const payload: BaseModel = new Card()
+      const payload: ICard = new Card(Suits.DIAMONDS, 1)
 
       wrapper.setData({ ready: true })
       wrapper.vm.onDrop({ payload })
@@ -156,8 +157,8 @@ describe('Card Container', () => {
   })
 
   describe('selectCard()', () => {
-    const card: BaseModel = new Card()
-    const child: BaseModel = new Card()
+    const card: ICard = new Card(Suits.DIAMONDS, 1)
+    const child: ICard = new Card(Suits.DIAMONDS, 1)
 
     beforeEach(() => {
       card.child = child

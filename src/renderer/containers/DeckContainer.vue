@@ -31,7 +31,7 @@ import Component from 'vue-class-component'
 import { Container } from 'vue-smooth-dnd'
 import { mapState } from 'vuex'
 
-import BaseModel from '../store/models/BaseModel'
+import ICard from '../types/interfaces/ICard'
 import CardContainer from './CardContainer.vue'
 
 @Component({
@@ -47,15 +47,15 @@ import CardContainer from './CardContainer.vue'
   }
 })
 class DeckContainer extends Vue {
-  public dealt: BaseModel[]
+  public dealt: ICard[]
 
-  public shouldAcceptDrop ({ id }: BaseModel, { getChildPayload }): boolean {
+  public shouldAcceptDrop ({ id }: ICard, { getChildPayload }): boolean {
     // the only time a card in the waste should accept a child is when a card is being returned
     return id === getChildPayload().id
   }
 
-  public isNth (card: BaseModel, n: number): boolean {
-    return this.dealt.findIndex(({ id }: BaseModel) => id === card.id) === n
+  public isNth (card: ICard, n: number): boolean {
+    return this.dealt.findIndex(({ id }: ICard) => id === card.id) === n
   }
 }
 

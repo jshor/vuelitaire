@@ -1,4 +1,4 @@
-import Pair from '../../models/Pair'
+import Pair from '../../../models/Pair'
 import animation, { AnimationState } from '../animation'
 
 const {

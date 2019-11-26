@@ -1,18 +1,18 @@
 import { shuffle, values } from 'lodash'
 import Vue from 'vue'
 import { Suits } from '../../../constants'
-import BaseModel from '../../models/BaseModel'
-import Card from '../../models/Card'
-import LaneSpace from '../../models/LaneSpace'
-import Pair from '../../models/Pair'
+import ICard from '../../../types/interfaces/ICard'
+import Card from '../../../models/Card'
+import LaneSpace from '../../../models/LaneSpace'
+import Pair from '../../../models/Pair'
 import cards, { CardsState } from './cards'
 
 export class DeckState {
   public cards: CardsState = {}
   public move: Pair = null
-  public stock: BaseModel[] = [] // cards in the stock pile
-  public waste: BaseModel[] = [] // the pile of cards dealt
-  public dealt: BaseModel[] = [] // the last `dealCount` (or fewer) cards dealt
+  public stock: ICard[] = [] // cards in the stock pile
+  public waste: ICard[] = [] // the pile of cards dealt
+  public dealt: ICard[] = [] // the last `dealCount` (or fewer) cards dealt
   public dealCount: number = 1 // number of cards to deal at a time
 }
 
@@ -66,7 +66,7 @@ const mutations = {
     let index = 0
 
     for (let i: number = 7; i > 0; i--) {
-      let parent: BaseModel = new LaneSpace()
+      let parent: ICard = new LaneSpace()
 
       // assign the first lane space card to the tableau row
       state.cards[parent.id] = parent
@@ -75,7 +75,7 @@ const mutations = {
       state
         .stock
         .splice(state.stock.length - i, i)
-        .forEach((card: BaseModel): void => {
+        .forEach((card: ICard): void => {
           // assign the next card to be the child of the previous card
           Vue.set(state.cards[parent.id], 'child', card)
           Vue.set(state.cards[card.id], 'isPlayed', true)
@@ -102,7 +102,7 @@ const mutations = {
       for (let i: number = 0; i < state.dealCount; i++) {
         // deal as many cards as possible up to `dealCount`
         if (state.stock.length) {
-          const card: BaseModel = state.stock.pop()
+          const card: ICard = state.stock.pop()
 
           state.waste.push(card)
           state.dealt.push(card)
@@ -144,8 +144,8 @@ const mutations = {
   SET_MOVE (state: DeckState, move: Pair = null): void {
     if (move) {
       const parent = values(state.cards)
-        .filter((card: BaseModel) => card.child)
-        .find((card: BaseModel) => card.child.id === move.cardId)
+        .filter((card: ICard) => card.child)
+        .find((card: ICard) => card.child.id === move.cardId)
 
       move.parentId = parent ? parent.id : 'DEAL_CARD'
     }

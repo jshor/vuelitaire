@@ -1,11 +1,12 @@
 import isDescendant from '../isDescendant'
-import Card from '../../store/models/Card'
+import Card from '../../models/Card'
+import { Suits } from '../../constants'
 
 describe('getLineage()', () => {
-  const cardA = new Card()
-  const cardB = new Card()
-  const cardC = new Card()
-  const cardD = new Card()
+  const cardA = new Card(Suits.DIAMONDS, 1)
+  const cardB = new Card(Suits.DIAMONDS, 1)
+  const cardC = new Card(Suits.DIAMONDS, 1)
+  const cardD = new Card(Suits.DIAMONDS, 1)
 
   cardA.child = cardB
   cardB.child = cardC

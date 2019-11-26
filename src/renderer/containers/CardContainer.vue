@@ -45,8 +45,8 @@ import { mapActions, mapGetters } from 'vuex'
 
 import Card from '../components/Card.vue'
 import CardDraggable from '../components/CardDraggable.vue'
-import BaseModel from '../store/models/BaseModel'
-import Pair from '../store/models/Pair'
+import ICard from '../types/interfaces/ICard'
+import Pair from '../models/Pair'
 import getDescendants from '../utils/getLineage'
 import isAncestor from '../utils/isAncestor'
 import isDescendant from '../utils/isDescendant'
@@ -54,7 +54,7 @@ import isDescendant from '../utils/isDescendant'
 @Component({
   props: {
     card: {
-      type: Object as () => BaseModel,
+      type: Object as () => ICard,
       default: null
     },
     hasChild: {
@@ -87,7 +87,7 @@ import isDescendant from '../utils/isDescendant'
 class CardContainer extends Vue {
   public name: string = 'CardContainer'
 
-  public card: BaseModel
+  public card: ICard
 
   public hasChild: boolean
 
@@ -101,9 +101,9 @@ class CardContainer extends Vue {
 
   public moveCard: (pair: Pair) => Promise<void>
 
-  public setSelection: (card: BaseModel) => Promise<void>
+  public setSelection: (card: ICard) => Promise<void>
 
-  get descendants (): BaseModel[] {
+  get descendants (): ICard[] {
     return getDescendants(this.card)
   }
 
@@ -115,9 +115,9 @@ class CardContainer extends Vue {
     return (this.ready || this.highlightedCards.includes(this.card.id)) && this.card.revealed
   }
 
-  public shouldAcceptDrop ({ getChildPayload }: { getChildPayload: () => BaseModel }) {
-    const parent: BaseModel = this.card
-    const card: BaseModel = getChildPayload()
+  public shouldAcceptDrop ({ getChildPayload }: { getChildPayload: () => ICard }) {
+    const parent: ICard = this.card
+    const card: ICard = getChildPayload()
 
     if (parent.child) {
       // if the child card is being returned, always accept it
@@ -144,7 +144,7 @@ class CardContainer extends Vue {
   }
 
   public selectCard (autoplay: boolean): void {
-    const card: BaseModel = this.card.child || this.card
+    const card: ICard = this.card.child || this.card
 
     if (!this.ready && card.revealed) {
       if (autoplay) {
@@ -155,7 +155,7 @@ class CardContainer extends Vue {
     }
   }
 
-  public autoplayCard (card: BaseModel): void {
+  public autoplayCard (card: ICard): void {
     this.ready = false
     this.error = true
   }

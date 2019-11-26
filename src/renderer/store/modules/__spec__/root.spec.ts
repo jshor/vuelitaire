@@ -1,6 +1,6 @@
 import { Suits } from '../../../constants'
-import Card from '../../models/Card'
-import Pair from '../../models/Pair'
+import Card from '../../../models/Card'
+import Pair from '../../../models/Pair'
 import deck, { DeckState } from '../deck'
 import { HintsState } from '../hints'
 import root, { RootState } from '../root'
@@ -18,7 +18,7 @@ describe('Root Vuex module', () => {
     describe('highlightedCards()', () => {
       describe('when no card is selected', () => {
         it('should return the selected card id as the only highlighted card', () => {
-          const selectedCard: Card = new Card()
+          const selectedCard: Card = new Card(Suits.DIAMONDS, 1)
           const state: RootState = new RootState()
 
           state.hints = new HintsState()
@@ -157,7 +157,7 @@ describe('Root Vuex module', () => {
 
       describe('when a card is not selected', () => {
         it('should only select the given target card', async () => {
-          const card: Card = new Card()
+          const card: Card = new Card(Suits.DIAMONDS, 1)
           const state: RootState = new RootState()
 
           await actions.setSelection({ commit, dispatch, state }, card)
@@ -170,7 +170,7 @@ describe('Root Vuex module', () => {
   })
 
   describe('CLEAR_GAME', () => {
-    const card: Card = new Card()
+    const card: Card = new Card(Suits.DIAMONDS, 1)
     const state: RootState = new RootState()
 
     beforeEach(() => {

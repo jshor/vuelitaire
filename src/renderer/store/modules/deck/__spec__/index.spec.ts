@@ -2,10 +2,10 @@ import { values } from 'lodash'
 import deck, { DeckState } from '..'
 import { Suits } from '../../../../constants'
 import getLineage from '../../../../utils/getLineage'
-import BaseModel from '../../../models/BaseModel'
-import Card from '../../../models/Card'
-import LaneSpace from '../../../models/LaneSpace'
-import Pair from '../../../models/Pair'
+import ICard from '../../../../types/interfaces/ICard'
+import Card from '../../../../models/Card'
+import LaneSpace from '../../../../models/LaneSpace'
+import Pair from '../../../../models/Pair'
 
 const {
   state,
@@ -19,7 +19,7 @@ describe('Vuex Deck module', () => {
       it('should return true if there are cards in the state to deal', () => {
         const state: DeckState = new DeckState()
 
-        state.stock = [new Card()]
+        state.stock = [new Card(Suits.DIAMONDS, 1)]
 
         expect(getters.canDeal(state)).toEqual(true)
       })
@@ -63,7 +63,7 @@ describe('Vuex Deck module', () => {
       it('should apply 7 space cards to the state', () => {
         mutations.INIT_TABLEAU(state)
 
-        const spaces = values(state.cards).filter((t: BaseModel) => t.type === 'LaneSpace')
+        const spaces = values(state.cards).filter((t: ICard) => t instanceof LaneSpace)
 
         expect(spaces).toHaveLength(7)
       })
@@ -73,7 +73,7 @@ describe('Vuex Deck module', () => {
 
         expect.assertions(7)
         values(state.cards)
-          .filter((t: BaseModel) => t.type === 'LaneSpace')
+          .filter((t: ICard) => t instanceof LaneSpace)
           .reverse()
           .forEach((space: LaneSpace, index: number) => {
             expect(getLineage(space)).toHaveLength(index + 2)
@@ -114,7 +114,7 @@ describe('Vuex Deck module', () => {
       })
 
       describe('when there are no more cards left to deal', () => {
-        let waste: BaseModel[]
+        let waste: ICard[]
 
         beforeEach(() => {
           waste = state.stock
@@ -139,7 +139,7 @@ describe('Vuex Deck module', () => {
 
     describe('REMOVE_FROM_DECK', () => {
       xit('should remove the given card from the waste pile if it exists', () => {
-        const card: BaseModel = new Card()
+        const card: ICard = new Card(Suits.DIAMONDS, 1)
         const state: DeckState = deck.createState()
 
         state.waste = [card]
@@ -152,7 +152,7 @@ describe('Vuex Deck module', () => {
       })
 
       it('should not mutate the state if the card having the given id doesn\'t exist', () => {
-        const card: BaseModel = new Card()
+        const card: ICard = new Card(Suits.DIAMONDS, 1)
         const state: DeckState = deck.createState()
 
         state.waste = [card]
@@ -166,9 +166,9 @@ describe('Vuex Deck module', () => {
     })
 
     describe('SET_MOVE', () => {
-      const parentCard: BaseModel = new Card()
-      const movingCard: BaseModel = new Card()
-      const targetCard: BaseModel = new Card()
+      const parentCard: ICard = new Card(Suits.DIAMONDS, 1)
+      const movingCard: ICard = new Card(Suits.DIAMONDS, 1)
+      const targetCard: ICard = new Card(Suits.DIAMONDS, 1)
       const move: Pair = new Pair(movingCard.id, targetCard.id)
       let state: DeckState
 

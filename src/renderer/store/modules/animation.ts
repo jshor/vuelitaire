@@ -1,4 +1,4 @@
-import Pair from '../models/Pair'
+import Pair from '../../models/Pair'
 
 export class AnimationState {
   public cardId: string = null // the card being moved

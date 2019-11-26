@@ -22,6 +22,7 @@
     "src/renderer/**/*.vue"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "src/renderer/**/*.spec.ts"
   ]
 }

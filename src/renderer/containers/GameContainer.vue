@@ -61,7 +61,7 @@ import Tableau from '../components/Tableau.vue'
 import CardContainer from './CardContainer.vue'
 import DeckContainer from './DeckContainer.vue'
 
-import BaseModel from '../store/models/BaseModel'
+import ICard from '../types/interfaces/ICard'
 import { AnimationState } from '../store/modules/animation'
 
 @Component({
@@ -98,9 +98,9 @@ import { AnimationState } from '../store/modules/animation'
   }
 })
 class GameContainer extends Vue {
-  public tableau: BaseModel[]
+  public tableau: ICard[]
 
-  public foundations: BaseModel[]
+  public foundations: ICard[]
 
   public highlightedCards: string[]
 

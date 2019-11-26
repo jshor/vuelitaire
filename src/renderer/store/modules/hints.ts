@@ -1,12 +1,10 @@
 import { values } from 'lodash'
-import {
-  getDeckHints,
-  getDestructuringLaneHints,
-  getLaneCreationHints,
-  getMoveableCardHints,
-  getWorryBackHints
-} from '../../gameplay'
-import BaseModel from '../models/BaseModel'
+import getDeckHints from '../../gameplay/hints/getDeckHints'
+import getDestructuringLaneHints from '../../gameplay/hints/getDestructuringLaneHints'
+import getLaneCreationHints from '../../gameplay/hints/getLaneCreationHints'
+import getMoveableCardHints from '../../gameplay/hints/getMoveableCardHints'
+import getWorryBackHints from '../../gameplay/hints/getWorryBackHints'
+import ICard from '../../types/interfaces/ICard'
 import { CardsState } from './deck/cards'
 
 export class HintsState {
@@ -31,24 +29,24 @@ const actions = {
   generateHints ({ rootState, commit }): void {
     const { cards, waste }: {
       cards: CardsState,
-      waste: BaseModel[]
+      waste: ICard[]
     } = rootState.deck
-    const allCards: BaseModel[] = values(cards)
-    const playableCards: BaseModel[] = allCards
+    const allCards: ICard[] = values(cards)
+    const playableCards: ICard[] = allCards
       .filter((card) => card.isPlayable() && !card.promoted)
       .concat(waste.slice(-1))
 
     // generate basic hints
     let hints: string[][] = [
-      ...getMoveableCardHints(allCards, playableCards),
-      ...getLaneCreationHints(allCards, playableCards),
-      ...getDeckHints(allCards, rootState.deck)
+      ...getMoveableCardHints(allCards, playableCards, rootState.deck),
+      ...getLaneCreationHints(allCards, playableCards, rootState.deck),
+      ...getDeckHints(allCards, playableCards, rootState.deck)
     ]
 
     // if there were no hints available, try the "desperate" hints
     if (hints.length === 0) {
-      hints = hints.concat(getDestructuringLaneHints(allCards))
-      hints = hints.concat(getWorryBackHints(allCards, rootState.deck))
+      hints = hints.concat(getDestructuringLaneHints(allCards, playableCards, rootState.deck))
+      hints = hints.concat(getWorryBackHints(allCards, playableCards, rootState.deck))
     }
 
     commit('SET_HINTS', hints)

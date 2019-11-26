@@ -1,20 +1,21 @@
 import { values } from 'lodash'
-import BaseModel from '../../../models/BaseModel'
-import Card from '../../../models/Card'
-import FoundationSpace from '../../../models/FoundationSpace'
-import LaneSpace from '../../../models/LaneSpace'
-import Pair from '../../../models/Pair'
+import ICard from '../../../../types/interfaces/ICard'
+import Card from '../../../../models/Card'
+import FoundationSpace from '../../../../models/FoundationSpace'
+import LaneSpace from '../../../../models/LaneSpace'
+import Pair from '../../../../models/Pair'
 import cards, { CardsState } from '../cards'
+import { Suits } from '../../../../constants'
 
 const { getters, mutations } = cards
 
 describe('Vuex cards module', () => {
   describe('getters', () => {
-    // helper: creates a card map state containing n elements of BaseModel
-    const createState = (n: number, fn: () => BaseModel): CardsState => Array(n)
+    // helper: creates a card map state containing n elements of ICard
+    const createState = (n: number, fn: () => ICard): CardsState => Array(n)
       .fill(null)
       .map(fn)
-      .reduce((s: any, c: BaseModel) => ({ ...s, [c.id]: c }), {})
+      .reduce((s: any, c: ICard) => ({ ...s, [c.id]: c }), {})
 
     describe('tableau', () => {
       it('should return an array of 7 tableau space cards', () => {
@@ -42,9 +43,9 @@ describe('Vuex cards module', () => {
   describe('mutations', () => {
     describe('REVEAL_CARDS', () => {
       it('should set all childless cards in the state to be revealed', () => {
-        const a: BaseModel = new Card()
-        const b: BaseModel = new Card()
-        const c: BaseModel = new Card()
+        const a: ICard = new Card(Suits.DIAMONDS, 1)
+        const b: ICard = new Card(Suits.DIAMONDS, 1)
+        const c: ICard = new Card(Suits.DIAMONDS, 1)
         const state: CardsState = {
           [a.id]: a,
           [b.id]: b
@@ -66,22 +67,22 @@ describe('Vuex cards module', () => {
 
         mutations.INIT_FOUNDATIONS(state)
 
-        const foundations = values(state).filter((t) => t.type === 'FoundationSpace')
+        const foundations = values(state).filter((t) => t instanceof FoundationSpace)
 
         expect(foundations).toHaveLength(4)
       })
     })
 
     describe('MOVE_CARD', () => {
-      let a: BaseModel
-      let b: BaseModel
-      let c: BaseModel
+      let a: ICard
+      let b: ICard
+      let c: ICard
       let state: CardsState
 
       beforeEach(() => {
-        a = new Card()
-        b = new Card()
-        c = new Card()
+        a = new Card(Suits.DIAMONDS, 1)
+        b = new Card(Suits.DIAMONDS, 1)
+        c = new Card(Suits.DIAMONDS, 1)
 
         state = {
           [a.id]: a,
