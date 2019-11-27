@@ -21,33 +21,19 @@ let webConfig = {
       {
         test: /\.ts$/,
         exclude: /node_modules|vue\/src/,
-        loader: "ts-loader",
+        loader: 'ts-loader',
         options: {
           appendTsSuffixTo: [/\.vue$/]
         }
       },
       {
-        test: /\.(js|vue)$/,
-        enforce: 'pre',
-        exclude: /node_modules/,
-        use: {
-          loader: 'eslint-loader',
-          options: {
-            formatter: require('eslint-friendly-formatter')
-          }
-        }
-      },
-      {
         test: /\.scss$/,
-        use: ['vue-style-loader', 'css-loader', 'sass-loader']
-      },
-      {
-        test: /\.sass$/,
-        use: ['vue-style-loader', 'css-loader', 'sass-loader?indentedSyntax']
-      },
-      {
-        test: /\.less$/,
-        use: ['vue-style-loader', 'css-loader', 'less-loader']
+        use: ['vue-style-loader', 'css-loader', {
+          loader: 'sass-loader',
+          options: {
+            data: '@import "./src/renderer/styles/globals.scss";'
+          }
+        }]
       },
       {
         test: /\.css$/,
@@ -60,19 +46,20 @@ let webConfig = {
       {
         test: /\.js$/,
         use: 'babel-loader',
-        include: [ path.resolve(__dirname, '../src/renderer') ],
         exclude: /node_modules/
+      },
+      {
+        test: /\.node$/,
+        use: 'node-loader'
       },
       {
         test: /\.vue$/,
         use: {
           loader: 'vue-loader',
           options: {
-            extractCSS: true,
+            extractCSS: process.env.NODE_ENV === 'production',
             loaders: {
-              sass: 'vue-style-loader!css-loader!sass-loader?indentedSyntax=1',
-              scss: 'vue-style-loader!css-loader!sass-loader',
-              less: 'vue-style-loader!css-loader!less-loader'
+              scss: 'vue-style-loader!css-loader!sass-loader?data=@import "./src/renderer/styles/globals.scss";',
             }
           }
         }
@@ -83,8 +70,16 @@ let webConfig = {
           loader: 'url-loader',
           query: {
             limit: 10000,
-            name: 'imgs/[name].[ext]'
+            name: 'imgs/[name]--[folder].[ext]'
           }
+        }
+      },
+      {
+        test: /\.(mp4|webm|ogg|mp3|wav|flac|aac)(\?.*)?$/,
+        loader: 'url-loader',
+        options: {
+          limit: 10000,
+          name: 'media/[name]--[folder].[ext]'
         }
       },
       {
@@ -93,7 +88,7 @@ let webConfig = {
           loader: 'url-loader',
           query: {
             limit: 10000,
-            name: 'fonts/[name].[ext]'
+            name: 'fonts/[name]--[folder].[ext]'
           }
         }
       }
