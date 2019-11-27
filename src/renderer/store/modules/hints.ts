@@ -16,6 +16,12 @@ const state: IHintsState = {
 }
 
 const actions: ActionTree<IHintsState, IRootState> = {
+  /**
+   * Shows a hint to the user. If no hints are generated, generate them.
+   * If generated hints yields no results, a dialog will be presented to the user.
+   *
+   * @param {ActionContext<IHintsState, IRootState>} context
+   */
   showHint ({ commit, dispatch, state }: ActionContext<IHintsState, IRootState>): void {
     if (state.entries.length === 0) {
       // if we have no hints for this state yet, generate them
@@ -27,6 +33,11 @@ const actions: ActionTree<IHintsState, IRootState> = {
     commit('SHOW_NEXT_HINT')
   },
 
+  /**
+   * Commits generated game hints to the store.
+   *
+   * @param {ActionContext<IHintsState, IRootState>} context
+   */
   generateHints ({ rootState, commit }: ActionContext<IHintsState, IRootState>): void {
     const { cards, waste }: {
       cards: ICardsState,
@@ -55,15 +66,31 @@ const actions: ActionTree<IHintsState, IRootState> = {
 }
 
 const mutations: MutationTree<IHintsState> = {
+  /**
+   * Clears existing hints from the state. Resets the hint index.
+   *
+   * @param {IHintsState} state
+   */
   CLEAR_HINTS (state: IHintsState): void {
     state.entries = []
     state.index = -1
   },
 
+  /**
+   * Stores the list of given hints.
+   *
+   * @param {IHintsState} state
+   * @param hints - list of hints to store
+   */
   SET_HINTS (state: IHintsState, hints: string[][]): void {
     hints.forEach((hint: string[]) => state.entries.push(hint))
   },
 
+  /**
+   * Shows the next generated hint in line. Cycles back if end of the list is reached.
+   *
+   * @param {IHintsState} state
+   */
   SHOW_NEXT_HINT (state: IHintsState) {
     state.index++
 

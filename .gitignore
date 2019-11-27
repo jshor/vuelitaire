@@ -12,3 +12,4 @@ thumbs.db
 *.log
 *.tgz
 coverage
+docs

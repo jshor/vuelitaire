@@ -1,6 +1,13 @@
 import IRule from '../../interfaces/IRule'
 import ICard from '../../interfaces/ICard'
 
+/**
+ * Determines if the child card is one rank above the parent if promoted, or below otherwise.
+ *
+ * @param {ICard} parent
+ * @param {ICard} child
+ * @returns {boolean}
+ */
 const isSequential: IRule = (parent: ICard, child: ICard): boolean => {
   const sequence = parent.promoted ? -1 : 1
 

@@ -1,5 +1,5 @@
 export default interface ICard {
-  id: uuid
+  id: string
 
   child: ICard
 

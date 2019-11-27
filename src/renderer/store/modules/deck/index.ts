@@ -88,7 +88,7 @@ const mutations: MutationTree<IDeckState> = {
   /**
    * Deals `dealCount` cards into the waste and dealt piles.
    *
-   * @param {Object} state
+   * @param {IDeckState} state
    */
   DEAL (state: IDeckState): void {
     Vue.set(state, 'dealt', [])

@@ -3,6 +3,17 @@ import IHint from '../../interfaces/IHint'
 import IDeckState from '../../interfaces/IDeckState'
 import BaseCard from '../../models/BaseCard'
 
+/**
+ * Returns a list of all hints where a card can be moved onto another.
+ *
+ * @remarks This does not count moves where a King can be moved onto an empty `LaneSpace`.
+ *
+ * @param {ICard[]} allCards - all cards in the game
+ * @param {ICard[]} playableCards - cards that can be moved around by the user
+ * @param {IDeckState} deckState - current state of the deck
+ * @param {boolean} ignoreRank - whether to ignore the rank of the card's current parent
+ * @returns {string[][]} list of hint pairs
+ */
 const getMoveableCardHints: IHint = (
   allCards: ICard[],
   playableCards: ICard[],
@@ -16,7 +27,7 @@ const getMoveableCardHints: IHint = (
    *
    * @private
    * @param {Card} child
-   * @returns {Card|Object}
+   * @returns {boolean}
    */
   const hasRankingParent = (child: ICard, target: ICard): boolean => {
     const parent: ICard = allCards.find(c => c.child === child && c.revealed)

@@ -15,7 +15,7 @@ const actions: ActionTree<IAnimationState, IRootState> = {
    * Animates a move that is reversed from the given state.
    * A reversed move is one where the target of the moved card reverts to its original parent.
    *
-   * @param {Vuex} store
+   * @param {ActionContext<IAnimationState, IRootState>} context
    * @param {Pair} prevMove - the move to reverse
    * @returns {Promise}
    */
@@ -31,8 +31,8 @@ const actions: ActionTree<IAnimationState, IRootState> = {
   /**
    * Animates a card to move from one parent to another.
    *
-   * @param {Vuex} store
-   * @param {IAnimationState} animation
+   * @param {ActionContext<IAnimationState, IRootState>} context
+   * @param {Pair} move - pairing to assign marriage to
    */
   move ({ commit }: ActionContext<IAnimationState, IRootState>, move: Pair): Promise<void> {
     commit('SET_IN_PROGRESS', true)
@@ -53,8 +53,8 @@ const mutations: MutationTree<IAnimationState> = {
   /**
    * Sets the animation target and card ids.
    *
-   * @param {Object} state
-   * @param {Pair} animation
+   * @param {IAnimationState} state
+   * @param {Pair} move - card pairing to animate
    */
   SET_ANIMATION (state: IAnimationState, move: Pair): void {
     state.cardId = move.cardId
@@ -65,8 +65,8 @@ const mutations: MutationTree<IAnimationState> = {
   /**
    * Sets whether an animation is in progress or not.
    *
-   * @param {Object} state
-   * @param {Boolean} inProgress
+   * @param {IAnimationState} state
+   * @param {Boolean} inProgress - whether or not the animation is in progress
    */
   SET_IN_PROGRESS (state: IAnimationState, inProgress: boolean): void {
     state.inProgress = inProgress

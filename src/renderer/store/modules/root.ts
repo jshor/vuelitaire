@@ -24,8 +24,8 @@ const getters: GetterTree<IRootState, IRootState> = {
   /**
    * Returns a list of card ids that should be highlighted.
    *
-   * @param {Object} state
-   * @returns {String[]}
+   * @param {IRootState} state
+   * @returns {String[]} - list of highlighted card ids
    */
   highlightedCards (state: IRootState): string[] {
     if (state.selectedCard) {
@@ -34,6 +34,11 @@ const getters: GetterTree<IRootState, IRootState> = {
     return state.hints.entries[state.hints.index] || []
   },
 
+  /**
+   * Returns true if the user can undo their last move.
+   *
+   * @param {IRootState} state
+   */
   canUndo (state: IRootState): boolean {
     return state.revertibleStates.length > 0
   }
@@ -44,6 +49,12 @@ function wait (ms) {
 }
 
 const actions: ActionTree<IRootState, IRootState> = {
+  /**
+   * Initiates a new game.
+   *
+   * @param {ActionContext<IRootState, IRootState>} context
+   * @returns {Promise<void>}
+   */
   async newGame ({ commit }: ActionContext<IRootState, IRootState>): Promise<void> {
     commit('CLEAR_GAME')
     commit('animation/SET_IN_PROGRESS', true)
@@ -59,6 +70,15 @@ const actions: ActionTree<IRootState, IRootState> = {
     commit('animation/SET_IN_PROGRESS', false)
   },
 
+  /**
+   * Moves the given card from one card to another via the given pairing.
+   *
+   * @remarks
+   *  * This will record a revertible state (i.e., make undoable)
+   *  * This will clear all visible hints from the state
+   * @param {ActionContext<IRootState, IRootState>} context
+   * @param {Pair} pair
+   */
   moveCard ({ commit }: ActionContext<IRootState, IRootState>, pair: Pair): void {
     commit('deck/SET_MOVE', pair)
     commit('RECORD_REVERTIBLE_STATE')
@@ -67,6 +87,14 @@ const actions: ActionTree<IRootState, IRootState> = {
     commit('hints/CLEAR_HINTS')
   },
 
+  /**
+   * Deals cards from the stock.
+   *
+   * @remarks
+   *  * This will record a revertible state (i.e., make undoable)
+   *  * This will clear all visible hints from the state
+   * @param {ActionContext<IRootState, IRootState>} context
+   */
   deal ({ commit }: ActionContext<IRootState, IRootState>): void {
     commit('deck/SET_MOVE', null)
     commit('RECORD_REVERTIBLE_STATE')
@@ -74,6 +102,13 @@ const actions: ActionTree<IRootState, IRootState> = {
     commit('hints/CLEAR_HINTS')
   },
 
+  /**
+   * Reverts back to the previous deck state.
+   *
+   * @remarks This will clear all visible hints from the state
+   * @param {ActionContext<IRootState, IRootState>} context
+   * @returns {Promise<void>}
+   */
   async undo ({ commit, dispatch, state }: ActionContext<IRootState, IRootState>): Promise<void> {
     const prevState: IDeckState = state.revertibleStates.slice(-1).pop()
 
@@ -88,9 +123,9 @@ const actions: ActionTree<IRootState, IRootState> = {
   /**
    * Selects a card. If one is already selected, try to move the previously-selected one onto it.
    *
-   * @param {Vuex} store
-   * @param {Card} target
-   * @returns {Promise}
+   * @param {ActionContext<IRootState, IRootState>} context
+   * @param {ICard} target
+   * @returns {Promise<void>}
    */
   async setSelection ({ commit, dispatch, state }: ActionContext<IRootState, IRootState>, target: ICard): Promise<void> {
     if (state.selectedCard && target.canAcceptCard(state.selectedCard)) {
@@ -105,6 +140,11 @@ const actions: ActionTree<IRootState, IRootState> = {
     }
   },
 
+  /**
+   * Clears the active card selection.
+   *
+   * @param {ActionContext<IRootState, IRootState>} context
+   */
   clearSelection ({ commit }): void {
     commit('SELECT_CARD', null)
   }
@@ -114,27 +154,44 @@ const mutations: MutationTree<IRootState> = {
   /**
    * Sets the actively-selected card.
    *
-   * @param {Object} state
-   * @param {Card} card
+   * @param {IRootState} state
+   * @param {Card} card - card to select
    */
   SELECT_CARD (state: IRootState, card: Card): void {
     state.selectedCard = card
   },
 
+  /**
+   * Resets the existing game data.
+   *
+   * @param {IRootState} state
+   */
   CLEAR_GAME (state: IRootState): void {
     Vue.set(state, 'deck', deck.state)
     Vue.set(state.deck, 'cards', {})
     Vue.set(state, 'gameId', uuid())
   },
 
+  /**
+   * Records the last state so it can be reverted to.
+   *
+   * @param {IRootState} state
+   */
   RECORD_REVERTIBLE_STATE (state: IRootState): void {
     state.revertibleStates.push(cloneDeep(state.deck))
   },
 
+  /**
+   * Reverts to the most recent deck state.
+   *
+   * @param {IRootState} state
+   */
   REVERT_TO_PREV_STATE (state: IRootState): void {
     Vue.set(state, 'deck', state.revertibleStates.pop())
   }
 }
+
+const strict: boolean = process.env.NODE_ENV !== 'production'
 
 const store: StoreOptions<any> = {
   state,
@@ -145,7 +202,8 @@ const store: StoreOptions<any> = {
     animation,
     deck,
     hints
-  }
+  },
+  strict
 }
 
 export default store

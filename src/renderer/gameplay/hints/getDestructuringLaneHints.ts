@@ -6,8 +6,10 @@ import IDeckState from '../../interfaces/IDeckState'
 /**
  * Finds all moves where moving a card will allow its parent to be promoted.
  *
- * @param {Card[]} cards
- * @returns {String[][]}
+ * @param {ICard[]} allCards - all cards in the game
+ * @param {ICard[]} playableCards - cards that can be moved around by the user
+ * @param {IDeckState} deckState - current state of the deck
+ * @returns {string[][]} list of hint pairs
  */
 const getDestructuringLaneHints: IHint = (allCards: ICard[], playableCards: ICard[], deckState: IDeckState): string[][] => {
   return allCards

@@ -15,6 +15,9 @@ const namespaced: boolean = true
 const getters: GetterTree<ICardsState, IDeckState> = {
   /**
    * Returns all tableau space cards.
+   *
+   * @param {ICardsState} state
+   * @returns {LaneSpace[]} - list of 7 lane spaces
    */
   tableau (state: ICardsState): LaneSpace[] {
     return values(state).filter((card: ICard): boolean => {
@@ -24,6 +27,9 @@ const getters: GetterTree<ICardsState, IDeckState> = {
 
   /**
    * Returns all foundation space cards.
+   *
+   * @param {ICardsState} state
+   * @returns {LaneSpace[]} - list of 4 foundation spaces
    */
   foundations (state: ICardsState): FoundationSpace[] {
     return values(state).filter((card: ICard): boolean => {
@@ -35,6 +41,8 @@ const getters: GetterTree<ICardsState, IDeckState> = {
 const mutations: MutationTree<ICardsState> = {
   /**
    * Reveals all the cards in the stock and top cards in the tableau.
+   *
+   * @param {ICardsState} state
    */
   REVEAL_CARDS (state: ICardsState): void {
     values(state)
@@ -44,6 +52,12 @@ const mutations: MutationTree<ICardsState> = {
       })
   },
 
+  /**
+   * Marks a card to not be revealed (i.e., 'turned over').
+   *
+   * @param {ICardsState} state
+   * @param cardId - id of the card to unreveal
+   */
   UNREVEAL_CARD (state: ICardsState, cardId: string): void {
     if (state[cardId]) {
       state[cardId].revealed = false
@@ -52,6 +66,8 @@ const mutations: MutationTree<ICardsState> = {
 
   /**
    * Resets all animation indices of all cards to 0.
+   *
+   * @param {ICardsState} state
    */
   CLEAR_ANIMATION_INDICES (state: ICardsState): void {
     values(state)
@@ -62,6 +78,8 @@ const mutations: MutationTree<ICardsState> = {
 
   /**
    * Creates 4 new foundations.
+   *
+   * @param {ICardsState} state
    */
   INIT_FOUNDATIONS (state: ICardsState): void {
     for (let i: number = 0; i < 4; i++) {
@@ -73,6 +91,10 @@ const mutations: MutationTree<ICardsState> = {
 
   /**
    * From the given pair, moves a card having `cardId` onto a card having `targetId`.
+   * By default, this will reveal the moved card's parent (if any) and mark it as played.
+   *
+   * @param {ICardsState} state
+   * @param {Pair} pair - card pairing to assign marriage to
    */
   MOVE_CARD (state: ICardsState, { cardId, targetId }: Pair): void {
     const card: ICard = state[cardId]

@@ -8,11 +8,12 @@ import IHint from '../../interfaces/IHint'
 import IDeckState from '../../interfaces/IDeckState'
 
 /**
- * Finds all promoted cards that, when worried back, will allow the playing of an untouched card.
+ * Finds all promoted cards that, when moved, will allow the playing of an untouched card.
  *
- * @param {Card[]} cards
- * @param {Object} deck
- * @returns {String[][]}
+ * @param {ICard[]} allCards - all cards in the game
+ * @param {ICard[]} playableCards - cards that can be moved around by the user
+ * @param {IDeckState} deckState - current state of the deck
+ * @returns {string[][]} list of hint pairs
  */
 const getWorryBackHints: IHint = (allCards: ICard[], playableCards: ICard[], deckState: IDeckState): string[][] => {
   // compute all tableaux top cards that haven't been touched by the user yet

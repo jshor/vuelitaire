@@ -4,7 +4,4 @@ import root from './modules/root'
 
 Vue.use(Vuex)
 
-export default new Vuex.Store({
-  ...root,
-  strict: process.env.NODE_ENV !== 'production'
-})
+export default new Vuex.Store(root)

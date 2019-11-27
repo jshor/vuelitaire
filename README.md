@@ -1,7 +1,5 @@
-<p align="center">
-  <h1>Vuelitaire</h1>
-  <p>Solitaire for Windows, Linux, and macOS.</p>
-</p>
+<h1 align="center">Vuelitaire</h1>
+<p align="center">Solitaire for Windows, Linux, and macOS.</p>
 
 <br>
 
@@ -16,19 +14,9 @@
       alt="Build status">
   </a>
 
-  <a href="https://david-dm.org/jshor/vuelitaire#info=devDependencies">
-    <img src="https://img.shields.io/david/dev/jshor/vuelitaire?style=for-the-badge"
-      alt="devDependencies Status">
-  </a>
-
   <a href="https://david-dm.org/jshor/vuelitaire#info=dependencies">
     <img src="https://img.shields.io/david/jshor/vuelitaire?style=for-the-badge"
       alt="Dependency Status">
-  </a>
-
-  <a href="LICENSE.md">
-    <img src="https://img.shields.io/github/license/jshor/vuelitaire?style=for-the-badge"
-      alt="License">
   </a>
 
   <a href="https://github.com/jshor/tycho/releases/">
@@ -36,3 +24,55 @@
     alt="Version">
   </a>
 </p>
+
+## Demo
+
+TODO
+
+## Screenshot
+
+TODO
+
+## Development
+
+<details><summary>Running a local build</summary>
+<p>
+
+After cloning this project:
+
+1. Navigate to the root of vuelitaire
+2. Run `yarn` to install dependencies
+3. Run `yarn dev`
+
+This will open an Electron instance of the app.
+
+</p>
+</details>
+
+<details><summary>Documentation</summary>
+<p>
+
+Documentation for the app is generated using [TypeDoc](https://typedoc.org/).
+
+To open the the documentation in your browser:
+
+```sh
+yarn typedoc
+```
+
+</p>
+</details>
+
+<details><summary>What's included</summary>
+<p>
+
+After cloning this project:
+
+1. Navigate to the root of vuelitaire
+2. Run `yarn` to install dependencies
+3. Run `yarn dev`
+
+This will open an Electron instance of the app.
+
+</p>
+</details>
