@@ -1,10 +1,11 @@
 import Card from '../../../models/Card'
 import LaneSpace from '../../../models/LaneSpace'
-import ICard from '../../../types/interfaces/ICard'
+import ICard from '../../../interfaces/ICard'
 import { Suits } from '../../../constants'
 import getWorryBackHints from '../getWorryBackHints'
 import FoundationSpace from '../../../models/FoundationSpace'
-import { DeckState } from '../../../store/modules/deck'
+import createDeckState from './__helpers__/createDeckState'
+import IDeckState from '../../../interfaces/IDeckState'
 
 describe('Hint: getWorryBackHints', () => {
   const laneSpace1: ICard = new LaneSpace()
@@ -49,7 +50,7 @@ describe('Hint: getWorryBackHints', () => {
     })
 
     it('should hint that a card should be worried back if its parent can marry one in the tableaux', () => {
-      const deck = new DeckState()
+      const deck: IDeckState = createDeckState()
       const hints: string[][] = getWorryBackHints([
         ...cards,
         untouchedTopCard
@@ -66,7 +67,7 @@ describe('Hint: getWorryBackHints', () => {
     })
 
     it('should hint that a card should be worried back if its parent can marry one in the waste pile', () => {
-      const deck = new DeckState()
+      const deck: IDeckState = createDeckState()
       deck.waste = [unplayedCard]
       const hints: string[][] = getWorryBackHints([
         ...cards,
@@ -84,7 +85,7 @@ describe('Hint: getWorryBackHints', () => {
     })
 
     it('should hint that a card should be worried back if its parent can marry one in the stock pile', () => {
-      const deck = new DeckState()
+      const deck: IDeckState = createDeckState()
       deck.waste = [unplayedCard]
       const hints: string[][] = getWorryBackHints([
         ...cards,

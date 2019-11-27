@@ -1,21 +1,22 @@
+import { ActionTree, MutationTree, ActionContext } from 'vuex'
 import { values } from 'lodash'
 import getDeckHints from '../../gameplay/hints/getDeckHints'
 import getDestructuringLaneHints from '../../gameplay/hints/getDestructuringLaneHints'
 import getLaneCreationHints from '../../gameplay/hints/getLaneCreationHints'
 import getMoveableCardHints from '../../gameplay/hints/getMoveableCardHints'
 import getWorryBackHints from '../../gameplay/hints/getWorryBackHints'
-import ICard from '../../types/interfaces/ICard'
-import { CardsState } from './deck/cards'
+import ICard from '../../interfaces/ICard'
+import ICardsState from '../../interfaces/ICardsState'
+import IHintsState from '../../interfaces/IHintsState'
+import IRootState from '../../interfaces/IRootState'
 
-export class HintsState {
-  public entries: string[][] = []
-  public index: number = -1
+const state: IHintsState = {
+  entries: [],
+  index: -1
 }
 
-const state: HintsState = new HintsState()
-
-const actions = {
-  showHint ({ commit, dispatch, state }): void {
+const actions: ActionTree<IHintsState, IRootState> = {
+  showHint ({ commit, dispatch, state }: ActionContext<IHintsState, IRootState>): void {
     if (state.entries.length === 0) {
       // if we have no hints for this state yet, generate them
       dispatch('generateHints')
@@ -26,9 +27,9 @@ const actions = {
     commit('SHOW_NEXT_HINT')
   },
 
-  generateHints ({ rootState, commit }): void {
+  generateHints ({ rootState, commit }: ActionContext<IHintsState, IRootState>): void {
     const { cards, waste }: {
-      cards: CardsState,
+      cards: ICardsState,
       waste: ICard[]
     } = rootState.deck
     const allCards: ICard[] = values(cards)
@@ -53,17 +54,17 @@ const actions = {
   }
 }
 
-const mutations = {
-  CLEAR_HINTS (state): void {
+const mutations: MutationTree<IHintsState> = {
+  CLEAR_HINTS (state: IHintsState): void {
     state.entries = []
     state.index = -1
   },
 
-  SET_HINTS (state: HintsState, hints: string[][]): void {
+  SET_HINTS (state: IHintsState, hints: string[][]): void {
     hints.forEach((hint: string[]) => state.entries.push(hint))
   },
 
-  SHOW_NEXT_HINT (state: HintsState) {
+  SHOW_NEXT_HINT (state: IHintsState) {
     state.index++
 
     if (state.index >= state.entries.length) {

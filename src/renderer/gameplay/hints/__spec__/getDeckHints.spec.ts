@@ -1,7 +1,8 @@
 import Card from '../../../models/Card'
 import { Suits } from '../../../constants'
-import { DeckState } from '../../../store/modules/deck'
+import IDeckState from '../../../interfaces/IDeckState'
 import getDeckHints from '../getDeckHints'
+import createDeckState from './__helpers__/createDeckState'
 
 describe('Hint: getDeckHints', () => {
   const aceOfSpades: Card = new Card(Suits.SPADES, 0)
@@ -21,7 +22,7 @@ describe('Hint: getDeckHints', () => {
   })
 
   it('should return the DEAL_CARD hint for a moveable card within the deck', () => {
-    const deck = new DeckState()
+    const deck: IDeckState = createDeckState()
 
     deck.stock = stock
     deck.waste = [aceOfSpades]
@@ -33,13 +34,13 @@ describe('Hint: getDeckHints', () => {
   })
 
   it('should return an empty array if there are no cards in the waste pile', () => {
-    const deck = new DeckState()
+    const deck: IDeckState = createDeckState()
 
     expect(getDeckHints(stock, stock, deck)).toEqual([])
   })
 
   it('should return an empty array if there are no cards that can be moved from the dealt pile', () => {
-    const deck = new DeckState()
+    const deck: IDeckState = createDeckState()
 
     deck.stock = []
     deck.waste = [sixOfSpades]

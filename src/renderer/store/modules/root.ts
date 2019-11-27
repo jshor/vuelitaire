@@ -1,38 +1,40 @@
+import { ActionContext, ActionTree, GetterTree, MutationTree, StoreOptions } from 'vuex'
 import { cloneDeep } from 'lodash'
 import uuid from 'uuid/v4'
 import Vue from 'vue'
 import Card from '../../models/Card'
 import Pair from '../../models/Pair'
-import animation, { AnimationState } from './animation'
-import deck, { DeckState } from './deck/index'
-import hints, { HintsState } from './hints'
+import animation from './animation'
+import deck from './deck'
+import hints from './hints'
+import ICard from '../../interfaces/ICard'
+import IDeckState from '../../interfaces/IDeckState'
+import IRootState from '../../interfaces/IRootState'
 
-export class RootState {
-  public gameId: string = uuid()
-  public revertibleStates: DeckState[] = []
-  public selectedCard: Card = null
-  public deck: DeckState
-  public animation: AnimationState
-  public hints: HintsState
+const state: IRootState = {
+  gameId: uuid(),
+  revertibleStates: [],
+  selectedCard: null,
+  animation: null,
+  deck: null,
+  hints: null
 }
 
-const state: RootState = new RootState()
-
-const getters = {
+const getters: GetterTree<IRootState, IRootState> = {
   /**
    * Returns a list of card ids that should be highlighted.
    *
    * @param {Object} state
    * @returns {String[]}
    */
-  highlightedCards (state): string[] {
+  highlightedCards (state: IRootState): string[] {
     if (state.selectedCard) {
       return [state.selectedCard.id]
     }
     return state.hints.entries[state.hints.index] || []
   },
 
-  canUndo (state): boolean {
+  canUndo (state: IRootState): boolean {
     return state.revertibleStates.length > 0
   }
 }
@@ -41,8 +43,8 @@ function wait (ms) {
   return new Promise((resolve, reject) => setTimeout(resolve, ms))
 }
 
-const actions = {
-  async newGame ({ commit }): Promise<void> {
+const actions: ActionTree<IRootState, IRootState> = {
+  async newGame ({ commit }: ActionContext<IRootState, IRootState>): Promise<void> {
     commit('CLEAR_GAME')
     commit('animation/SET_IN_PROGRESS', true)
     commit('deck/INIT_DECK')
@@ -57,7 +59,7 @@ const actions = {
     commit('animation/SET_IN_PROGRESS', false)
   },
 
-  moveCard ({ commit }, pair: Pair): void {
+  moveCard ({ commit }: ActionContext<IRootState, IRootState>, pair: Pair): void {
     commit('deck/SET_MOVE', pair)
     commit('RECORD_REVERTIBLE_STATE')
     commit('deck/cards/MOVE_CARD', pair)
@@ -65,15 +67,15 @@ const actions = {
     commit('hints/CLEAR_HINTS')
   },
 
-  deal ({ commit }): void {
+  deal ({ commit }: ActionContext<IRootState, IRootState>): void {
     commit('deck/SET_MOVE', null)
     commit('RECORD_REVERTIBLE_STATE')
     commit('deck/DEAL')
     commit('hints/CLEAR_HINTS')
   },
 
-  async undo ({ commit, dispatch }): Promise<void> {
-    const prevState: DeckState = state.revertibleStates.slice(-1).pop()
+  async undo ({ commit, dispatch, state }: ActionContext<IRootState, IRootState>): Promise<void> {
+    const prevState: IDeckState = state.revertibleStates.slice(-1).pop()
 
     if (prevState && prevState.move) {
       commit('deck/cards/UNREVEAL_CARD', prevState.move.parentId)
@@ -90,7 +92,7 @@ const actions = {
    * @param {Card} target
    * @returns {Promise}
    */
-  async setSelection ({ commit, dispatch, state }, target): Promise<void> {
+  async setSelection ({ commit, dispatch, state }: ActionContext<IRootState, IRootState>, target: ICard): Promise<void> {
     if (state.selectedCard && target.canAcceptCard(state.selectedCard)) {
       const move: Pair = new Pair(state.selectedCard.id, target.id)
 
@@ -108,33 +110,33 @@ const actions = {
   }
 }
 
-const mutations = {
+const mutations: MutationTree<IRootState> = {
   /**
    * Sets the actively-selected card.
    *
    * @param {Object} state
    * @param {Card} card
    */
-  SELECT_CARD (state: RootState, card: Card): void {
+  SELECT_CARD (state: IRootState, card: Card): void {
     state.selectedCard = card
   },
 
-  CLEAR_GAME (state: RootState): void {
-    Vue.set(state, 'deck', deck.createState())
+  CLEAR_GAME (state: IRootState): void {
+    Vue.set(state, 'deck', deck.state)
     Vue.set(state.deck, 'cards', {})
     Vue.set(state, 'gameId', uuid())
   },
 
-  RECORD_REVERTIBLE_STATE (state: RootState): void {
+  RECORD_REVERTIBLE_STATE (state: IRootState): void {
     state.revertibleStates.push(cloneDeep(state.deck))
   },
 
-  REVERT_TO_PREV_STATE (state: RootState): void {
+  REVERT_TO_PREV_STATE (state: IRootState): void {
     Vue.set(state, 'deck', state.revertibleStates.pop())
   }
 }
 
-export default {
+const store: StoreOptions<any> = {
   state,
   getters,
   actions,
@@ -145,3 +147,5 @@ export default {
     hints
   }
 }
+
+export default store

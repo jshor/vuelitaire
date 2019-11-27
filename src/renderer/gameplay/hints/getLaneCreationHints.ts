@@ -1,9 +1,9 @@
 import LaneSpace from '../../models/LaneSpace'
-import ICard from '../../types/interfaces/ICard'
-import IHint from '../IHint'
-import { DeckState } from '../../store/modules/deck'
+import ICard from '../../interfaces/ICard'
+import IDeckState from '../../interfaces/IDeckState'
+import IHint from '../../interfaces/IHint'
 
-const getLaneCreationHints: IHint = (allCards: ICard[], playableCards: ICard[], deckState: DeckState): string[][] => {
+const getLaneCreationHints: IHint = (allCards: ICard[], playableCards: ICard[], deckState: IDeckState): string[][] => {
   const openSpaces = allCards.filter((card: ICard): boolean => {
     return card instanceof LaneSpace && !card.child
   })

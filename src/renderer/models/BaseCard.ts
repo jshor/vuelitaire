@@ -1,9 +1,9 @@
 import generateId from 'uuid/v4'
-import ICard from '../types/interfaces/ICard'
+import ICard from '../interfaces/ICard'
 import { isBuildable } from '../gameplay'
-import IRule from '../gameplay/IRule'
+import IRule from '../interfaces/IRule'
 
-export default class BaseCard implements ICard {
+export default abstract class BaseCard implements ICard {
   public id: string = generateId()
 
   public child: ICard = null

@@ -1,1 +1,1 @@
-import './types/interfaces/ICard'
+import './interfaces/ICard'

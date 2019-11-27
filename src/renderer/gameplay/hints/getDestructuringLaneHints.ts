@@ -1,7 +1,7 @@
 import getLineage from '../../utils/getLineage'
-import ICard from '../../types/interfaces/ICard'
-import IHint from '../IHint'
-import { DeckState } from '../../store/modules/deck'
+import ICard from '../../interfaces/ICard'
+import IHint from '../../interfaces/IHint'
+import IDeckState from '../../interfaces/IDeckState'
 
 /**
  * Finds all moves where moving a card will allow its parent to be promoted.
@@ -9,7 +9,7 @@ import { DeckState } from '../../store/modules/deck'
  * @param {Card[]} cards
  * @returns {String[][]}
  */
-const getDestructuringLaneHints: IHint = (allCards: ICard[], playableCards: ICard[], deckState: DeckState): string[][] => {
+const getDestructuringLaneHints: IHint = (allCards: ICard[], playableCards: ICard[], deckState: IDeckState): string[][] => {
   return allCards
     // start with finding the Foundation spaces
     .filter((card: ICard): boolean => card.constructor.name === 'FoundationSpace')

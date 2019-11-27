@@ -1,5 +1,5 @@
-import IRule from '../IRule'
-import ICard from '../../types/interfaces/ICard'
+import IRule from '../../interfaces/IRule'
+import ICard from '../../interfaces/ICard'
 
 const hasSameSuitAfterPromotion: IRule = (parent: ICard, target: ICard): boolean => {
   if (!parent.promoted) {

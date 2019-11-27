@@ -1,10 +1,14 @@
 import Pair from '../../../models/Pair'
-import animation, { AnimationState } from '../animation'
+import animation from '../animation'
+import IAnimationState from '../../../interfaces/IAnimationState'
+import invokeAction from './__helpers__/invokeAction'
 
 const {
   actions,
   mutations
 } = animation
+
+const createState = (): IAnimationState => (<IAnimationState>{ ...animation.state })
 
 describe('Vuex animation module', () => {
   beforeEach(() => jest.useFakeTimers())
@@ -20,7 +24,7 @@ describe('Vuex animation module', () => {
         const move = new Pair('some-card-id', 'some-target-id')
 
         move.parentId = 'some-parent-id'
-        actions.reverse({ dispatch }, move)
+        invokeAction(actions, 'reverse', { dispatch }, move)
 
         expect(dispatch).toHaveBeenCalledTimes(1)
         expect(dispatch).toHaveBeenCalledWith('move', expect.objectContaining({
@@ -34,7 +38,7 @@ describe('Vuex animation module', () => {
       const move: Pair = new Pair('some-card-id', 'some-target-id')
 
       it('should reset the animation to an empty pair after the specified time', (done) => {
-        const promise: Promise<void> = actions.move({ commit }, move)
+        const promise: Promise<void> = invokeAction(actions, 'move', { commit }, move)
 
         expect.assertions(5)
         expect(commit).toHaveBeenCalledWith('SET_IN_PROGRESS', true)
@@ -56,7 +60,7 @@ describe('Vuex animation module', () => {
       it('should set the state\'s cardId and targetId with the ones in the given pair', () => {
         const cardId: string = 'some-card-id'
         const targetId: string = 'some-target-id'
-        const state: AnimationState = new AnimationState()
+        const state: IAnimationState = createState()
 
         mutations.SET_ANIMATION(state, new Pair(cardId, targetId))
 

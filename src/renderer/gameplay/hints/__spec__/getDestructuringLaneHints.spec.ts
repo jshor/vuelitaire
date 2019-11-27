@@ -1,9 +1,10 @@
 import getDestructuringLaneHints from '../getDestructuringLaneHints'
 import Card from '../../../models/Card'
 import FoundationSpace from '../../../models/FoundationSpace'
-import { DeckState } from '../../../store/modules/deck'
-import ICard from '../../../types/interfaces/ICard'
+import IDeckState from '../../../interfaces/IDeckState'
+import ICard from '../../../interfaces/ICard'
 import { Suits } from '../../../constants'
+import createDeckState from './__helpers__/createDeckState'
 
 function makePlayable (cards: ICard[]): void {
   cards.forEach((card: ICard): void => {
@@ -12,7 +13,7 @@ function makePlayable (cards: ICard[]): void {
 }
 
 describe('getDestructuringLaneHints()', () => {
-  const deck = new DeckState()
+  const deck: IDeckState = createDeckState()
 
   it('should', () => {
     expect(true).toEqual(true)

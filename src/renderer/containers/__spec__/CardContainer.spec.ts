@@ -1,6 +1,6 @@
 import { createLocalVue, shallowMount } from '@vue/test-utils'
 import Vuex from 'vuex'
-import ICard from '../../types/interfaces/ICard'
+import ICard from '../../interfaces/ICard'
 import Card from '../../models/Card'
 import Pair from '../../models/Pair'
 import CardContainer from '../CardContainer.vue'

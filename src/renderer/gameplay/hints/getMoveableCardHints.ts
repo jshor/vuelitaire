@@ -1,12 +1,12 @@
-import ICard from '../../types/interfaces/ICard'
-import IHint from '../IHint'
-import { DeckState } from '../../store/modules/deck'
+import ICard from '../../interfaces/ICard'
+import IHint from '../../interfaces/IHint'
+import IDeckState from '../../interfaces/IDeckState'
 import BaseCard from '../../models/BaseCard'
 
 const getMoveableCardHints: IHint = (
   allCards: ICard[],
   playableCards: ICard[],
-  deckState: DeckState,
+  deckState: IDeckState,
   ignoreRank: boolean = false
 ): string[][] => {
   const potentialTargets = allCards.filter(card => card.isPlayable())

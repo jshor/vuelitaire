@@ -1,6 +1,6 @@
 import Card from '../../models/Card'
-import IRule from '../IRule'
-import ICard from '../../types/interfaces/ICard'
+import IRule from '../../interfaces/IRule'
+import ICard from '../../interfaces/ICard'
 
 const isBuildable: IRule = (parent: ICard, child: ICard): boolean => {
   if (!(child instanceof Card)) {

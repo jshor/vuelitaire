@@ -45,7 +45,7 @@ import { mapActions, mapGetters } from 'vuex'
 
 import Card from '../components/Card.vue'
 import CardDraggable from '../components/CardDraggable.vue'
-import ICard from '../types/interfaces/ICard'
+import ICard from '../interfaces/ICard'
 import Pair from '../models/Pair'
 import getDescendants from '../utils/getLineage'
 import isAncestor from '../utils/isAncestor'
@@ -134,8 +134,10 @@ class CardContainer extends Vue {
     this.ready = false
   }
 
-  public onDrop ({ payload }: { payload: any }) {
-    if (!this.ready) { return }
+  public onDrop ({ payload }: { payload: ICard }): void {
+    if (!this.ready) {
+      return
+    }
 
     if (!isDescendant(this.card, payload.id)) {
       this.moveCard(new Pair(payload.id, this.card.id))

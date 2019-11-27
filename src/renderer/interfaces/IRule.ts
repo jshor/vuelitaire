@@ -1,4 +1,4 @@
-import ICard from '../types/interfaces/ICard'
+import ICard from './ICard'
 
 export default interface IRule {
   (parent: ICard, child: ICard): boolean

@@ -1,5 +1,5 @@
-import IRule from '../IRule'
-import ICard from '../../types/interfaces/ICard'
+import IRule from '../../interfaces/IRule'
+import ICard from '../../interfaces/ICard'
 
 const isSequential: IRule = (parent: ICard, child: ICard): boolean => {
   const sequence = parent.promoted ? -1 : 1

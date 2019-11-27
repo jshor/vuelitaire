@@ -1,6 +1,6 @@
 import { Suits } from '../../constants'
-import IRule from '../IRule'
-import ICard from '../../types/interfaces/ICard'
+import IRule from '../../interfaces/IRule'
+import ICard from '../../interfaces/ICard'
 
 const hasAlternatingColor: IRule = (parent: ICard, child: ICard): boolean => {
   const isRed = (s: string): boolean => [Suits.DIAMONDS, Suits.HEARTS].includes(s)

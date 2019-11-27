@@ -3,9 +3,9 @@ import getDealableCards from '../../utils/getDealableCards'
 import hasAlternatingColor from '../rules/hasAlternatingColor'
 import FoundationSpace from '../../models/FoundationSpace'
 import LaneSpace from '../../models/LaneSpace'
-import ICard from '../../types/interfaces/ICard'
-import IHint from '../IHint'
-import { DeckState } from '../../store/modules/deck'
+import ICard from '../../interfaces/ICard'
+import IHint from '../../interfaces/IHint'
+import IDeckState from '../../interfaces/IDeckState'
 
 /**
  * Finds all promoted cards that, when worried back, will allow the playing of an untouched card.
@@ -14,7 +14,7 @@ import { DeckState } from '../../store/modules/deck'
  * @param {Object} deck
  * @returns {String[][]}
  */
-const getWorryBackHints: IHint = (allCards: ICard[], playableCards: ICard[], deckState: DeckState): string[][] => {
+const getWorryBackHints: IHint = (allCards: ICard[], playableCards: ICard[], deckState: IDeckState): string[][] => {
   // compute all tableaux top cards that haven't been touched by the user yet
   const untouchedTopCards = allCards
     .filter(card => card instanceof LaneSpace)

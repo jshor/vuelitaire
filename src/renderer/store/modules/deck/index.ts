@@ -1,45 +1,44 @@
-import { shuffle, values } from 'lodash'
+import { GetterTree, ModuleTree, Module, MutationTree } from 'vuex'
+import { remove, shuffle, values } from 'lodash'
 import Vue from 'vue'
 import { Suits } from '../../../constants'
-import ICard from '../../../types/interfaces/ICard'
+import ICard from '../../../interfaces/ICard'
 import Card from '../../../models/Card'
 import LaneSpace from '../../../models/LaneSpace'
 import Pair from '../../../models/Pair'
-import cards, { CardsState } from './cards'
+import cards from './cards'
+import IDeckState from '../../../interfaces/IDeckState'
+import IRootState from '../../../interfaces/IDeckState'
 
-export class DeckState {
-  public cards: CardsState = {}
-  public move: Pair = null
-  public stock: ICard[] = [] // cards in the stock pile
-  public waste: ICard[] = [] // the pile of cards dealt
-  public dealt: ICard[] = [] // the last `dealCount` (or fewer) cards dealt
-  public dealCount: number = 1 // number of cards to deal at a time
+const state: IDeckState = {
+  cards: {},
+  move: null,
+  stock: [], // cards in the stock pile
+  waste: [], // the pile of cards dealt
+  dealt: [], // the last `dealCount` (or fewer) cards dealt
+  dealCount: 1 // number of cards to deal at a time
 }
 
-const createState = () => new DeckState()
+const namespaced: boolean = true
 
-const state: DeckState = new DeckState()
-
-const getters = {
+const getters: GetterTree<IDeckState, IRootState> = {
   /**
    * Returns whether or not cards can be dealt.
    *
-   * @param {DeckState} state
+   * @param {IDeckState} state
    */
-  canDeal (state: DeckState): boolean {
+  canDeal (state: IDeckState): boolean {
     return state.stock.length > 0
   }
 }
 
-const actions = {}
-
-const mutations = {
+const mutations: MutationTree<IDeckState> = {
   /**
    * Creates a new deck with 4 suits of 13 ranks each.
    *
-   * @param {DeckState} state
+   * @param {IDeckState} state
    */
-  INIT_DECK (state: DeckState): void {
+  INIT_DECK (state: IDeckState): void {
     const createSuit = (suit): Card[] => Array(13) // TODO: enum suits
       .fill(null)
       .map((l, rank: number): Card => new Card(suit, rank)) // TODO: enum ranks
@@ -60,9 +59,9 @@ const mutations = {
   /**
    * Creates a new tableau (7 spaces, each having `index` descendant cards).
    *
-   * @param {DeckState} state
+   * @param {IDeckState} state
    */
-  INIT_TABLEAU (state: DeckState): void {
+  INIT_TABLEAU (state: IDeckState): void {
     let index = 0
 
     for (let i: number = 7; i > 0; i--) {
@@ -91,7 +90,7 @@ const mutations = {
    *
    * @param {Object} state
    */
-  DEAL (state: DeckState): void {
+  DEAL (state: IDeckState): void {
     Vue.set(state, 'dealt', [])
 
     if (state.stock.length === 0) {
@@ -114,34 +113,24 @@ const mutations = {
   /**
    * Removes the card having the given id from the waste pile.
    *
-   * @param {DeckState} state
+   * @param {IDeckState} state
    * @param {String} cardId - id of card to remove
    */
-  REMOVE_FROM_DECK (state: DeckState, cardId: string): void {
-    const wasteIndex: number = state
-      .waste
-      .findIndex(({ id }: Card): boolean => id === cardId)
-    const dealtIndex: number = state
-      .dealt
-      .findIndex(({ id }: Card): boolean => id === cardId)
+  REMOVE_FROM_DECK (state: IDeckState, cardId: string): void {
+    const predicate = ({ id }: Card): boolean => id === cardId
 
-    if (wasteIndex > 0) {
-      state.waste.splice(wasteIndex, 1)
-    }
-
-    if (dealtIndex > 0) {
-      state.dealt.splice(dealtIndex, 1)
-    }
+    remove(state.waste, predicate)
+    remove(state.dealt, predicate)
   },
 
   /**
    * Sets information about a move from one card to allow animations during undo.
    * If there is no parent card present for a moving card, assume it came from the dealt pile.
    *
-   * @param {DeckState} state
+   * @param {IDeckState} state
    * @param {Pair} move
    */
-  SET_MOVE (state: DeckState, move: Pair = null): void {
+  SET_MOVE (state: IDeckState, move: Pair = null): void {
     if (move) {
       const parent = values(state.cards)
         .filter((card: ICard) => card.child)
@@ -153,12 +142,14 @@ const mutations = {
   }
 }
 
-export default {
-  namespaced: true,
-  createState,
+const modules: ModuleTree<IDeckState> = { cards }
+
+const deck: Module<IDeckState, IRootState> = {
+  namespaced,
   state,
   getters,
-  actions,
   mutations,
-  modules: { cards }
+  modules
 }
+
+export default deck

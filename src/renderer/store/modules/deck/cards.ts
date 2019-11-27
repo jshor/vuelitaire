@@ -1,25 +1,22 @@
+import { ActionTree, GetterTree, Module, MutationTree } from 'vuex'
 import { values } from 'lodash'
 import Vue from 'vue'
-import ICard from '../../../types/interfaces/ICard'
+import ICard from '../../../interfaces/ICard'
+import ICardsState from '../../../interfaces/ICardsState'
 import FoundationSpace from '../../../models/FoundationSpace'
 import LaneSpace from '../../../models/LaneSpace'
 import Pair from '../../../models/Pair'
+import IDeckState from '../../../interfaces/IDeckState'
 
-interface ICardsMap {
-  [id: string]: ICard
-}
+const state: ICardsState = {}
 
-export class CardsState implements ICardsMap {
-  [id: string]: ICard
-}
+const namespaced: boolean = true
 
-const state: CardsState = {}
-
-const getters = {
+const getters: GetterTree<ICardsState, IDeckState> = {
   /**
    * Returns all tableau space cards.
    */
-  tableau (state: CardsState): LaneSpace[] {
+  tableau (state: ICardsState): LaneSpace[] {
     return values(state).filter((card: ICard): boolean => {
       return card instanceof LaneSpace
     })
@@ -28,20 +25,18 @@ const getters = {
   /**
    * Returns all foundation space cards.
    */
-  foundations (state: CardsState): FoundationSpace[] {
+  foundations (state: ICardsState): FoundationSpace[] {
     return values(state).filter((card: ICard): boolean => {
       return card instanceof FoundationSpace
     })
   }
 }
 
-const actions = {}
-
-const mutations = {
+const mutations: MutationTree<ICardsState> = {
   /**
    * Reveals all the cards in the stock and top cards in the tableau.
    */
-  REVEAL_CARDS (state: CardsState): void {
+  REVEAL_CARDS (state: ICardsState): void {
     values(state)
       .filter(({ child }: ICard): boolean => !child)
       .forEach(({ id }: ICard): void => {
@@ -49,7 +44,7 @@ const mutations = {
       })
   },
 
-  UNREVEAL_CARD (state: CardsState, cardId: string): void {
+  UNREVEAL_CARD (state: ICardsState, cardId: string): void {
     if (state[cardId]) {
       state[cardId].revealed = false
     }
@@ -58,7 +53,7 @@ const mutations = {
   /**
    * Resets all animation indices of all cards to 0.
    */
-  CLEAR_ANIMATION_INDICES (state: CardsState): void {
+  CLEAR_ANIMATION_INDICES (state: ICardsState): void {
     values(state)
       .forEach(({ id }: ICard): void => {
         state[id].animationIndex = 0
@@ -68,7 +63,7 @@ const mutations = {
   /**
    * Creates 4 new foundations.
    */
-  INIT_FOUNDATIONS (state: CardsState): void {
+  INIT_FOUNDATIONS (state: ICardsState): void {
     for (let i: number = 0; i < 4; i++) {
       const space: FoundationSpace = new FoundationSpace()
 
@@ -79,7 +74,7 @@ const mutations = {
   /**
    * From the given pair, moves a card having `cardId` onto a card having `targetId`.
    */
-  MOVE_CARD (state: CardsState, { cardId, targetId }: Pair): void {
+  MOVE_CARD (state: ICardsState, { cardId, targetId }: Pair): void {
     const card: ICard = state[cardId]
     const parent: ICard = values(state)
       .find(({ child }: ICard): boolean => {
@@ -97,10 +92,11 @@ const mutations = {
   }
 }
 
-export default {
-  namespaced: true,
+const cards: Module<ICardsState, IDeckState> = {
+  namespaced,
   state,
   getters,
-  actions,
   mutations
 }
+
+export default cards

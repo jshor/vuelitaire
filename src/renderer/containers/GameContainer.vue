@@ -61,8 +61,8 @@ import Tableau from '../components/Tableau.vue'
 import CardContainer from './CardContainer.vue'
 import DeckContainer from './DeckContainer.vue'
 
-import ICard from '../types/interfaces/ICard'
-import { AnimationState } from '../store/modules/animation'
+import ICard from '../interfaces/ICard'
+import IAnimationState from '../interfaces/IAnimationState'
 
 @Component({
   computed: {
@@ -106,7 +106,7 @@ class GameContainer extends Vue {
 
   public canUndo: boolean
 
-  public animation: AnimationState
+  public animation: IAnimationState
 
   public newGame: () => Promise<void>
 }
