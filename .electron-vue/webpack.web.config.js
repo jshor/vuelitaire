@@ -14,7 +14,7 @@ const { VueLoaderPlugin } = require('vue-loader')
 let webConfig = {
   devtool: '#cheap-module-eval-source-map',
   entry: {
-    web: path.join(__dirname, '../src/renderer/main.ts')
+    app: path.join(__dirname, '../src/renderer/main.ts')
   },
   module: {
     rules: [
@@ -114,7 +114,7 @@ let webConfig = {
     new webpack.NoEmitOnErrorsPlugin()
   ],
   output: {
-    filename: '[name].js',
+    filename: '[name].[hash].js',
     path: path.join(__dirname, '../dist/web')
   },
   resolve: {

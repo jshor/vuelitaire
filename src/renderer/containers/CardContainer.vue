@@ -52,6 +52,7 @@ import isAncestor from '../utils/isAncestor'
 import isDescendant from '../utils/isDescendant'
 
 @Component({
+  name: 'CardContainer',
   props: {
     card: {
       type: Object as () => ICard,
@@ -85,8 +86,6 @@ import isDescendant from '../utils/isDescendant'
   }
 })
 class CardContainer extends Vue {
-  public name: string = 'CardContainer'
-
   public card: ICard
 
   public hasChild: boolean

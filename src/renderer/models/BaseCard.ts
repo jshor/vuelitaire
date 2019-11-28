@@ -20,8 +20,6 @@ export default abstract class BaseCard implements ICard {
 
   public suit: string = null
 
-  public type: string
-
   public rules: IRule[] = [isBuildable]
 
   public isPlayable (): boolean {

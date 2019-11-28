@@ -1,4 +1,4 @@
-import { values } from 'lodash'
+import values from 'lodash-es/values'
 import deck from '..'
 import { Suits } from '../../../../constants'
 import getLineage from '../../../../utils/getLineage'

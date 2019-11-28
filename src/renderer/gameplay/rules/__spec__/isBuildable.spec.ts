@@ -1,5 +1,6 @@
 import isBuildable from '../isBuildable'
 import Card from '../../../models/Card'
+import LaneSpace from '../../../models/LaneSpace'
 import { Suits } from '../../../constants'
 
 describe('Rule: isBuildable', () => {
@@ -11,10 +12,8 @@ describe('Rule: isBuildable', () => {
     child = new Card(Suits.HEARTS, 1)
   })
 
-  it('should return false when the child card is not of type \'CARD\'', () => {
-    child.type = 'SPACE'
-
-    expect(isBuildable(parent, child)).toEqual(false)
+  it('should return false when the child card is not of type Card', () => {
+    expect(isBuildable(parent, new LaneSpace())).toEqual(false)
   })
 
   it('should return false when parent already has a child card', () => {

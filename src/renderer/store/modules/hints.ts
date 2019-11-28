@@ -1,5 +1,5 @@
 import { ActionTree, MutationTree, ActionContext } from 'vuex'
-import { values } from 'lodash'
+import values from 'lodash-es/values'
 import getDeckHints from '../../gameplay/hints/getDeckHints'
 import getDestructuringLaneHints from '../../gameplay/hints/getDestructuringLaneHints'
 import getLaneCreationHints from '../../gameplay/hints/getLaneCreationHints'

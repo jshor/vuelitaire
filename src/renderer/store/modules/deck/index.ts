@@ -1,5 +1,7 @@
 import { GetterTree, ModuleTree, Module, MutationTree } from 'vuex'
-import { remove, shuffle, values } from 'lodash'
+import values from 'lodash-es/values'
+import remove from 'lodash-es/remove'
+import shuffle from 'lodash-es/shuffle'
 import Vue from 'vue'
 import { Suits } from '../../../constants'
 import ICard from '../../../interfaces/ICard'

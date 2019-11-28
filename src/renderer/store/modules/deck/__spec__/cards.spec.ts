@@ -1,4 +1,4 @@
-import { values } from 'lodash'
+import values from 'lodash-es/values'
 import ICard from '../../../../interfaces/ICard'
 import ICardsState from '../../../../interfaces/ICardsState'
 import Card from '../../../../models/Card'
@@ -25,7 +25,7 @@ describe('Vuex cards module', () => {
 
         expect.assertions(8)
         expect(tableau).toHaveLength(7)
-        tableau.forEach((t) => expect(t.type).toEqual('LaneSpace'))
+        tableau.forEach((t) => expect(t).toBeInstanceOf(LaneSpace))
       })
     })
 
@@ -36,7 +36,7 @@ describe('Vuex cards module', () => {
 
         expect.assertions(5)
         expect(foundations).toHaveLength(4)
-        foundations.forEach((t) => expect(t.type).toEqual('FoundationSpace'))
+        foundations.forEach((t) => expect(t).toBeInstanceOf(FoundationSpace))
       })
     })
   })

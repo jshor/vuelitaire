@@ -1,5 +1,5 @@
 import { ActionContext, ActionTree, GetterTree, MutationTree, StoreOptions } from 'vuex'
-import { cloneDeep } from 'lodash'
+import cloneDeep from 'lodash-es/cloneDeep'
 import uuid from 'uuid/v4'
 import Vue from 'vue'
 import Card from '../../models/Card'

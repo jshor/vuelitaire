@@ -1,5 +1,5 @@
-import { ActionTree, GetterTree, Module, MutationTree } from 'vuex'
-import { values } from 'lodash'
+import { GetterTree, Module, MutationTree } from 'vuex'
+import values from 'lodash-es/values'
 import Vue from 'vue'
 import ICard from '../../../interfaces/ICard'
 import ICardsState from '../../../interfaces/ICardsState'

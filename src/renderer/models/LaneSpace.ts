@@ -1,12 +1,8 @@
 import BaseCard from './BaseCard'
+import isBuildable from '../gameplay/rules/isBuildable'
 import isKing from '../gameplay/rules/isKing'
+import IRule from '../interfaces/IRule'
 
 export default class LaneSpace extends BaseCard {
-  public type: string = 'LaneSpace'
-
-  constructor () {
-    super()
-
-    this.rules.push(isKing)
-  }
+  public rules: IRule[] = [isBuildable, isKing]
 }

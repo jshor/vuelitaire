@@ -2,6 +2,8 @@ import BaseCard from './BaseCard'
 import hasAlternatingColorBeforePromotion from '../gameplay/rules/hasAlternatingColorBeforePromotion'
 import hasSameSuitAfterPromotion from '../gameplay/rules/hasSameSuitAfterPromotion'
 import isSequential from '../gameplay/rules/isSequential'
+import isBuildable from '../gameplay/rules/isBuildable'
+import IRule from '../interfaces/IRule'
 
 export default class Card extends BaseCard {
   public suit: string
@@ -12,17 +14,18 @@ export default class Card extends BaseCard {
 
   public revealed: boolean = false
 
-  public type: string = 'Card'
+  public rules: IRule[] = [
+    isBuildable,
+    hasAlternatingColorBeforePromotion,
+    hasSameSuitAfterPromotion,
+    isSequential
+  ]
 
   constructor (suit: string, rank: number) {
     super()
 
     this.suit = suit
     this.rank = rank
-
-    this.rules.push(hasAlternatingColorBeforePromotion)
-    this.rules.push(hasSameSuitAfterPromotion)
-    this.rules.push(isSequential)
   }
 
   public toString () {
