@@ -14,7 +14,7 @@
           }"
           @click="deal"
         />
-        <div class="game__spacer game__spacer--deck">
+        <div class="game__spacer game__spacer--deck"  data-id="WASTE_PILE">
           <deck-container />
         </div>
         <div class="game__spacer" />
@@ -45,7 +45,7 @@
     />
 
     <button @click="undo" :disabled="!canUndo">Undo</button>
-    <button @click="showHint">Hint</button>
+    <button @click.stop="showHint">Hint</button>
     <button @click="newGame">New Game</button>
   </div>
 </template>
@@ -109,6 +109,10 @@ class GameContainer extends Vue {
   public animation: IAnimationState
 
   public newGame: () => Promise<void>
+
+  beforeCreate () {
+    this.$store.dispatch('newGame')
+  }
 }
 
 export default GameContainer

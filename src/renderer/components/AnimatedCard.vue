@@ -85,4 +85,17 @@ export default {
   transition-duration: 250ms;
   transition-property: top, left;
 }
+
+.animated-card__inner .card-container {
+  margin-top: 20px;
+}
+
+.animated-card__inner > .card-draggable > .card {
+  margin-top: -20px;
+}
+
+/* disable highlighting */
+.animated-card .animated-card__inner div {
+  box-shadow: none;
+}
 </style>

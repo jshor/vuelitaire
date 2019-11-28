@@ -7,7 +7,6 @@
         'deck__card--second': isNth(card, 1),
         'deck__card--third': isNth(card, 2)
       }"
-      style="margin-left: -30px"
       class="deck__card">
       <container
         :get-child-payload="() => card"
@@ -65,6 +64,40 @@ export default DeckContainer
 <style lang="scss">
 .deck, .deck__card {
   position: absolute;
+}
+
+.deck__card {
+  .card-draggable:not(.card-draggable--ready) {
+    animation-duration: 1s;
+    animation-fill-mode: forwards;
+    animation-name: outer-card-glow-out;
+
+    .card__front,
+    .card__back {
+      animation-duration: 1s;
+      animation-fill-mode: forwards;
+      animation-name: inner-card-glow-out;
+    }
+  }
+}
+
+
+@keyframes outer-card-glow-out {
+  from {
+    box-shadow: 0px 0 30px orange;
+  }
+  to {
+    box-shadow: none;
+  }
+}
+
+@keyframes inner-card-glow-out {
+  from {
+    box-shadow: inset 0px 0 30px orange;
+  }
+  to {
+    box-shadow: none;
+  }
 }
 
 .deck__card {

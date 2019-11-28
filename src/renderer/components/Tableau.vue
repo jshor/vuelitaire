@@ -24,6 +24,10 @@ export default {
   box-sizing: border-box;
 }
 
+.tableau .card-container:not(.card-container--revealed) {
+  margin-top: 10px;
+}
+
 .tableau > .card-draggable > .card-container {
   margin-top: 0;
 }

@@ -79,12 +79,12 @@ const actions: ActionTree<IRootState, IRootState> = {
    * @param {ActionContext<IRootState, IRootState>} context
    * @param {Pair} pair
    */
-  moveCard ({ commit }: ActionContext<IRootState, IRootState>, pair: Pair): void {
+  moveCard ({ commit, dispatch }: ActionContext<IRootState, IRootState>, pair: Pair): void {
+    dispatch('clearSelection')
     commit('deck/SET_MOVE', pair)
     commit('RECORD_REVERTIBLE_STATE')
     commit('deck/cards/MOVE_CARD', pair)
     commit('deck/REMOVE_FROM_DECK', pair.cardId)
-    commit('hints/CLEAR_HINTS')
   },
 
   /**
@@ -95,11 +95,11 @@ const actions: ActionTree<IRootState, IRootState> = {
    *  * This will clear all visible hints from the state
    * @param {ActionContext<IRootState, IRootState>} context
    */
-  deal ({ commit }: ActionContext<IRootState, IRootState>): void {
+  deal ({ commit, dispatch }: ActionContext<IRootState, IRootState>): void {
+    dispatch('clearSelection')
     commit('deck/SET_MOVE', null)
     commit('RECORD_REVERTIBLE_STATE')
     commit('deck/DEAL')
-    commit('hints/CLEAR_HINTS')
   },
 
   /**
@@ -147,6 +147,7 @@ const actions: ActionTree<IRootState, IRootState> = {
    */
   clearSelection ({ commit }): void {
     commit('SELECT_CARD', null)
+    commit('hints/CLEAR_HINTS')
   }
 }
 

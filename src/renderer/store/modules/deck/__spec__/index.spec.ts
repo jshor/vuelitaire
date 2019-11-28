@@ -197,12 +197,12 @@ describe('Vuex Deck module', () => {
           expect(state.move.parentId).toEqual(parentCard.id)
         })
 
-        it('should set the parent id to `DEAL_CARD`', () => {
+        it('should set the parent id to `WASTE_PILE`', () => {
           parentCard.child = null
           mutations.SET_MOVE(state, move)
 
           expect(state.move).toEqual(move)
-          expect(state.move.parentId).toEqual('DEAL_CARD')
+          expect(state.move.parentId).toEqual('WASTE_PILE')
         })
       })
     })

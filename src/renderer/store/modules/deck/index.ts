@@ -1,6 +1,5 @@
 import { GetterTree, ModuleTree, Module, MutationTree } from 'vuex'
 import values from 'lodash-es/values'
-import remove from 'lodash-es/remove'
 import shuffle from 'lodash-es/shuffle'
 import Vue from 'vue'
 import { Suits } from '../../../constants'
@@ -119,10 +118,18 @@ const mutations: MutationTree<IDeckState> = {
    * @param {String} cardId - id of card to remove
    */
   REMOVE_FROM_DECK (state: IDeckState, cardId: string): void {
-    const predicate = ({ id }: Card): boolean => id === cardId
+    const remove = (arr: ICard[]): void => {
+      const index: number = arr.findIndex(({ id }: Card): boolean => {
+        return id === cardId
+      })
 
-    remove(state.waste, predicate)
-    remove(state.dealt, predicate)
+      if (index > -1) {
+        arr.splice(index, 1)
+      }
+    }
+
+    remove(state.dealt)
+    remove(state.waste)
   },
 
   /**
@@ -138,7 +145,7 @@ const mutations: MutationTree<IDeckState> = {
         .filter((card: ICard) => card.child)
         .find((card: ICard) => card.child.id === move.cardId)
 
-      move.parentId = parent ? parent.id : 'DEAL_CARD'
+      move.parentId = parent ? parent.id : 'WASTE_PILE'
     }
     state.move = move
   }

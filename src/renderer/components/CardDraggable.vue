@@ -66,7 +66,6 @@ export default {
 .card-draggable--space {
   width: 10vw;
   height: 14vw;
-  /* border: 1px solid #000; */
   box-sizing: border-box;
 }
 
@@ -83,10 +82,6 @@ export default {
 
 .card-draggable.animated:not(.smooth-dnd-ghost) {
   display: none;
-}
-
-.card-draggable.smooth-dnd-ghost > .highlight {
-  display: block;
 }
 
 .card-draggable--ready {

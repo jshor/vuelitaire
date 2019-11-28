@@ -15,6 +15,7 @@
     <div
       @click.stop="selectCard(false)"
       @dblclick.stop="selectCard(true)"
+      :class="{ 'card-container--revealed': card.revealed }"
       class="card-container">
       <container
         v-if="!canReveal"
