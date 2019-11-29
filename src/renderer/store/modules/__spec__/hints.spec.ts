@@ -9,13 +9,7 @@ const {
 
 const createState = (): IHintsState => (<IHintsState>{ ...hints.state })
 
-jest.mock('../../../gameplay', () => ({
-  getMoveableCardHints: () => [],
-  getLaneCreationHints: () => [],
-  getDestructuringLaneHints: () => [],
-  getDeckHints: () => [],
-  getWorryBackHints: () => []
-}))
+jest.mock('../../../gameplay/hints/', () => () => [])
 
 describe('Vuex hints module', () => {
   describe('actions', () => {

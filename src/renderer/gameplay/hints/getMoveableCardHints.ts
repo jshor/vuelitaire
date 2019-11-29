@@ -1,6 +1,6 @@
 import ICard from '../../interfaces/ICard'
-import IHint from '../../interfaces/IHint'
 import IDeckState from '../../interfaces/IDeckState'
+import IHint from '../../interfaces/IHint'
 import BaseCard from '../../models/BaseCard'
 
 /**
@@ -20,7 +20,7 @@ const getMoveableCardHints: IHint = (
   deckState: IDeckState,
   ignoreRank: boolean = false
 ): string[][] => {
-  const potentialTargets = allCards.filter(card => card.isPlayable())
+  const potentialTargets = allCards.filter((card) => card.isPlayable())
 
   /**
    * Returns the parent card, or an empty object if child is an orphan.
@@ -30,7 +30,7 @@ const getMoveableCardHints: IHint = (
    * @returns {boolean}
    */
   const hasRankingParent = (child: ICard, target: ICard): boolean => {
-    const parent: ICard = allCards.find(c => c.child === child && c.revealed)
+    const parent: ICard = allCards.find((c) => c.child === child && c.revealed)
 
     if (parent) {
       return parent.rank !== target.rank

@@ -1,6 +1,6 @@
 
-import IRule from '../../interfaces/IRule'
 import ICard from '../../interfaces/ICard'
+import IRule from '../../interfaces/IRule'
 
 /**
  * Determines if the child card is an Ace.

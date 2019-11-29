@@ -1,6 +1,6 @@
-import Card from '../../models/Card'
-import IRule from '../../interfaces/IRule'
 import ICard from '../../interfaces/ICard'
+import IRule from '../../interfaces/IRule'
+import Card from '../../models/Card'
 
 /**
  * Determines if the child can be moved and placed onto the parent.

@@ -1,6 +1,6 @@
-import ICardsState from './ICardsState'
-import ICard from './ICard'
 import Pair from '../models/Pair'
+import ICard from './ICard'
+import ICardsState from './ICardsState'
 
 export default interface IDeckState {
   cards: ICardsState

@@ -1,9 +1,9 @@
-import BaseCard from './BaseCard'
 import hasAlternatingColorBeforePromotion from '../gameplay/rules/hasAlternatingColorBeforePromotion'
 import hasSameSuitAfterPromotion from '../gameplay/rules/hasSameSuitAfterPromotion'
-import isSequential from '../gameplay/rules/isSequential'
 import isBuildable from '../gameplay/rules/isBuildable'
+import isSequential from '../gameplay/rules/isSequential'
 import IRule from '../interfaces/IRule'
+import BaseCard from './BaseCard'
 
 export default class Card extends BaseCard {
   public suit: string

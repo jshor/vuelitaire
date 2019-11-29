@@ -6,6 +6,7 @@ import root from '../root'
 import invokeAction from './__helpers__/invokeAction'
 import IRootState from '../../../interfaces/IRootState'
 import IDeckState from '../../../interfaces/IDeckState'
+import auto from '../../../gameplay/auto'
 
 const {
   getters,
@@ -50,6 +51,24 @@ describe('Root Vuex module', () => {
 
           expect(getters.highlightedCards(state, null, null, null)).toEqual([])
         })
+      })
+    })
+
+    describe('canUndo()', () => {
+      it('should return true if there exists states to revert to', () => {
+        const state: IRootState = createState()
+
+        state.revertibleStates = [{ ...state.deck }]
+
+        expect(getters.canUndo(state, null, null, null)).toEqual(true)
+      })
+
+      it('should return false if there are no states to revert to', () => {
+        const state: IRootState = createState()
+
+        state.revertibleStates = []
+
+        expect(getters.canUndo(state, null, null, null)).toEqual(false)
       })
     })
   })
@@ -103,7 +122,11 @@ describe('Root Vuex module', () => {
 
     describe('deal()', () => {
       beforeEach(() => {
-        invokeAction(actions, 'deal', { commit })
+        invokeAction(actions, 'deal', { commit, dispatch })
+      })
+
+      it('should clear the existing selected cards', () => {
+        expect(dispatch).toHaveBeenCalledWith('clearSelection')
       })
 
       it('should clear the dangling state and deal a new set of cards', () => {
@@ -118,8 +141,8 @@ describe('Root Vuex module', () => {
         expect(commit).toHaveBeenCalledWith('deck/DEAL')
       })
 
-      it('should clear the existing hints', () => {
-        expect(commit).toHaveBeenCalledWith('hints/CLEAR_HINTS')
+      it('should halt UI until the deal animation completes', () => {
+        expect(dispatch).toHaveBeenLastCalledWith('animation/wait')
       })
     })
 
@@ -127,7 +150,12 @@ describe('Root Vuex module', () => {
       const pair: Pair = new Pair('card-id', 'target-id')
 
       beforeEach(() => {
-        invokeAction(actions, 'moveCard', { commit }, pair)
+        invokeAction(actions, 'moveCard', { commit, dispatch }, pair)
+      })
+
+      it('should clear the existing selected cards', () => {
+        expect(dispatch).toHaveBeenCalledTimes(1)
+        expect(dispatch).toHaveBeenCalledWith('clearSelection')
       })
 
       it('should move the card', () => {
@@ -138,10 +166,6 @@ describe('Root Vuex module', () => {
 
       it('should record the deck state', () => {
         expect(commit).toHaveBeenCalledWith('RECORD_REVERTIBLE_STATE')
-      })
-
-      it('should clear any active hints', () => {
-        expect(commit).toHaveBeenCalledWith('hints/CLEAR_HINTS')
       })
     })
 
@@ -255,11 +279,77 @@ describe('Root Vuex module', () => {
     })
 
     describe('clearSelection()', () => {
-      it('should reset the selected card', () => {
+      it('should reset the selected card and clear hints', () => {
         invokeAction(actions, 'clearSelection', { commit })
 
-        expect(commit).toHaveBeenCalledTimes(1)
+        expect(commit).toHaveBeenCalledTimes(2)
         expect(commit).toHaveBeenCalledWith('SELECT_CARD', null)
+        expect(commit).toHaveBeenCalledWith('hints/CLEAR_HINTS')
+      })
+    })
+
+    describe('autoplayCard()', () => {
+      const card: Card = new Card(Suits.DIAMONDS, 1)
+      const state: IDeckState = createState().deck
+
+      it('should move the card if a pair is found', async () => {
+        const pair: Pair = new Pair(card.id, 'some-target-id')
+
+        jest
+          .spyOn(auto, 'findNextMove')
+          .mockReturnValue(pair)
+
+        await invokeAction(actions, 'autoplayCard', { state, commit, dispatch }, card)
+
+        expect(dispatch).toHaveBeenCalledTimes(2)
+        expect(dispatch).toHaveBeenCalledWith('animation/move', pair)
+        expect(dispatch).toHaveBeenLastCalledWith('moveCard', pair)
+      })
+
+      it('should animate an error on the card if there is no applicable pair', async () => {
+        jest
+          .spyOn(auto, 'findNextMove')
+          .mockReturnValue(null)
+
+        await invokeAction(actions, 'autoplayCard', { state, commit, dispatch }, card)
+
+        expect(dispatch).toHaveBeenCalledTimes(1)
+        expect(dispatch).toHaveBeenCalledWith('animation/wait')
+        expect(commit).toHaveBeenCalledTimes(2)
+        expect(commit).toHaveBeenCalledWith('deck/cards/SET_CARD_ERROR', { cardId: card.id, hasError: true })
+        expect(commit).toHaveBeenLastCalledWith('deck/cards/SET_CARD_ERROR', { cardId: card.id, hasError: false })
+      })
+    })
+
+    describe('autoComplete()', () => {
+      const state: IDeckState = createState().deck
+
+      it('should move the card and then temporarily halt UI if a pair is found before re-attempt', async () => {
+        const pair: Pair = new Pair('some-card-id', 'some-target-id')
+
+        jest
+          .spyOn(auto, 'findNextPromotion')
+          .mockReturnValue(pair)
+
+        await invokeAction(actions, 'autoComplete', { state, dispatch })
+
+        expect(dispatch).toHaveBeenCalledTimes(4)
+        expect(dispatch).toHaveBeenCalledWith('animation/move', pair)
+        expect(dispatch).toHaveBeenCalledWith('moveCard', pair)
+        expect(dispatch).toHaveBeenCalledWith('animation/wait')
+        expect(dispatch).toHaveBeenCalledWith('autoComplete')
+      })
+
+      it('should trigger a deal if no pair is found before re-attempt', async () => {
+        jest
+          .spyOn(auto, 'findNextPromotion')
+          .mockReturnValue(null)
+
+          await invokeAction(actions, 'autoComplete', { state, dispatch })
+
+        expect(dispatch).toHaveBeenCalledTimes(2)
+        expect(dispatch).toHaveBeenCalledWith('deal')
+        expect(dispatch).toHaveBeenCalledWith('autoComplete')
       })
     })
   })

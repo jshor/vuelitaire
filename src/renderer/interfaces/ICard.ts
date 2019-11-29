@@ -5,6 +5,8 @@ export default interface ICard {
 
   promoted: boolean
 
+  hasError: boolean
+
   isPlayed: boolean
 
   revealed: boolean

@@ -37,16 +37,46 @@ describe('Vuex animation module', () => {
     describe('move()', () => {
       const move: Pair = new Pair('some-card-id', 'some-target-id')
 
-      it('should reset the animation to an empty pair after the specified time', (done) => {
-        const promise: Promise<void> = invokeAction(actions, 'move', { commit }, move)
+      it('should set the move animation before resetting it', async () => {
+        invokeAction(actions, 'move', { commit, dispatch }, move)
 
-        expect.assertions(5)
-        expect(commit).toHaveBeenCalledWith('SET_IN_PROGRESS', true)
+        expect(commit).toHaveBeenCalledTimes(1)
         expect(commit).toHaveBeenCalledWith('SET_ANIMATION', move)
+      })
+
+      it('should reset the move animation after halting user interaction', async () => {
+        await invokeAction(actions, 'move', { commit, dispatch }, move)
+
+        expect(dispatch).toHaveBeenCalledTimes(1)
+        expect(dispatch).toHaveBeenCalledWith('wait')
+        expect(commit).toHaveBeenCalledTimes(2)
+        expect(commit).toHaveBeenLastCalledWith('SET_ANIMATION', expect.objectContaining(new Pair()))
+      })
+    })
+
+    describe('wait()', () => {
+      it('should reset the animation after the specified time', (done) => {
+        const promise = invokeAction(actions, 'wait', { commit }, 10)
+
+        expect.assertions(3)
+        expect(commit).toHaveBeenCalledWith('SET_IN_PROGRESS', true)
 
         promise.then(() => {
-          expect(commit).toHaveBeenCalledTimes(4)
-          expect(commit).toHaveBeenCalledWith('SET_ANIMATION', expect.objectContaining(new Pair()))
+          expect(commit).toHaveBeenCalledTimes(2)
+          expect(commit).toHaveBeenCalledWith('SET_IN_PROGRESS', false)
+          done()
+        })
+        jest.runAllTimers()
+      })
+
+      it('should fall back to a default time if no time is specified', (done) => {
+        const promise = invokeAction(actions, 'wait', { commit })
+
+        expect.assertions(3)
+        expect(commit).toHaveBeenCalledWith('SET_IN_PROGRESS', true)
+
+        promise.then(() => {
+          expect(commit).toHaveBeenCalledTimes(2)
           expect(commit).toHaveBeenCalledWith('SET_IN_PROGRESS', false)
           done()
         })
@@ -66,6 +96,17 @@ describe('Vuex animation module', () => {
 
         expect(state.cardId).toEqual(cardId)
         expect(state.targetId).toEqual(targetId)
+      })
+    })
+
+    describe('SET_IN_PROGRESS', () => {
+      it('should update `inProgress` to `true`', () => {
+        const inProgress: boolean = true
+        const state: IAnimationState = createState()
+
+        mutations.SET_IN_PROGRESS(state, inProgress)
+
+        expect(state.inProgress).toEqual(inProgress)
       })
     })
   })

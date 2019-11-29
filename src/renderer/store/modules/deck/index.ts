@@ -1,15 +1,14 @@
-import { GetterTree, ModuleTree, Module, MutationTree } from 'vuex'
-import values from 'lodash-es/values'
-import shuffle from 'lodash-es/shuffle'
 import Vue from 'vue'
+import { GetterTree, Module, ModuleTree, MutationTree } from 'vuex'
+import shuffle from 'lodash.shuffle'
 import { Suits } from '../../../constants'
 import ICard from '../../../interfaces/ICard'
+import IDeckState from '../../../interfaces/IDeckState'
+import IRootState from '../../../interfaces/IDeckState'
 import Card from '../../../models/Card'
 import LaneSpace from '../../../models/LaneSpace'
 import Pair from '../../../models/Pair'
 import cards from './cards'
-import IDeckState from '../../../interfaces/IDeckState'
-import IRootState from '../../../interfaces/IDeckState'
 
 const state: IDeckState = {
   cards: {},
@@ -141,7 +140,8 @@ const mutations: MutationTree<IDeckState> = {
    */
   SET_MOVE (state: IDeckState, move: Pair = null): void {
     if (move) {
-      const parent = values(state.cards)
+      const parent = Object
+        .values(state.cards)
         .filter((card: ICard) => card.child)
         .find((card: ICard) => card.child.id === move.cardId)
 

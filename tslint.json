@@ -5,6 +5,8 @@
   ],
   "jsRules": {},
   "rules": {
+    "callable-types": false,
+    "forin": false,
     "object-literal-sort-keys": false,
     "no-shadowed-variable": false,
     "no-var-requires": false,

@@ -1,6 +1,6 @@
-import hasAlternatingColor from './hasAlternatingColor'
-import IRule from '../../interfaces/IRule'
 import ICard from '../../interfaces/ICard'
+import IRule from '../../interfaces/IRule'
+import hasAlternatingColor from './hasAlternatingColor'
 
 /**
  * Determines if the parent and child have opposite colors.

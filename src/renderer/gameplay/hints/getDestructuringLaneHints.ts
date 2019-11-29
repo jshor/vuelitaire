@@ -1,7 +1,7 @@
-import getLineage from '../../utils/getLineage'
 import ICard from '../../interfaces/ICard'
-import IHint from '../../interfaces/IHint'
 import IDeckState from '../../interfaces/IDeckState'
+import IHint from '../../interfaces/IHint'
+import getLineage from '../../utils/getLineage'
 
 /**
  * Finds all moves where moving a card will allow its parent to be promoted.
@@ -11,7 +11,7 @@ import IDeckState from '../../interfaces/IDeckState'
  * @param {IDeckState} deckState - current state of the deck
  * @returns {string[][]} list of hint pairs
  */
-const getDestructuringLaneHints: IHint = (allCards: ICard[], playableCards: ICard[], deckState: IDeckState): string[][] => {
+const getDestructuringLaneHints: IHint = (allCards: ICard[], p: ICard[], d: IDeckState): string[][] => {
   return allCards
     // start with finding the Foundation spaces
     .filter((card: ICard): boolean => card.constructor.name === 'FoundationSpace')

@@ -1,4 +1,3 @@
-import values from 'lodash-es/values'
 import deck from '..'
 import { Suits } from '../../../../constants'
 import getLineage from '../../../../utils/getLineage'
@@ -70,17 +69,17 @@ describe('Vuex Deck module', () => {
       it('should apply 7 space cards to the state', () => {
         mutations.INIT_TABLEAU(state)
 
-        const spaces = values(state.cards).filter((t: ICard) => t instanceof LaneSpace)
+        const spaces = Object.values(state.cards).filter((t: ICard) => t instanceof LaneSpace)
 
         expect(spaces).toHaveLength(7)
       })
 
       it('should create a hierarchy of (n + 2) cards for each nth index, for n = 7 ~ 1', () => {
         mutations.INIT_TABLEAU(state)
-        const arr = []
 
         expect.assertions(7)
-        values(state.cards)
+        Object
+          .values(state.cards)
           .filter((t: ICard) => t instanceof LaneSpace)
           .reverse()
           .forEach((space: LaneSpace, index: number) => {

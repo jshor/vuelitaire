@@ -1,14 +1,8 @@
-import { ActionTree, MutationTree, ActionContext } from 'vuex'
-import values from 'lodash-es/values'
-import getDeckHints from '../../gameplay/hints/getDeckHints'
-import getDestructuringLaneHints from '../../gameplay/hints/getDestructuringLaneHints'
-import getLaneCreationHints from '../../gameplay/hints/getLaneCreationHints'
-import getMoveableCardHints from '../../gameplay/hints/getMoveableCardHints'
-import getWorryBackHints from '../../gameplay/hints/getWorryBackHints'
-import ICard from '../../interfaces/ICard'
-import ICardsState from '../../interfaces/ICardsState'
+import { ActionContext, ActionTree, MutationTree } from 'vuex'
 import IHintsState from '../../interfaces/IHintsState'
 import IRootState from '../../interfaces/IRootState'
+
+import generateHints from '../../gameplay/hints'
 
 const state: IHintsState = {
   entries: [],
@@ -39,29 +33,7 @@ const actions: ActionTree<IHintsState, IRootState> = {
    * @param {ActionContext<IHintsState, IRootState>} context
    */
   generateHints ({ rootState, commit }: ActionContext<IHintsState, IRootState>): void {
-    const { cards, waste }: {
-      cards: ICardsState,
-      waste: ICard[]
-    } = rootState.deck
-    const allCards: ICard[] = values(cards)
-    const playableCards: ICard[] = allCards
-      .filter((card) => card.isPlayable() && !card.promoted)
-      .concat(waste.slice(-1))
-
-    // generate basic hints
-    let hints: string[][] = [
-      ...getMoveableCardHints(allCards, playableCards, rootState.deck),
-      ...getLaneCreationHints(allCards, playableCards, rootState.deck),
-      ...getDeckHints(allCards, playableCards, rootState.deck)
-    ]
-
-    // if there were no hints available, try the "desperate" hints
-    if (hints.length === 0) {
-      hints = hints.concat(getDestructuringLaneHints(allCards, playableCards, rootState.deck))
-      hints = hints.concat(getWorryBackHints(allCards, playableCards, rootState.deck))
-    }
-
-    commit('SET_HINTS', hints)
+    commit('SET_HINTS', generateHints(rootState.deck))
   }
 }
 

@@ -44,9 +44,12 @@
       :target-id="animation.targetId"
     />
 
+    <stats-container />
+
     <button @click="undo" :disabled="!canUndo">Undo</button>
     <button @click.stop="showHint">Hint</button>
     <button @click="newGame">New Game</button>
+    <button @click="autoComplete(0)">Autoplay</button>
   </div>
 </template>
 
@@ -60,9 +63,10 @@ import Foundations from '../components/Foundations.vue'
 import Tableau from '../components/Tableau.vue'
 import CardContainer from './CardContainer.vue'
 import DeckContainer from './DeckContainer.vue'
+import StatsContainer from './StatsContainer.vue'
 
-import ICard from '../interfaces/ICard'
 import IAnimationState from '../interfaces/IAnimationState'
+import ICard from '../interfaces/ICard'
 
 @Component({
   computed: {
@@ -86,7 +90,8 @@ import IAnimationState from '../interfaces/IAnimationState'
       'deal',
       'newGame',
       'undo',
-      'clearSelection'
+      'clearSelection',
+      'autoComplete'
     ])
   },
   components: {
@@ -94,7 +99,8 @@ import IAnimationState from '../interfaces/IAnimationState'
     CardContainer,
     DeckContainer,
     Foundations,
-    Tableau
+    Tableau,
+    StatsContainer
   }
 })
 class GameContainer extends Vue {
@@ -110,7 +116,7 @@ class GameContainer extends Vue {
 
   public newGame: () => Promise<void>
 
-  beforeCreate () {
+  public beforeCreate () {
     this.$store.dispatch('newGame')
   }
 }

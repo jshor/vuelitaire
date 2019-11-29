@@ -1,4 +1,4 @@
-import { ActionTree, MutationTree, ActionContext } from 'vuex'
+import { ActionContext, ActionTree, MutationTree } from 'vuex'
 import IAnimationState from '../../interfaces/IAnimationState'
 import IRootState from '../../interfaces/IRootState'
 import Pair from '../../models/Pair'
@@ -34,17 +34,27 @@ const actions: ActionTree<IAnimationState, IRootState> = {
    * @param {ActionContext<IAnimationState, IRootState>} context
    * @param {Pair} move - pairing to assign marriage to
    */
-  move ({ commit }: ActionContext<IAnimationState, IRootState>, move: Pair): Promise<void> {
-    commit('SET_IN_PROGRESS', true)
+  async move ({ commit, dispatch }: ActionContext<IAnimationState, IRootState>, move: Pair): Promise<void> {
     commit('SET_ANIMATION', move)
+    await dispatch('wait')
+    commit('SET_ANIMATION', new Pair()) // now that the animation is complete, we can reset
+  },
+
+  /**
+   * Halts user interaction for the specified time to elapse (in milliseconds).
+   *
+   * @param {ActionContext<IAnimationState, IRootState>} context
+   * @param {number} [time = 250] - time, in milliseconds, to halt
+   * @returns {Promise<void>}
+   */
+  wait ({ commit }: ActionContext<IAnimationState, IRootState>, time: number = 250): Promise<void> {
+    commit('SET_IN_PROGRESS', true)
 
     return new Promise((resolve): void => {
-      setTimeout((): void => {
-        // now that the animation is complete, we can reset
-        commit('SET_ANIMATION', new Pair())
+      window.setTimeout((): void => {
         commit('SET_IN_PROGRESS', false)
         resolve()
-      }, 250) // TODO: make const
+      }, time)
     })
   }
 }

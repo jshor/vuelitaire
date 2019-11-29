@@ -1,4 +1,3 @@
-import values from 'lodash-es/values'
 import ICard from '../../../../interfaces/ICard'
 import ICardsState from '../../../../interfaces/ICardsState'
 import Card from '../../../../models/Card'
@@ -117,7 +116,7 @@ describe('Vuex cards module', () => {
 
         mutations.INIT_FOUNDATIONS(state)
 
-        const foundations = values(state).filter((t) => t instanceof FoundationSpace)
+        const foundations = Object.values(state).filter((t) => t instanceof FoundationSpace)
 
         expect(foundations).toHaveLength(4)
       })

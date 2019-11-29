@@ -1,12 +1,11 @@
-import { GetterTree, Module, MutationTree } from 'vuex'
-import values from 'lodash-es/values'
 import Vue from 'vue'
+import { GetterTree, Module, MutationTree } from 'vuex'
 import ICard from '../../../interfaces/ICard'
 import ICardsState from '../../../interfaces/ICardsState'
+import IDeckState from '../../../interfaces/IDeckState'
 import FoundationSpace from '../../../models/FoundationSpace'
 import LaneSpace from '../../../models/LaneSpace'
 import Pair from '../../../models/Pair'
-import IDeckState from '../../../interfaces/IDeckState'
 
 const state: ICardsState = {}
 
@@ -20,7 +19,9 @@ const getters: GetterTree<ICardsState, IDeckState> = {
    * @returns {LaneSpace[]} - list of 7 lane spaces
    */
   tableau (state: ICardsState): LaneSpace[] {
-    return values(state).filter((card: ICard): boolean => {
+    const tableau = Object.values(state) as LaneSpace[]
+
+    return tableau.filter((card: ICard): boolean => {
       return card instanceof LaneSpace
     })
   },
@@ -32,7 +33,9 @@ const getters: GetterTree<ICardsState, IDeckState> = {
    * @returns {LaneSpace[]} - list of 4 foundation spaces
    */
   foundations (state: ICardsState): FoundationSpace[] {
-    return values(state).filter((card: ICard): boolean => {
+    const foundations = Object.values(state) as FoundationSpace[]
+
+    return foundations.filter((card: ICard): boolean => {
       return card instanceof FoundationSpace
     })
   }
@@ -45,7 +48,7 @@ const mutations: MutationTree<ICardsState> = {
    * @param {ICardsState} state
    */
   REVEAL_CARDS (state: ICardsState): void {
-    values(state)
+    Object.values(state)
       .filter(({ child }: ICard): boolean => !child)
       .forEach(({ id }: ICard): void => {
         Vue.set(state[id], 'revealed', true)
@@ -65,12 +68,24 @@ const mutations: MutationTree<ICardsState> = {
   },
 
   /**
+   * Toggles the card `hasError` flag. When true, it causes the card to shake.
+   *
+   * @param {ICardsState} state
+   * @param cardId - id of the card to unreveal
+   */
+  SET_CARD_ERROR (state: ICardsState, { cardId, hasError }: { cardId: string, hasError: boolean }): void {
+    if (state[cardId]) {
+      state[cardId].hasError = hasError
+    }
+  },
+
+  /**
    * Resets all animation indices of all cards to 0.
    *
    * @param {ICardsState} state
    */
   CLEAR_ANIMATION_INDICES (state: ICardsState): void {
-    values(state)
+    Object.values(state)
       .forEach(({ id }: ICard): void => {
         state[id].animationIndex = 0
       })
@@ -98,7 +113,7 @@ const mutations: MutationTree<ICardsState> = {
    */
   MOVE_CARD (state: ICardsState, { cardId, targetId }: Pair): void {
     const card: ICard = state[cardId]
-    const parent: ICard = values(state)
+    const parent: ICard = Object.values(state)
       .find(({ child }: ICard): boolean => {
         return child && child.id === card.id
       })

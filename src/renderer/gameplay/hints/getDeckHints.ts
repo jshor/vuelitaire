@@ -1,8 +1,8 @@
+import ICard from '../../interfaces/ICard'
+import IDeckState from '../../interfaces/IDeckState'
+import IHint from '../../interfaces/IHint'
 import getDealableCards from '../../utils/getDealableCards'
 import getMoveableCardHints from './getMoveableCardHints'
-import ICard from '../../interfaces/ICard'
-import IHint from '../../interfaces/IHint'
-import IDeckState from '../../interfaces/IDeckState'
 
 /**
  * Returns a list containing a single hint to highlight the dealing card, if a playable card
@@ -15,7 +15,7 @@ import IDeckState from '../../interfaces/IDeckState'
  */
 const getDeckHints: IHint = (allCards: ICard[], playableCards: ICard[], deckState: IDeckState): string[][] => {
   const dealableCards: ICard[] = getDealableCards(deckState)
-  const targetCards: ICard[]  = allCards.filter(card => !card.child)
+  const targetCards: ICard[]  = allCards.filter((card) => !card.child)
   const hints: string[][] = getMoveableCardHints(targetCards, dealableCards, deckState, true)
 
   return hints.length > 0

@@ -81,7 +81,7 @@ export default {
 
 .card--dealing {
   animation-delay: calc(var(--index) * 50ms);
-  animation-duration: 100ms;
+  animation-duration: 250ms;
   animation-fill-mode: forwards;
   animation-name: dealing;
   opacity: 0;

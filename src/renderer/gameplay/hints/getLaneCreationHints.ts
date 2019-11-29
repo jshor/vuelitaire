@@ -1,7 +1,7 @@
-import LaneSpace from '../../models/LaneSpace'
 import ICard from '../../interfaces/ICard'
 import IDeckState from '../../interfaces/IDeckState'
 import IHint from '../../interfaces/IHint'
+import LaneSpace from '../../models/LaneSpace'
 
 /**
  * Returns a list of all hints where a king can be moved onto an empty `LaneSpace`
@@ -21,7 +21,7 @@ const getLaneCreationHints: IHint = (allCards: ICard[], playableCards: ICard[], 
 
   return openSpaces.reduce((entries: string[][], space: ICard): string[][] => [
     ...entries,
-    ...availableKings.map(king => [king.id, space.id])
+    ...availableKings.map((king) => [king.id, space.id])
   ], [])
 }
 

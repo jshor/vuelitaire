@@ -10,7 +10,7 @@
       :rank="card.rank"
       :revealed="card.revealed"
       :card-id="card.id"
-      :error="error"
+      :error="card.hasError"
     />
     <div
       @click.stop="selectCard(false)"
@@ -82,7 +82,8 @@ import isDescendant from '../utils/isDescendant'
   methods: {
     ...mapActions([
       'moveCard',
-      'setSelection'
+      'setSelection',
+      'autoplayCard'
     ])
   }
 })
@@ -102,6 +103,8 @@ class CardContainer extends Vue {
   public moveCard: (pair: Pair) => Promise<void>
 
   public setSelection: (card: ICard) => Promise<void>
+
+  public autoplayCard: (card: ICard) => Promise<void>
 
   get descendants (): ICard[] {
     return getDescendants(this.card)
@@ -155,11 +158,6 @@ class CardContainer extends Vue {
         this.setSelection(card)
       }
     }
-  }
-
-  public autoplayCard (card: ICard): void {
-    this.ready = false
-    this.error = true
   }
 }
 

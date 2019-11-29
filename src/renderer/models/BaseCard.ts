@@ -1,6 +1,6 @@
 import generateId from 'uuid/v4'
-import ICard from '../interfaces/ICard'
 import isBuildable from '../gameplay/rules/isBuildable'
+import ICard from '../interfaces/ICard'
 import IRule from '../interfaces/IRule'
 
 export default abstract class BaseCard implements ICard {
@@ -19,6 +19,8 @@ export default abstract class BaseCard implements ICard {
   public rank: number = -1
 
   public suit: string = null
+
+  public hasError: boolean = false
 
   public rules: IRule[] = [isBuildable]
 

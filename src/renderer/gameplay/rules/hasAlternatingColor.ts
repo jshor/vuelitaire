@@ -1,6 +1,6 @@
 import { Suits } from '../../constants'
-import IRule from '../../interfaces/IRule'
 import ICard from '../../interfaces/ICard'
+import IRule from '../../interfaces/IRule'
 
 /**
  * Determines if the parent and child have opposite colors.

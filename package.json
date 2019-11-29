@@ -53,6 +53,8 @@
   },
   "dependencies": {
     "lodash-es": "^4.17.15",
+    "lodash.clonedeep": "^4.5.0",
+    "lodash.shuffle": "^4.2.0",
     "uuid": "^3.3.3",
     "vue": "^2.5.16",
     "vue-electron": "^1.0.6",

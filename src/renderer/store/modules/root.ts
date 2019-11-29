@@ -1,15 +1,17 @@
-import { ActionContext, ActionTree, GetterTree, MutationTree, StoreOptions } from 'vuex'
-import cloneDeep from 'lodash-es/cloneDeep'
 import uuid from 'uuid/v4'
 import Vue from 'vue'
+import { ActionContext, ActionTree, GetterTree, MutationTree, StoreOptions } from 'vuex'
+import cloneDeep from 'lodash.clonedeep'
+import autoplay from '../../gameplay/auto'
+import ICard from '../../interfaces/ICard'
+import IDeckState from '../../interfaces/IDeckState'
+import IRootState from '../../interfaces/IRootState'
 import Card from '../../models/Card'
 import Pair from '../../models/Pair'
 import animation from './animation'
 import deck from './deck'
 import hints from './hints'
-import ICard from '../../interfaces/ICard'
-import IDeckState from '../../interfaces/IDeckState'
-import IRootState from '../../interfaces/IRootState'
+import stats from './stats'
 
 const state: IRootState = {
   gameId: uuid(),
@@ -17,7 +19,8 @@ const state: IRootState = {
   selectedCard: null,
   animation: null,
   deck: null,
-  hints: null
+  hints: null,
+  stats: null
 }
 
 const getters: GetterTree<IRootState, IRootState> = {
@@ -95,11 +98,12 @@ const actions: ActionTree<IRootState, IRootState> = {
    *  * This will clear all visible hints from the state
    * @param {ActionContext<IRootState, IRootState>} context
    */
-  deal ({ commit, dispatch }: ActionContext<IRootState, IRootState>): void {
+  async deal ({ commit, dispatch }: ActionContext<IRootState, IRootState>): Promise<void> {
     dispatch('clearSelection')
     commit('deck/SET_MOVE', null)
     commit('RECORD_REVERTIBLE_STATE')
     commit('deck/DEAL')
+    await dispatch('animation/wait')
   },
 
   /**
@@ -121,13 +125,26 @@ const actions: ActionTree<IRootState, IRootState> = {
   },
 
   /**
+   * Clears the active card selection.
+   *
+   * @param {ActionContext<IRootState, IRootState>} context
+   */
+  clearSelection ({ commit }: ActionContext<IRootState, IRootState>): void {
+    commit('SELECT_CARD', null)
+    commit('hints/CLEAR_HINTS')
+  },
+
+  /**
    * Selects a card. If one is already selected, try to move the previously-selected one onto it.
    *
    * @param {ActionContext<IRootState, IRootState>} context
    * @param {ICard} target
    * @returns {Promise<void>}
    */
-  async setSelection ({ commit, dispatch, state }: ActionContext<IRootState, IRootState>, target: ICard): Promise<void> {
+  async setSelection (
+    { commit, dispatch, state }: ActionContext<IRootState, IRootState>,
+    target: ICard
+  ): Promise<void> {
     if (state.selectedCard && target.canAcceptCard(state.selectedCard)) {
       const move: Pair = new Pair(state.selectedCard.id, target.id)
 
@@ -141,13 +158,45 @@ const actions: ActionTree<IRootState, IRootState> = {
   },
 
   /**
-   * Clears the active card selection.
+   * Attempts to auto-play a card. If no moves apply, tell it to 'shake' to inform the user of an error.
    *
    * @param {ActionContext<IRootState, IRootState>} context
+   * @param {ICard} card - card to auto-play
+   * @returns {Promise<void>}
    */
-  clearSelection ({ commit }): void {
-    commit('SELECT_CARD', null)
-    commit('hints/CLEAR_HINTS')
+  async autoplayCard ({ state, commit, dispatch }: ActionContext<IRootState, IRootState>, card: ICard) {
+    const pair: Pair = autoplay.findNextMove(state.deck, card)
+
+    if (pair) {
+      await dispatch('animation/move', pair)
+      await dispatch('moveCard', pair)
+    } else {
+      commit('deck/cards/SET_CARD_ERROR', { cardId: card.id, hasError: true })
+      await dispatch('animation/wait')
+      commit('deck/cards/SET_CARD_ERROR', { cardId: card.id, hasError: false })
+    }
+  },
+
+  /**
+   * Continuously promotes cards from the tableaux or waste pile, in an animated fashion.
+   * If there are no moves available at the time of invocation, deal again and try again.
+   * Do this repeatedly until the score state determines that it's complete.
+   *
+   * @param {ActionContext<IRootState, IRootState>} context
+   * @returns {Promise<void>}
+   */
+  async autoComplete ({ state, dispatch }: ActionContext<IRootState, IRootState>) {
+    const pair: Pair = autoplay.findNextPromotion(state.deck)
+
+    if (pair) {
+      await dispatch('animation/move', pair)
+      await dispatch('moveCard', pair)
+      await dispatch('animation/wait')
+    } else {
+      await dispatch('deal')
+    }
+
+    await dispatch('autoComplete')
   }
 }
 
@@ -202,7 +251,8 @@ const store: StoreOptions<any> = {
   modules: {
     animation,
     deck,
-    hints
+    hints,
+    stats
   },
   strict
 }
