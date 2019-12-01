@@ -27,7 +27,8 @@
         @drag-enter="onDragEnter"
         @drag-leave="onDragLeave"
         :get-child-payload="() => card.child"
-        :should-accept-drop="shouldAcceptDrop">
+        :should-accept-drop="shouldAcceptDrop"
+        :drag-begin-delay="0">
         <card-container
           v-if="card.child && hasChild"
           :card="card.child"
