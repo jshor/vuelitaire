@@ -1,6 +1,9 @@
 module.exports = {
   collectCoverage: true,
   coverageDirectory: '<rootDir>/test/coverage',
+  coveragePathIgnorePatterns: [
+    '<rootDir>/src/renderer/.*/__spec__/.*'
+  ],
   moduleFileExtensions: [
     'js',
     'ts',

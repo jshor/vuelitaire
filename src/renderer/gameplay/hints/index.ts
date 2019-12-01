@@ -12,9 +12,12 @@ export default function generateHints (deck: IDeckState): string[][] {
     cards: ICardsState,
     waste: ICard[]
   } = deck
-  const allCards: ICard[] = Object.values(cards)
+  const allCards: ICard[] = Object
+    .values(cards.regular)
+    .concat(Object.values(cards.foundations))
+    .concat(Object.values(cards.tableau))
   const playableCards: ICard[] = allCards
-    .filter((card) => card.isPlayable() && !card.promoted)
+    .filter((card) => card.parent && !card.promoted)
     .concat(waste.slice(-1))
 
   // generate basic hints

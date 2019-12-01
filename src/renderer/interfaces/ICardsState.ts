@@ -1,5 +1,8 @@
-import ICard from './ICard'
+import ICardsMap from './ICardsMap'
+import ICard from './ICard';
 
 export default interface ICardsState {
-  [id: string]: ICard
+  foundations: ICardsMap<ICard>,
+  tableau: ICardsMap<ICard>,
+  regular: ICardsMap<ICard>
 }

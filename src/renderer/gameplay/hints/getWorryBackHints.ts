@@ -17,8 +17,8 @@ import hasAlternatingColor from '../rules/hasAlternatingColor'
  */
 const getWorryBackHints: IHint = (allCards: ICard[], playableCards: ICard[], deckState: IDeckState): string[][] => {
   // compute all tableaux top cards that haven't been touched by the user yet
-  const untouchedTopCards = allCards
-    .filter((card) => card instanceof LaneSpace)
+  const untouchedTopCards = Object
+    .values(deckState.cards.tableau)
     .map((card) => getLineage(card).slice(-2).shift()) // get the second-to-last card
     .filter((card) => !card.revealed || card instanceof LaneSpace)
     .map((card) => card.child)
@@ -27,9 +27,9 @@ const getWorryBackHints: IHint = (allCards: ICard[], playableCards: ICard[], dec
   // get all cards that can be used for moving
   const moveableCards = getDealableCards(deckState).concat(untouchedTopCards)
 
-  const promotedCards = allCards
+  const promotedCards = Object
     // start with finding the Foundation spaces
-    .filter((card) => card instanceof FoundationSpace)
+    .values(deckState.cards.foundations)
     // then get the top (visible) card of each foundation pile
     .map((card) => getLineage(card).pop())
 

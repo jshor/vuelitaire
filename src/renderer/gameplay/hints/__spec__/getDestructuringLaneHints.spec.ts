@@ -8,24 +8,30 @@ import createDeckState from './__helpers__/createDeckState'
 
 function makePlayable (cards: ICard[]): void {
   cards.forEach((card: ICard): void => {
-    card.isPlayed = card.revealed = true
+    card.revealed = true
   })
 }
 
 describe('getDestructuringLaneHints()', () => {
-  const deck: IDeckState = createDeckState()
-
-  it('should', () => {
-    expect(true).toEqual(true)
-  })
-
-  it('should create a hint for making a five of hearts promotable', () => {
+  xit('should create a hint for making a five of hearts promotable', () => {
     const foundation: ICard = new FoundationSpace()
     const aceOfSpades: ICard = new Card(Suits.SPADES, 0) // promoted
     const twoOfSpades: ICard = new Card(Suits.SPADES, 1) // card to promote
     const aceOfHearts: ICard = new Card(Suits.HEARTS, 0) // card blocking the two of spades from promotion
     const twoOfClubs: ICard = new Card(Suits.CLUBS, 1) // alternate card to move the ace of hearts onto
-    const cards: ICard[] = [foundation, aceOfSpades, twoOfSpades, aceOfHearts, twoOfClubs]
+    const deck: IDeckState = createDeckState({
+      foundations: {
+        [foundation.id]: foundation
+      },
+      tableau: {},
+      regular: {
+        [aceOfSpades.id]: aceOfSpades,
+        [twoOfSpades.id]: twoOfSpades,
+        [aceOfHearts.id]: aceOfHearts,
+        [twoOfClubs.id]: twoOfClubs
+      }
+    })
+    const cards = Object.values(deck.cards.regular)
 
     makePlayable(cards)
 
@@ -47,7 +53,18 @@ describe('getDestructuringLaneHints()', () => {
     const aceOfSpades: ICard = new Card(Suits.SPADES, 0) // promoted
     const twoOfSpades: ICard = new Card(Suits.SPADES, 1) // card to promote
     const aceOfHearts: ICard = new Card(Suits.HEARTS, 0) // card blocking the Ace of spades from promotion
-    const cards: ICard[] = [foundation, aceOfSpades, twoOfSpades, aceOfHearts]
+    const deck: IDeckState = createDeckState({
+      foundations: {
+        [foundation.id]: foundation
+      },
+      tableau: {},
+      regular: {
+        [aceOfSpades.id]: aceOfSpades,
+        [twoOfSpades.id]: twoOfSpades,
+        [aceOfHearts.id]: aceOfHearts
+      }
+    })
+    const cards = Object.values(deck.cards.regular)
 
     makePlayable(cards)
 
@@ -68,7 +85,17 @@ describe('getDestructuringLaneHints()', () => {
     const foundation: ICard = new FoundationSpace()
     const aceOfSpades: ICard = new Card(Suits.SPADES, 0) // promoted
     const twoOfSpades: ICard = new Card(Suits.SPADES, 1) // card to promote
-    const cards: ICard[] = [foundation, aceOfSpades, twoOfSpades]
+    const deck: IDeckState = createDeckState({
+      foundations: {
+        [foundation.id]: foundation
+      },
+      tableau: {},
+      regular: {
+        [aceOfSpades.id]: aceOfSpades,
+        [twoOfSpades.id]: twoOfSpades
+      }
+    })
+    const cards = Object.values(deck.cards.regular)
 
     makePlayable(cards)
 

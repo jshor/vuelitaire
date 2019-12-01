@@ -2,13 +2,12 @@ import Card from '../../../models/Card'
 import { Suits } from '../../../constants'
 import Pair from '../../../models/Pair'
 import IDeckState from '../../../interfaces/IDeckState'
-import ICardsState from '../../../interfaces/ICardsState'
 import LaneSpace from '../../../models/LaneSpace'
 import FoundationSpace from '../../../models/FoundationSpace'
 import findNextPromotion from '../findNextPromotion'
 import generateDeckState from './__helpers__/generateDeckState'
 
-describe('findNextMove()', () => {
+describe('findNextPromotion()', () => {
   it('should promote a card from the tableaux', () => {
     const card: Card = new Card(Suits.CLUBS, 1)
     const target: Card = new Card(Suits.CLUBS, 0)
@@ -17,15 +16,19 @@ describe('findNextMove()', () => {
     const state: IDeckState = generateDeckState({
       [card.id]: card,
       [target.id]: target,
-      [lane.id]: lane,
-      [foundation.id]: foundation
+      [lane.id]: lane
     })
 
-    card.isPlayed = card.revealed = true
-    target.isPlayed = target.revealed = true
+    state.cards.foundations[foundation.id] = foundation
+    state.cards.tableau[lane.id] = lane
+
+    card.revealed = true
+    target.revealed = true
     target.promoted = true
     lane.child = card
+    card.parent = lane
     foundation.child = target
+    target.parent = foundation
 
     expect(findNextPromotion(state)).toEqual(
       expect.objectContaining(new Pair(card.id, target.id))
@@ -38,14 +41,16 @@ describe('findNextMove()', () => {
     const foundation: FoundationSpace = new FoundationSpace()
     const state: IDeckState = generateDeckState({
       [card.id]: card,
-      [target.id]: target,
-      [foundation.id]: foundation
+      [target.id]: target
     })
 
-    state.waste = [card]
-    card.isPlayed = card.revealed = true
-    target.isPlayed = target.revealed = true
+    state.cards.foundations[foundation.id] = foundation
+    state.dealt = [card]
+
+    card.revealed = true
+    target.revealed = true
     target.promoted = true
+    target.parent = foundation
     foundation.child = target
 
     expect(findNextPromotion(state)).toEqual(
@@ -59,13 +64,15 @@ describe('findNextMove()', () => {
     const foundation: FoundationSpace = new FoundationSpace()
     const state: IDeckState = generateDeckState({
       [card.id]: card,
-      [target.id]: target,
-      [foundation.id]: foundation
+      [target.id]: target
     })
 
+    state.cards.foundations[foundation.id] = foundation
     state.dealt = [card]
-    card.isPlayed = card.revealed = true
+
+    card.revealed = true
     foundation.child = target
+    target.parent = foundation
 
     expect(findNextPromotion(state)).toBeNull()
   })
@@ -78,8 +85,9 @@ describe('findNextMove()', () => {
       [lane.id]: lane
     })
 
-    card.isPlayed = card.revealed = true
+    card.revealed = true
     lane.child = card
+    card.parent = lane
 
     expect(findNextPromotion(state)).toBeNull()
   })

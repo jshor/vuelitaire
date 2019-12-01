@@ -11,7 +11,7 @@ import Pair from '../../../models/Pair'
 import cards from './cards'
 
 const state: IDeckState = {
-  cards: {},
+  cards: null,
   move: null,
   stock: [], // cards in the stock pile
   waste: [], // the pile of cards dealt
@@ -52,7 +52,7 @@ const mutations: MutationTree<IDeckState> = {
 
     shuffle(stock).forEach((card: Card): void => {
       state.stock.push(card)
-      state.cards[card.id] = card
+      state.cards.regular[card.id] = card
     })
   },
 
@@ -68,7 +68,7 @@ const mutations: MutationTree<IDeckState> = {
       let parent: ICard = new LaneSpace()
 
       // assign the first lane space card to the tableau row
-      state.cards[parent.id] = parent
+      state.cards.tableau[parent.id] = parent
 
       // move the last n cards from the stock pile to the tableau
       state
@@ -76,9 +76,9 @@ const mutations: MutationTree<IDeckState> = {
         .splice(state.stock.length - i, i)
         .forEach((card: ICard): void => {
           // assign the next card to be the child of the previous card
-          Vue.set(state.cards[parent.id], 'child', card)
-          Vue.set(state.cards[card.id], 'isPlayed', true)
-          Vue.set(state.cards[card.id], 'animationIndex', ++index)
+          Vue.set(parent, 'child', card)
+          Vue.set(card, 'parent', parent)
+          Vue.set(card, 'animationIndex', ++index)
 
           parent = card
         })
@@ -140,12 +140,13 @@ const mutations: MutationTree<IDeckState> = {
    */
   SET_MOVE (state: IDeckState, move: Pair = null): void {
     if (move) {
-      const parent = Object
-        .values(state.cards)
-        .filter((card: ICard) => card.child)
-        .find((card: ICard) => card.child.id === move.cardId)
+      const card: ICard = state.cards.regular[move.cardId]
 
-      move.parentId = parent ? parent.id : 'WASTE_PILE'
+      if (card) {
+        move.parentId = card.parent
+          ? card.parent.id
+          : 'WASTE_PILE'
+      }
     }
     state.move = move
   }

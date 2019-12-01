@@ -11,10 +11,10 @@ import getLineage from '../../utils/getLineage'
  * @param {IDeckState} deckState - current state of the deck
  * @returns {string[][]} list of hint pairs
  */
-const getDestructuringLaneHints: IHint = (allCards: ICard[], p: ICard[], d: IDeckState): string[][] => {
-  return allCards
+const getDestructuringLaneHints: IHint = (allCards: ICard[], p: ICard[], deckState: IDeckState): string[][] => {
+  return Object
     // start with finding the Foundation spaces
-    .filter((card: ICard): boolean => card.constructor.name === 'FoundationSpace')
+    .values(deckState.cards.foundations)
     // then get the top (visible) card of each foundation pile
     .map((card: ICard): ICard => getLineage(card).pop())
     // select the card with the next rank to be placed onto the top of each Foundation pile

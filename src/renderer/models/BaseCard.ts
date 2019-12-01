@@ -8,9 +8,9 @@ export default abstract class BaseCard implements ICard {
 
   public child: ICard = null
 
-  public promoted: boolean = false
+  public parent: ICard = null
 
-  public isPlayed: boolean = true
+  public promoted: boolean = false
 
   public revealed: boolean = true
 
@@ -23,10 +23,6 @@ export default abstract class BaseCard implements ICard {
   public hasError: boolean = false
 
   public rules: IRule[] = [isBuildable]
-
-  public isPlayable (): boolean {
-    return this.isPlayed && this.revealed
-  }
 
   public canAcceptCard (card: ICard): boolean {
     return this.rules.reduce((result: boolean, rule: IRule): boolean => {

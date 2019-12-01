@@ -6,17 +6,24 @@ import ICard from '../../../interfaces/ICard'
 import createDeckState from './__helpers__/createDeckState'
 import IDeckState from '../../../interfaces/IDeckState'
 
-
 describe('Lane creation', () => {
-  const deck: IDeckState = createDeckState()
-
   it('should return multiple hints if multiple kings can be moved to a space', () => {
     const space: ICard = new LaneSpace()
     const kingOfHearts: ICard = new Card(Suits.HEARTS, 12)
     const kingOfSpades: ICard = new Card(Suits.SPADES, 12)
-    const allCards: ICard[] = [space, kingOfHearts, kingOfSpades]
+    const deck: IDeckState = createDeckState({
+      foundations: {},
+      tableau: {
+        [space.id]: space
+      },
+      regular: {
+        [kingOfHearts.id]: kingOfHearts,
+        [kingOfSpades.id]: kingOfSpades
+      }
+    })
+    const cards = Object.values(deck.cards.regular)
 
-    const hints: string[][] = getLaneCreationHints(allCards, [kingOfHearts, kingOfSpades], deck)
+    const hints: string[][] = getLaneCreationHints(cards, [kingOfHearts, kingOfSpades], deck)
 
     expect(hints).toEqual(
       expect.arrayContaining([
@@ -30,9 +37,19 @@ describe('Lane creation', () => {
     const space1: ICard = new LaneSpace()
     const space2: ICard = new LaneSpace()
     const kingOfHearts: ICard = new Card(Suits.HEARTS, 12)
-    const allCards: ICard[] = [space1, space2, kingOfHearts]
+    const deck: IDeckState = createDeckState({
+      foundations: {},
+      tableau: {
+        [space1.id]: space1,
+        [space2.id]: space2
+      },
+      regular: {
+        [kingOfHearts.id]: kingOfHearts
+      }
+    })
+    const cards = Object.values(deck.cards.regular)
 
-    const hints: string[][] = getLaneCreationHints(allCards, [kingOfHearts], deck)
+    const hints: string[][] = getLaneCreationHints(cards, [kingOfHearts], deck)
 
     expect(hints).toEqual(
       expect.arrayContaining([
@@ -47,9 +64,20 @@ describe('Lane creation', () => {
     const space2: ICard = new LaneSpace()
     const kingOfHearts: ICard = new Card(Suits.HEARTS, 12)
     const kingOfSpades: ICard = new Card(Suits.SPADES, 12)
-    const allCards: ICard[] = [space1, space2, kingOfHearts, kingOfSpades]
+    const deck: IDeckState = createDeckState({
+      foundations: {},
+      tableau: {
+        [space1.id]: space1,
+        [space2.id]: space2
+      },
+      regular: {
+        [kingOfHearts.id]: kingOfHearts,
+        [kingOfSpades.id]: kingOfSpades
+      }
+    })
+    const cards = Object.values(deck.cards.regular)
 
-    const hints: string[][] = getLaneCreationHints(allCards, [kingOfHearts, kingOfSpades], deck)
+    const hints: string[][] = getLaneCreationHints(cards, [kingOfHearts, kingOfSpades], deck)
 
     expect(hints).toEqual(
       expect.arrayContaining([
@@ -65,11 +93,21 @@ describe('Lane creation', () => {
     const space: ICard = new LaneSpace()
     const kingOfHearts: ICard = new Card(Suits.HEARTS, 12)
     const kingOfSpades: ICard = new Card(Suits.SPADES, 12)
-    const allCards: ICard[] = [space, kingOfHearts, kingOfSpades]
+    const deck: IDeckState = createDeckState({
+      foundations: {},
+      tableau: {
+        [space.id]: space
+      },
+      regular: {
+        [kingOfHearts.id]: kingOfHearts,
+        [kingOfSpades.id]: kingOfSpades
+      }
+    })
+    const cards = Object.values(deck.cards.regular)
 
     space.child = kingOfSpades
 
-    const hints: string[][] = getLaneCreationHints(allCards, [kingOfHearts, kingOfSpades], deck)
+    const hints: string[][] = getLaneCreationHints(cards, [kingOfHearts, kingOfSpades], deck)
 
     expect(hints).not.toEqual(
       expect.arrayContaining([
@@ -82,11 +120,21 @@ describe('Lane creation', () => {
     const space: ICard = new LaneSpace()
     const kingOfHearts: ICard = new Card(Suits.HEARTS, 12)
     const queenOfSpades: ICard = new Card(Suits.SPADES, 11)
-    const allCards: ICard[] = [space, kingOfHearts, queenOfSpades]
+    const deck: IDeckState = createDeckState({
+      foundations: {},
+      tableau: {
+        [space.id]: space
+      },
+      regular: {
+        [kingOfHearts.id]: kingOfHearts,
+        [queenOfSpades.id]: queenOfSpades
+      }
+    })
+    const cards = Object.values(deck.cards.regular)
 
     kingOfHearts.child = queenOfSpades
 
-    const hints: string[][] = getLaneCreationHints(allCards, [kingOfHearts, queenOfSpades], deck)
+    const hints: string[][] = getLaneCreationHints(cards, [kingOfHearts, queenOfSpades], deck)
 
     expect(hints).not.toEqual(
       expect.arrayContaining([
@@ -99,9 +147,19 @@ describe('Lane creation', () => {
     const space: ICard = new LaneSpace()
     const kingOfHearts: ICard = new Card(Suits.HEARTS, 12)
     const queenOfSpades: ICard = new Card(Suits.SPADES, 11)
-    const allCards: ICard[] = [space, kingOfHearts, queenOfSpades]
+    const deck: IDeckState = createDeckState({
+      foundations: {},
+      tableau: {
+        [space.id]: space
+      },
+      regular: {
+        [kingOfHearts.id]: kingOfHearts,
+        [queenOfSpades.id]: queenOfSpades
+      }
+    })
+    const cards = Object.values(deck.cards.regular)
 
-    const hints: string[][] = getLaneCreationHints(allCards, [kingOfHearts, queenOfSpades], deck)
+    const hints: string[][] = getLaneCreationHints(cards, [kingOfHearts, queenOfSpades], deck)
 
     expect(hints).not.toEqual(
       expect.arrayContaining([

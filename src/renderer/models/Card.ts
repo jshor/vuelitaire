@@ -10,8 +10,6 @@ export default class Card extends BaseCard {
 
   public rank: number
 
-  public isPlayed: boolean = false
-
   public revealed: boolean = false
 
   public rules: IRule[] = [

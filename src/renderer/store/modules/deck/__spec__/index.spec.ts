@@ -12,7 +12,17 @@ const {
   mutations
 } = deck
 
-const createState = (): IDeckState => (<IDeckState>{ ...deck.state })
+const createState = (): IDeckState => {
+  const state = <IDeckState>{ ...deck.state }
+
+  state.cards = {
+    foundations: {},
+    tableau: {},
+    regular: {}
+  }
+
+  return state
+}
 
 export default createState
 
@@ -61,7 +71,7 @@ describe('Vuex Deck module', () => {
 
       beforeEach(() => {
         state = createState()
-        state.cards = {}
+        state.cards.regular = {}
 
         mutations.INIT_DECK(state)
       })
@@ -69,7 +79,7 @@ describe('Vuex Deck module', () => {
       it('should apply 7 space cards to the state', () => {
         mutations.INIT_TABLEAU(state)
 
-        const spaces = Object.values(state.cards).filter((t: ICard) => t instanceof LaneSpace)
+        const spaces = Object.values(state.cards.tableau)
 
         expect(spaces).toHaveLength(7)
       })
@@ -79,8 +89,7 @@ describe('Vuex Deck module', () => {
 
         expect.assertions(7)
         Object
-          .values(state.cards)
-          .filter((t: ICard) => t instanceof LaneSpace)
+          .values(state.cards.tableau)
           .reverse()
           .forEach((space: LaneSpace, index: number) => {
             expect(getLineage(space)).toHaveLength(index + 2) // + 2 cards (one for LaneSpace, one for last child)
@@ -182,14 +191,16 @@ describe('Vuex Deck module', () => {
       beforeEach(() => {
         state = createState()
 
-        state.cards[parentCard.id] = parentCard
-        state.cards[movingCard.id] = movingCard
-        state.cards[targetCard.id] = targetCard
+        state.cards.regular[parentCard.id] = parentCard
+        state.cards.regular[movingCard.id] = movingCard
+        state.cards.regular[targetCard.id] = targetCard
       })
 
       describe('when the move is set', () => {
         it('should set the parent id when one exists', () => {
           parentCard.child = movingCard
+          movingCard.parent = parentCard
+
           mutations.SET_MOVE(state, move)
 
           expect(state.move).toEqual(move)
@@ -198,6 +209,8 @@ describe('Vuex Deck module', () => {
 
         it('should set the parent id to `WASTE_PILE`', () => {
           parentCard.child = null
+          movingCard.parent = null
+
           mutations.SET_MOVE(state, move)
 
           expect(state.move).toEqual(move)

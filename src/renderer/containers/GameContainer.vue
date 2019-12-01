@@ -70,7 +70,7 @@ import ICard from '../interfaces/ICard'
 
 @Component({
   computed: {
-    ...mapGetters('deck/cards', [
+    ...mapState('deck/cards', [
       'tableau',
       'foundations'
     ]),

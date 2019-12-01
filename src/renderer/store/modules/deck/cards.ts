@@ -1,45 +1,20 @@
 import Vue from 'vue'
-import { GetterTree, Module, MutationTree } from 'vuex'
+import { Module, MutationTree } from 'vuex'
 import ICard from '../../../interfaces/ICard'
+// import ICardsMap from '../../../interfaces/ICardsMap'
 import ICardsState from '../../../interfaces/ICardsState'
 import IDeckState from '../../../interfaces/IDeckState'
 import FoundationSpace from '../../../models/FoundationSpace'
-import LaneSpace from '../../../models/LaneSpace'
+// import LaneSpace from '../../../models/LaneSpace'
 import Pair from '../../../models/Pair'
 
-const state: ICardsState = {}
+const state: ICardsState = {
+  foundations: {},
+  tableau: {},
+  regular: {}
+}
 
 const namespaced: boolean = true
-
-const getters: GetterTree<ICardsState, IDeckState> = {
-  /**
-   * Returns all tableau space cards.
-   *
-   * @param {ICardsState} state
-   * @returns {LaneSpace[]} - list of 7 lane spaces
-   */
-  tableau (state: ICardsState): LaneSpace[] {
-    const tableau = Object.values(state) as LaneSpace[]
-
-    return tableau.filter((card: ICard): boolean => {
-      return card instanceof LaneSpace
-    })
-  },
-
-  /**
-   * Returns all foundation space cards.
-   *
-   * @param {ICardsState} state
-   * @returns {LaneSpace[]} - list of 4 foundation spaces
-   */
-  foundations (state: ICardsState): FoundationSpace[] {
-    const foundations = Object.values(state) as FoundationSpace[]
-
-    return foundations.filter((card: ICard): boolean => {
-      return card instanceof FoundationSpace
-    })
-  }
-}
 
 const mutations: MutationTree<ICardsState> = {
   /**
@@ -48,10 +23,10 @@ const mutations: MutationTree<ICardsState> = {
    * @param {ICardsState} state
    */
   REVEAL_CARDS (state: ICardsState): void {
-    Object.values(state)
+    Object.values(state.regular)
       .filter(({ child }: ICard): boolean => !child)
       .forEach(({ id }: ICard): void => {
-        Vue.set(state[id], 'revealed', true)
+        Vue.set(state.regular[id], 'revealed', true)
       })
   },
 
@@ -62,8 +37,8 @@ const mutations: MutationTree<ICardsState> = {
    * @param cardId - id of the card to unreveal
    */
   UNREVEAL_CARD (state: ICardsState, cardId: string): void {
-    if (state[cardId]) {
-      state[cardId].revealed = false
+    if (state.regular[cardId]) {
+      state.regular[cardId].revealed = false
     }
   },
 
@@ -74,8 +49,8 @@ const mutations: MutationTree<ICardsState> = {
    * @param cardId - id of the card to unreveal
    */
   SET_CARD_ERROR (state: ICardsState, { cardId, hasError }: { cardId: string, hasError: boolean }): void {
-    if (state[cardId]) {
-      state[cardId].hasError = hasError
+    if (state.regular[cardId]) {
+      state.regular[cardId].hasError = hasError
     }
   },
 
@@ -85,9 +60,9 @@ const mutations: MutationTree<ICardsState> = {
    * @param {ICardsState} state
    */
   CLEAR_ANIMATION_INDICES (state: ICardsState): void {
-    Object.values(state)
+    Object.values(state.regular)
       .forEach(({ id }: ICard): void => {
-        state[id].animationIndex = 0
+        state.regular[id].animationIndex = 0
       })
   },
 
@@ -100,7 +75,7 @@ const mutations: MutationTree<ICardsState> = {
     for (let i: number = 0; i < 4; i++) {
       const space: FoundationSpace = new FoundationSpace()
 
-      state[space.id] = space
+      state.foundations[space.id] = space
     }
   },
 
@@ -112,27 +87,26 @@ const mutations: MutationTree<ICardsState> = {
    * @param {Pair} pair - card pairing to assign marriage to
    */
   MOVE_CARD (state: ICardsState, { cardId, targetId }: Pair): void {
-    const card: ICard = state[cardId]
-    const parent: ICard = Object.values(state)
-      .find(({ child }: ICard): boolean => {
-        return child && child.id === card.id
-      })
+    const card: ICard = state.regular[cardId]
+    const target: ICard = state.regular[targetId]
+      || state.foundations[targetId]
+      || state.tableau[targetId]
 
-    if (parent) {
-      Vue.set(state[parent.id], 'child', null)
-      Vue.set(state[parent.id], 'revealed', true)
+    if (card.parent) {
+      Vue.set(card.parent, 'child', null)
+      Vue.set(card.parent, 'revealed', true)
+      Vue.set(card, 'parent', null)
     }
 
-    Vue.set(state[cardId], 'promoted', state[targetId].promoted)
-    Vue.set(state[cardId], 'isPlayed', true)
-    Vue.set(state[targetId], 'child', card)
+    Vue.set(card, 'parent', target)
+    Vue.set(card, 'promoted', target.promoted)
+    Vue.set(target, 'child', card)
   }
 }
 
 const cards: Module<ICardsState, IDeckState> = {
   namespaced,
   state,
-  getters,
   mutations
 }
 

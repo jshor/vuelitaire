@@ -1,7 +1,11 @@
 import IDeckState from '../../../../interfaces/IDeckState'
 
-const createDeckState = (): IDeckState => ({
-  cards: {},
+const createDeckState = (cards = {
+  foundations: {},
+  tableau: {},
+  regular: {}
+}): IDeckState => ({
+  cards,
   move: null,
   stock: [], // cards in the stock pile
   waste: [], // the pile of cards dealt

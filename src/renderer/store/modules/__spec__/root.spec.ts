@@ -237,7 +237,7 @@ describe('Root Vuex module', () => {
             selectedCard: aceOfSpades
           }
 
-          threeOfHearts.isPlayed = threeOfHearts.revealed = true
+          threeOfHearts.revealed = true
 
           await invokeAction(actions, 'setSelection', { commit, dispatch, state }, threeOfHearts)
 
@@ -371,7 +371,11 @@ describe('Root Vuex module', () => {
 
     beforeEach(() => {
       state.deck.cards = {
-        [card.id]: card
+        foundations: {},
+        tableau: {},
+        regular: {
+          [card.id]: card
+        }
       }
       state.deck.stock = [card]
       state.gameId = 'original-game-id'
@@ -382,7 +386,11 @@ describe('Root Vuex module', () => {
 
       expect(state.deck).toEqual({
         ...createState().deck,
-        cards: {}
+        cards: {
+          foundations: {},
+          tableau: {},
+          regular: {}
+        }
       })
     })
 

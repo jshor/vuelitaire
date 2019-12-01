@@ -20,7 +20,7 @@ const getMoveableCardHints: IHint = (
   deckState: IDeckState,
   ignoreRank: boolean = false
 ): string[][] => {
-  const potentialTargets = allCards.filter((card) => card.isPlayable())
+  const potentialTargets = allCards.filter((card) => card.revealed && card.parent)
 
   /**
    * Returns the parent card, or an empty object if child is an orphan.

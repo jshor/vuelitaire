@@ -1,8 +1,13 @@
-import ICardsState from '../../../../interfaces/ICardsState'
+import ICardsMap from '../../../../interfaces/ICardsMap'
 import IDeckState from '../../../../interfaces/IDeckState'
+import ICard from '../../../../interfaces/ICard'
 
-const generateState = (cards: ICardsState): IDeckState => ({
-  cards,
+const generateState = (regular: ICardsMap<ICard>): IDeckState => ({
+  cards: {
+    tableau: {},
+    foundations: {},
+    regular
+  },
   move: null,
   waste: [],
   stock: [],

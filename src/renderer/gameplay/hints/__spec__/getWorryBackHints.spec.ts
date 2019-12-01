@@ -19,8 +19,6 @@ describe('Hint: getWorryBackHints', () => {
   const unplayedCard: ICard = new Card(Suits.DIAMONDS, 6)
 
   beforeEach(() => {
-    untouchedTopCard.isPlayed =
-    receivableTopCard.isPlayed =
     untouchedTopCard.revealed =
     receivableTopCard.revealed =
     unplayedCard.revealed =
@@ -40,17 +38,45 @@ describe('Hint: getWorryBackHints', () => {
   ]
 
   describe('when a marryable card whose parent is unplayable exists in the tableaux', () => {
+    let deck: IDeckState
+
     beforeEach(() => {
+      deck = createDeckState()
+
       // set up the hierarchy
       laneSpace1.child = unrevealedParent
       laneSpace2.child = receivableTopCard
       foundationSpace.child = promotedParent
       unrevealedParent.child = untouchedTopCard
       promotedParent.child = promotedChild
+
+      unrevealedParent.parent = laneSpace1
+      receivableTopCard.parent = laneSpace2
+      promotedChild.parent = foundationSpace
+      untouchedTopCard.parent = unrevealedParent
+      promotedChild.parent = promotedParent
+
+      deck.cards = {
+        foundations: {
+          [foundationSpace.id]: foundationSpace
+        },
+        tableau: {
+          [laneSpace1.id]: laneSpace1,
+          [laneSpace2.id]: laneSpace2
+        },
+        regular: {
+          [unrevealedParent.id]: unrevealedParent,
+          [receivableTopCard.id]: receivableTopCard,
+          [promotedChild.id]: promotedChild,
+          [promotedParent.id]: promotedParent,
+          [unplayedCard.id]: unplayedCard,
+        }
+      }
     })
 
     it('should hint that a card should be worried back if its parent can marry one in the tableaux', () => {
-      const deck: IDeckState = createDeckState()
+      deck.cards.tableau[untouchedTopCard.id] = untouchedTopCard
+
       const hints: string[][] = getWorryBackHints([
         ...cards,
         untouchedTopCard
@@ -67,8 +93,8 @@ describe('Hint: getWorryBackHints', () => {
     })
 
     it('should hint that a card should be worried back if its parent can marry one in the waste pile', () => {
-      const deck: IDeckState = createDeckState()
       deck.waste = [unplayedCard]
+
       const hints: string[][] = getWorryBackHints([
         ...cards,
         unplayedCard
@@ -85,8 +111,8 @@ describe('Hint: getWorryBackHints', () => {
     })
 
     it('should hint that a card should be worried back if its parent can marry one in the stock pile', () => {
-      const deck: IDeckState = createDeckState()
       deck.waste = [unplayedCard]
+
       const hints: string[][] = getWorryBackHints([
         ...cards,
         unplayedCard

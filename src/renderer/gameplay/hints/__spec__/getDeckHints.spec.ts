@@ -15,10 +15,14 @@ describe('Hint: getDeckHints', () => {
   ]
 
   beforeEach(() => {
+
     // make the cards playable
-    aceOfSpades.isPlayed = aceOfSpades.revealed = true
-    twoOfHearts.isPlayed = twoOfHearts.revealed = true
-    sixOfSpades.isPlayed = sixOfSpades.revealed = true
+    aceOfSpades.revealed = true
+    twoOfHearts.revealed = true
+    sixOfSpades.revealed = true
+
+    // add a parent to make this a legitimate tableaux card
+    twoOfHearts.parent = new Card(Suits.DIAMONDS, 6)
   })
 
   it('should return the DEAL_CARD hint for a moveable card within the deck', () => {

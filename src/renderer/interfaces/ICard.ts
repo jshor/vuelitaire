@@ -3,11 +3,11 @@ export default interface ICard {
 
   child: ICard
 
+  parent: ICard
+
   promoted: boolean
 
   hasError: boolean
-
-  isPlayed: boolean
 
   revealed: boolean
 
@@ -16,8 +16,6 @@ export default interface ICard {
   suit: string
 
   rank: number
-
-  isPlayable: () => boolean
 
   canAcceptCard: (card: ICard) => boolean
 }

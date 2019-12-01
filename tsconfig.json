@@ -23,6 +23,7 @@
   ],
   "exclude": [
     "node_modules",
-    "src/renderer/**/*.spec.ts"
+    "src/renderer/**/*.spec.ts",
+    "src/renderer/**/__helpers__/*.ts"
   ]
 }

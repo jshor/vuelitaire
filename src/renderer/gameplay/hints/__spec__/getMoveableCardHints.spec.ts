@@ -24,11 +24,26 @@ describe('Hint: getMoveableCardHints', () => {
     laneSpace,
     foundationSpace
   ]
-  const deck: IDeckState = createDeckState()
+  const deck: IDeckState = createDeckState({
+    foundations: {
+      [foundationSpace.id]: foundationSpace
+    },
+    tableau: {
+      [laneSpace.id]: laneSpace
+    },
+    regular: {
+      [sixOfDiamonds.id]: sixOfDiamonds,
+      [sevenOfClubs.id]: sevenOfClubs,
+      [sevenOfSpades.id]: sevenOfSpades,
+      [aceOfHearts.id]: aceOfHearts,
+      [kingOfSpades.id]: kingOfSpades
+    }
+  })
   let hints: string[][]
 
   cards.forEach((card: ICard): void => {
-    card.isPlayed = card.revealed = true
+    card.revealed = true
+    card.parent = new Card(Suits.DIAMONDS, 2)
   })
 
   beforeEach(() => {

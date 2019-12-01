@@ -2,6 +2,7 @@ import isBuildable from '../isBuildable'
 import Card from '../../../models/Card'
 import LaneSpace from '../../../models/LaneSpace'
 import { Suits } from '../../../constants'
+import FoundationSpace from '../../../models/FoundationSpace'
 
 describe('Rule: isBuildable', () => {
   let parent: Card
@@ -26,21 +27,27 @@ describe('Rule: isBuildable', () => {
     expect(isBuildable(parent, parent)).toEqual(false)
   })
 
-  it('should return false when the parent card is not yet in play', () => {
-    parent.isPlayed = false
-
+  it('should return false when the target card has no parent of itself', () => {
     expect(isBuildable(parent, child)).toEqual(false)
   })
 
+  it('should return true when the target card has no parent of itself but is a Foundation', () => {
+    expect(isBuildable(new FoundationSpace(), child)).toEqual(false)
+  })
+
+  it('should return true when the target card has no parent of itself but is a Tableau lane', () => {
+    expect(isBuildable(new LaneSpace(), child)).toEqual(false)
+  })
+
   it('should return false when parent card is not yet revealed', () => {
-    parent.isPlayed = true
+    parent.parent = new Card(Suits.DIAMONDS, 1)
     parent.revealed = false
 
     expect(isBuildable(parent, child)).toEqual(false)
   })
 
   it('should return false when child card is not yet revealed', () => {
-    parent.isPlayed = true
+    parent.parent = new Card(Suits.DIAMONDS, 1)
     parent.revealed = true
     child.revealed = false
 
@@ -48,7 +55,7 @@ describe('Rule: isBuildable', () => {
   })
 
   it('should return true', () => {
-    parent.isPlayed = true
+    parent.parent = new Card(Suits.DIAMONDS, 1)
     parent.revealed = true
     child.revealed = true
 

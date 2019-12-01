@@ -1,7 +1,6 @@
 import ICard from '../../interfaces/ICard'
 import IDeckState from '../../interfaces/IDeckState'
 import IHint from '../../interfaces/IHint'
-import LaneSpace from '../../models/LaneSpace'
 
 /**
  * Returns a list of all hints where a king can be moved onto an empty `LaneSpace`
@@ -12,9 +11,9 @@ import LaneSpace from '../../models/LaneSpace'
  * @returns {string[][]} list of hint pairs
  */
 const getLaneCreationHints: IHint = (allCards: ICard[], playableCards: ICard[], deckState: IDeckState): string[][] => {
-  const openSpaces = allCards.filter((card: ICard): boolean => {
-    return card instanceof LaneSpace && !card.child
-  })
+  const openSpaces = Object
+    .values(deckState.cards.tableau)
+    .filter((card: ICard): boolean => !card.child)
   const availableKings = playableCards.filter((card: ICard): boolean => {
     return card.rank === 12 && !card.child
   })

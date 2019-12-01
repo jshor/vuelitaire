@@ -1,10 +1,11 @@
-import Pair from '../models/Pair'
+// import Pair from '../models/Pair'
 import ICard from './ICard'
 import ICardsState from './ICardsState'
+import Pair from '../models/Pair'
 
 export default interface IDeckState {
   cards: ICardsState
-  move: Pair
+  move: Pair,
   stock: ICard[] // cards in the stock pile
   waste: ICard[] // the pile of cards dealt
   dealt: ICard[] // the last `dealCount` (or fewer) cards dealt

@@ -2,44 +2,14 @@ import ICard from '../../../../interfaces/ICard'
 import ICardsState from '../../../../interfaces/ICardsState'
 import Card from '../../../../models/Card'
 import FoundationSpace from '../../../../models/FoundationSpace'
-import LaneSpace from '../../../../models/LaneSpace'
 import Pair from '../../../../models/Pair'
 import cards from '../cards'
 import { Suits } from '../../../../constants'
+import LaneSpace from '../../../../models/LaneSpace'
 
-const { getters, mutations } = cards
+const { mutations } = cards
 
 describe('Vuex cards module', () => {
-  describe('getters', () => {
-    // helper: creates a card map state containing n elements of ICard
-    const createState = (n: number, fn: () => ICard): ICardsState => Array(n)
-      .fill(null)
-      .map(fn)
-      .reduce((s: ICardsState, c: ICard) => ({ ...s, [c.id]: c }), {})
-
-    describe('tableau', () => {
-      it('should return an array of 7 tableau space cards', () => {
-        const state: ICardsState = createState(7, () => new LaneSpace())
-        const tableau: LaneSpace[] = getters.tableau(state, null, null, null)
-
-        expect.assertions(8)
-        expect(tableau).toHaveLength(7)
-        tableau.forEach((t) => expect(t).toBeInstanceOf(LaneSpace))
-      })
-    })
-
-    describe('foundations', () => {
-      it('should return an array of 4 foundation space cards', () => {
-        const state: ICardsState = createState(4, () => new FoundationSpace())
-        const foundations: FoundationSpace[] = getters.foundations(state, null, null, null)
-
-        expect.assertions(5)
-        expect(foundations).toHaveLength(4)
-        foundations.forEach((t) => expect(t).toBeInstanceOf(FoundationSpace))
-      })
-    })
-  })
-
   describe('mutations', () => {
     describe('REVEAL_CARDS', () => {
       it('should set all childless cards in the state to be revealed', () => {
@@ -47,8 +17,12 @@ describe('Vuex cards module', () => {
         const b: ICard = new Card(Suits.DIAMONDS, 1)
         const c: ICard = new Card(Suits.DIAMONDS, 1)
         const state: ICardsState = {
-          [a.id]: a,
-          [b.id]: b
+          tableau: {},
+          foundations: {},
+          regular: {
+            [a.id]: a,
+            [b.id]: b
+          }
         }
 
         b.child = c
@@ -64,7 +38,11 @@ describe('Vuex cards module', () => {
     describe('UNREVEAL_CARD', () => {
       it('should leave the state intact if the card having the given id is not found', () => {
         const card: Card = new Card(Suits.CLUBS, 0)
-        const state: ICardsState = {}
+        const state: ICardsState = {
+          tableau: {},
+          foundations: {},
+          regular: {}
+        }
         const originalState: ICardsState = <ICardsState>{ ...state }
 
         mutations.UNREVEAL_CARD(state, card.id)
@@ -75,15 +53,51 @@ describe('Vuex cards module', () => {
       it('should set the revealed flag to false if the card exists in the state', () => {
         const card: Card = new Card(Suits.CLUBS, 0)
         const state: ICardsState = {
-          [card.id]: card
+          tableau: {},
+          foundations: {},
+          regular: {
+            [card.id]: card
+          }
         }
-        const originalState: ICardsState = <ICardsState>{ ...state }
 
         card.revealed = true
 
         mutations.UNREVEAL_CARD(state, card.id)
 
-        expect(state[card.id].revealed).toEqual(false)
+        expect(card.revealed).toEqual(false)
+      })
+    })
+
+    describe('SET_CARD_ERROR', () => {
+      it('should leave the state intact if the card having the given id is not found', () => {
+        const card: Card = new Card(Suits.CLUBS, 0)
+        const state: ICardsState = {
+          tableau: {},
+          foundations: {},
+          regular: {}
+        }
+        const originalState: ICardsState = <ICardsState>{ ...state }
+
+        mutations.SET_CARD_ERROR(state, { cardId: card.id, hasError: true })
+
+        expect(state).toEqual(originalState)
+      })
+
+      it('should set the revealed flag to the given value if the card exists in the state', () => {
+        const card: Card = new Card(Suits.CLUBS, 0)
+        const state: ICardsState = {
+          tableau: {},
+          foundations: {},
+          regular: {
+            [card.id]: card
+          }
+        }
+
+        card.hasError = true
+
+        mutations.SET_CARD_ERROR(state, { cardId: card.id, hasError: true })
+
+        expect(card.hasError).toEqual(true)
       })
     })
 
@@ -93,9 +107,13 @@ describe('Vuex cards module', () => {
         const b: Card = new Card(Suits.DIAMONDS, 1)
         const c: Card = new Card(Suits.SPADES, 2)
         const state: ICardsState = {
-          [a.id]: a,
-          [b.id]: b,
-          [c.id]: c
+          tableau: {},
+          foundations: {},
+          regular: {
+            [a.id]: a,
+            [b.id]: b,
+            [c.id]: c
+          }
         }
 
         a.animationIndex = 1
@@ -112,72 +130,83 @@ describe('Vuex cards module', () => {
 
     describe('INIT_FOUNDATIONS', () => {
       it('should attach 4 spaces to the cards state', () => {
-        const state: ICardsState = {}
+        const state: ICardsState = {
+          tableau: {},
+          foundations: {},
+          regular: {}
+        }
 
         mutations.INIT_FOUNDATIONS(state)
 
-        const foundations = Object.values(state).filter((t) => t instanceof FoundationSpace)
-
-        expect(foundations).toHaveLength(4)
+        expect(Object.values(state.foundations)).toHaveLength(4)
       })
     })
 
     describe('MOVE_CARD', () => {
-      let a: ICard
-      let b: ICard
-      let c: ICard
-      let state: ICardsState
-
-      beforeEach(() => {
-        a = new Card(Suits.DIAMONDS, 1)
-        b = new Card(Suits.DIAMONDS, 1)
-        c = new Card(Suits.DIAMONDS, 1)
-
-        state = {
-          [a.id]: a,
-          [b.id]: b,
-          [c.id]: c
+      it('should move a card from an existing one in the tableaux to another', () => {
+        const lane: LaneSpace = new LaneSpace()
+        const oldParent: Card = new Card(Suits.CLUBS, 12)
+        const newParent: Card = new Card(Suits.SPADES, 12)
+        const card: Card = new Card(Suits.DIAMONDS, 11)
+        const state: ICardsState = {
+          foundations: {},
+          tableau: {
+            [lane.id]: lane
+          },
+          regular: {
+            [oldParent.id]: oldParent,
+            [newParent.id]: newParent,
+            [card.id]: card
+          }
         }
-        a.child = b
+
+        oldParent.child = card
+        card.parent = oldParent
+
+        mutations.MOVE_CARD(state, new Pair(card.id, newParent.id))
+
+        expect(newParent.child).toEqual(card)
+        expect(oldParent.child).toBeNull()
+        expect(card.parent).toEqual(newParent)
       })
 
-      it('should set the child of the previous parent to null', () => {
-        const cardId: string = b.id
-        const targetId: string = c.id
+      it('should move a card into the tableaux', () => {
+        const lane: LaneSpace = new LaneSpace()
+        const card: Card = new Card(Suits.CLUBS, 12)
+        const state: ICardsState = {
+          foundations: {},
+          tableau: {
+            [lane.id]: lane
+          },
+          regular: {
+            [card.id]: card
+          }
+        }
 
-        mutations.MOVE_CARD(state, new Pair(cardId, targetId))
+        mutations.MOVE_CARD(state, new Pair(card.id, lane.id))
 
-        expect(a.child).toBeNull()
+        expect(lane.child).toEqual(card)
+        expect(card.parent).toEqual(lane)
       })
 
-      it('should set the child of the target to the moving card', () => {
-        const cardId: string = b.id
-        const targetId: string = c.id
+      it('should promote a card', () => {
+        const foundation: FoundationSpace = new FoundationSpace()
+        const card: Card = new Card(Suits.CLUBS, 0)
+        const state: ICardsState = {
+          foundations: {
+            [foundation.id]: foundation
+          },
+          tableau: {},
+          regular: {
+            [card.id]: card
+          }
+        }
 
-        mutations.MOVE_CARD(state, new Pair(cardId, targetId))
+        mutations.MOVE_CARD(state, new Pair(card.id, foundation.id))
 
-        expect(c.child).toEqual(b)
-      })
-
-      it('should not mutate the state if the moving card is the same as its parent', () => {
-        const cardId: string = c.id
-        const targetId: string = a.id
-
-        mutations.MOVE_CARD(state, new Pair(cardId, targetId))
-
-        expect(state[a.id]).toEqual(a)
-        expect(state[b.id]).toEqual(b)
-        expect(state[c.id]).toEqual(c)
-      })
-
-      it('should not remove the child card from its parent if it is an orphan', () => {
-        const originalState = { ...state }
-        const cardId = b.id
-        const targetId = b.id
-
-        mutations.MOVE_CARD(state, new Pair(cardId, targetId))
-
-        expect(state).toEqual(originalState)
+        expect(foundation.child).toEqual(card)
+        expect(card.parent).toEqual(foundation)
+        expect(card.promoted).toEqual(true)
       })
     })
   })

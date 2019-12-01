@@ -218,7 +218,11 @@ const mutations: MutationTree<IRootState> = {
    */
   CLEAR_GAME (state: IRootState): void {
     Vue.set(state, 'deck', deck.state)
-    Vue.set(state.deck, 'cards', {})
+    Vue.set(state.deck, 'cards', {
+      foundations: {},
+      tableau: {},
+      regular: {}
+    })
     Vue.set(state, 'gameId', uuid())
   },
 
