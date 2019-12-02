@@ -1,5 +1,5 @@
-import hints from '../hints'
 import IHintsState from '@/interfaces/IHintsState'
+import hints from '../hints'
 import invokeAction from './__helpers__/invokeAction'
 
 const {
@@ -7,7 +7,7 @@ const {
   mutations
 } = hints
 
-const createState = (): IHintsState => (<IHintsState>{ ...hints.state })
+const createState = (): IHintsState => ({ ...hints.state } as IHintsState)
 
 jest.mock('@/gameplay/hints/', () => () => [])
 

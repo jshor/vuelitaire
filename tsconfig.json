@@ -13,13 +13,14 @@
       "@/*": [
         "renderer/*"
       ]
-    },
+    }
   },
   "files": [
     "src/renderer/vue-shims.d.ts"
   ],
   "include": [
     "src/renderer/**/*.ts",
+    "src/renderer/**/*.js",
     "src/renderer/**/*.vue"
   ],
   "exclude": [

@@ -12,8 +12,9 @@
           :class="{
             'game__spacer--active': highlightedCards.includes('DEAL_CARD')
           }"
-          @click="deal"
-        />
+          @click="deal">
+          <card-back />
+        </div>
         <div class="game__spacer game__spacer--deck"  data-id="WASTE_PILE">
           <deck-container />
         </div>
@@ -44,12 +45,29 @@
       :target-id="animation.targetId"
     />
 
-    <stats-container />
-
-    <button @click="undo" :disabled="!canUndo">Undo</button>
-    <button @click.stop="showHint">Hint</button>
-    <button @click="newGame">New Game</button>
-    <button @click="autoComplete(0)">Autoplay</button>
+    <div class="game__action-bar">
+      <div class="game__action-bar--left">
+        <stats-container />
+      </div>
+      <div class="game__action-bar--right">
+        <action-button @click="autoComplete(0)">
+          <i class="fas fa-magic" />
+          Auto
+        </action-button>
+        <action-button @click="undo" :disabled="!canUndo">
+          <i class="fas fa-reply" />
+          Undo
+        </action-button>
+        <action-button @click="showHint">
+          <i class="fas fa-lightbulb" />
+          Hint
+        </action-button>
+        <action-button @click="newGame">
+          <i class="fas fa-layer-group" />
+          Deal
+        </action-button>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -58,7 +76,9 @@ import Vue from 'vue'
 import Component from 'vue-class-component'
 import { mapActions, mapGetters, mapState } from 'vuex'
 
+import ActionButton from '@/components/ActionButton.vue'
 import AnimatedCard from '@/components/AnimatedCard.vue'
+import CardBack from '@/components/CardBack.vue'
 import Foundations from '@/components/Foundations.vue'
 import Tableau from '@/components/Tableau.vue'
 import CardContainer from './CardContainer.vue'
@@ -95,7 +115,9 @@ import ICard from '@/interfaces/ICard'
     ])
   },
   components: {
+    ActionButton,
     AnimatedCard,
+    CardBack,
     CardContainer,
     DeckContainer,
     Foundations,
@@ -124,7 +146,7 @@ class GameContainer extends Vue {
 export default GameContainer
 </script>
 
-<style>
+<style lang="scss">
 .animation-cover {
   z-index: 1000;
   position: absolute;
@@ -137,6 +159,8 @@ export default GameContainer
   display: flex;
   flex-direction: column;
   height: 100%;
+  width: 100vmin;
+  margin: auto;
 }
 
 .game__top {
@@ -148,22 +172,13 @@ export default GameContainer
 
 .game__spacer {
   margin-top: 0;
-  width: 10vw;
-  height: 14vw;
+  width: $card-width;
+  height: $card-height;
   box-sizing: border-box;
 }
 
 .game__spacer--deal {
   z-index: 1000;
-  border: 1px solid #000;
-  border-radius: 3px;
-  background: repeating-linear-gradient(
-    45deg,
-    #606dbc,
-    #606dbc 10px,
-    #465298 10px,
-    #465298 20px
-  );
 }
 
 .game__spacer--active {
@@ -180,5 +195,41 @@ export default GameContainer
 
 .game__tableau {
   flex: 1;
+}
+
+.game__action-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: row;
+  margin: 0.5rem;
+
+  &--left, &--right {
+    display: flex;
+    align-items: center;
+    flex: 1;
+  }
+
+  &--right {
+    justify-content: flex-end;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .game__action-bar {
+    flex-direction: column;
+
+    &--left {
+      text-align: center;
+    }
+
+    &--right {
+      > * {
+        flex: 1;
+      }
+    }
+  }
 }
 </style>

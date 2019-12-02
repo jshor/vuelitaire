@@ -1,9 +1,9 @@
-import Card from '@/models/Card'
 import { Suits } from '@/constants'
-import Pair from '@/models/Pair'
 import IDeckState from '@/interfaces/IDeckState'
-import LaneSpace from '@/models/LaneSpace'
+import Card from '@/models/Card'
 import FoundationSpace from '@/models/FoundationSpace'
+import LaneSpace from '@/models/LaneSpace'
+import Pair from '@/models/Pair'
 import findNextPromotion from '../findNextPromotion'
 import generateDeckState from './__helpers__/generateDeckState'
 

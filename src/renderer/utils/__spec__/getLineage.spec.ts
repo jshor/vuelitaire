@@ -1,12 +1,12 @@
-import getLineage from '@/getLineage'
-import Card from '@/models/Card'
 import { Suits } from '@/constants'
+import Card from '@/models/Card'
+import getLineage from '../getLineage'
 
 describe('getLineage()', () => {
-  const cardA = new Card(Suits.DIAMONDS, 1)
-  const cardB = new Card(Suits.DIAMONDS, 1)
-  const cardC = new Card(Suits.DIAMONDS, 1)
-  const cardD = new Card(Suits.DIAMONDS, 1)
+  const cardA: Card = new Card(Suits.DIAMONDS, 1)
+  const cardB: Card = new Card(Suits.DIAMONDS, 1)
+  const cardC: Card = new Card(Suits.DIAMONDS, 1)
+  const cardD: Card = new Card(Suits.DIAMONDS, 1)
 
   cardA.child = cardB
   cardB.child = cardC

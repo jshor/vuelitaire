@@ -1,19 +1,23 @@
 <template>
-  <div>Points: {{ stats.points }} - Elapsed: {{ timeElapsed }}</div>
+  <stats>Points: {{ stats.points }} &middot; Time: {{ timeElapsed }}</stats>
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import Component from 'vue-class-component'
-import { mapActions, mapState } from 'vuex'
+import Stats from '@/components/Stats'
 import { Scoring } from '@/constants'
 import Stopwatch from '@/gameplay/Stopwatch'
 import IStatsState from '@/interfaces/IStatsState'
+import Vue from 'vue'
+import Component from 'vue-class-component'
+import { mapActions, mapState } from 'vuex'
 
 /**
  * The container for monitoring and broadcasting game time and score.
  */
 @Component({
+  components: {
+    Stats
+  },
   computed: {
     ...mapState(['stats'])
   },

@@ -1,11 +1,11 @@
-import deck from '..'
 import { Suits } from '@/constants'
-import getLineage from '@/utils/getLineage'
 import ICard from '@/interfaces/ICard'
+import IDeckState from '@/interfaces/IDeckState'
 import Card from '@/models/Card'
 import LaneSpace from '@/models/LaneSpace'
 import Pair from '@/models/Pair'
-import IDeckState from '@/interfaces/IDeckState'
+import getLineage from '@/utils/getLineage'
+import deck from '..'
 
 const {
   getters,
@@ -13,7 +13,7 @@ const {
 } = deck
 
 const createState = (): IDeckState => {
-  const state = <IDeckState>{ ...deck.state }
+  const state = { ...deck.state } as IDeckState
 
   state.cards = {
     foundations: {},
@@ -25,7 +25,6 @@ const createState = (): IDeckState => {
 }
 
 export default createState
-
 
 describe('Vuex Deck module', () => {
   describe('getters', () => {

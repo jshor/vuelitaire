@@ -165,11 +165,11 @@ class CardContainer extends Vue {
 export default CardContainer
 </script>
 
-<style>
+<style lang="scss">
 .card-container,
 .card-container__inner {
-  width: 10vw;
-  min-height: calc(14vw - 20px);
+  width: $card-width;
+  min-height: calc(#{$card-height} - #{$card-fanning-space});
   box-sizing: border-box;
 }
 </style>

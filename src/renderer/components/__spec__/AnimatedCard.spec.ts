@@ -1,5 +1,5 @@
-import AnimatedCard from '@/AnimatedCard'
 import { shallowMount } from '@vue/test-utils'
+import AnimatedCard from '../AnimatedCard.vue'
 
 describe('Animated Card component', () => {
   let wrapper
@@ -16,6 +16,10 @@ describe('Animated Card component', () => {
   })
 
   afterEach(() => jest.resetAllMocks())
+
+  it('should render contents correctly', () => {
+    expect(wrapper.html()).toMatchSnapshot()
+  })
 
   describe('cloneCard()', () => {
     afterEach(() => {
@@ -39,7 +43,6 @@ describe('Animated Card component', () => {
         expect(wrapper.find(`[data-id="${cardId}"]`).attributes('style')).toContain('opacity: 0')
       })
     })
-
 
     it('should clear the component if the card does not exist in the DOM', () => {
       const elem = document.createElement('div')

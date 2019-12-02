@@ -1,6 +1,6 @@
+import IAnimationState from '@/interfaces/IAnimationState'
 import Pair from '@/models/Pair'
 import animation from '../animation'
-import IAnimationState from '@/interfaces/IAnimationState'
 import invokeAction from './__helpers__/invokeAction'
 
 const {
@@ -8,7 +8,7 @@ const {
   mutations
 } = animation
 
-const createState = (): IAnimationState => (<IAnimationState>{ ...animation.state })
+const createState = (): IAnimationState => ({ ...animation.state } as IAnimationState)
 
 describe('Vuex animation module', () => {
   beforeEach(() => jest.useFakeTimers())

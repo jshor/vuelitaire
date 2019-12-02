@@ -1,8 +1,7 @@
+import { Scoring } from '@/constants'
 import { createLocalVue, shallowMount } from '@vue/test-utils'
 import Vuex from 'vuex'
-import StatsContainer from '@/StatsContainer.vue'
-import IStatsState from '@/interfaces/IStatsState'
-import { Scoring } from '@/constants'
+import StatsContainer from '../StatsContainer.vue'
 
 const localVue = createLocalVue()
 
@@ -15,6 +14,7 @@ describe('Stats Container', () => {
 
   beforeEach(() => {
     const stats = {
+      namespaced: true,
       actions: {
         deductByEpoch: jest.fn()
       },

@@ -1,10 +1,10 @@
-import { createLocalVue, shallowMount } from '@vue/test-utils'
-import Vuex from 'vuex'
+import { Suits } from '@/constants'
 import ICard from '@/interfaces/ICard'
 import Card from '@/models/Card'
 import Pair from '@/models/Pair'
-import CardContainer from '@/CardContainer.vue'
-import { Suits } from '@/constants'
+import { createLocalVue, shallowMount } from '@vue/test-utils'
+import Vuex from 'vuex'
+import CardContainer from '../CardContainer.vue'
 
 const localVue = createLocalVue()
 
@@ -22,7 +22,8 @@ describe('Card Container', () => {
       store: new Vuex.Store({
         actions: {
           moveCard: jest.fn(),
-          setSelection: jest.fn()
+          setSelection: jest.fn(),
+          autoplayCard: jest.fn()
         },
         getters: {
           highlightedCards: jest.fn(() => [])

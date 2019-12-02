@@ -113,6 +113,6 @@ export default DeckContainer
 }
 
 @include fanning-deck-card('first', 0px);
-@include fanning-deck-card('second', 20px);
-@include fanning-deck-card('third', 40px);
+@include fanning-deck-card('second', $card-fanning-space);
+@include fanning-deck-card('third', $card-fanning-space * 2);
 </style>

@@ -4,10 +4,12 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: 'Foundations'
-}
+<script lang="ts">
+import Vue from 'vue'
+import Component from 'vue-class-component'
+
+@Component
+export default class Foundations extends Vue {}
 </script>
 
 <style>

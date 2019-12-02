@@ -70,7 +70,7 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
 .animated-card {
   position: absolute;
   top: 0;
@@ -87,11 +87,11 @@ export default {
 }
 
 .animated-card__inner .card-container {
-  margin-top: 20px;
+  margin-top: $card-fanning-space;
 }
 
 .animated-card__inner > .card-draggable > .card {
-  margin-top: -20px;
+  margin-top: -$card-fanning-space;
 }
 
 /* disable highlighting */

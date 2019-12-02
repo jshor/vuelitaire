@@ -1,6 +1,6 @@
-import hasSameSuitAfterPromotion from '../hasSameSuitAfterPromotion'
-import Card from '@/models/Card'
 import { Suits } from '@/constants'
+import Card from '@/models/Card'
+import hasSameSuitAfterPromotion from '../hasSameSuitAfterPromotion'
 
 describe('Rule: hasSameSuitAfterPromotion', () => {
   it('should return true if the card is not promoted', () => {

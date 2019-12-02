@@ -1,7 +1,7 @@
-import { ActionContext, ActionTree, MutationTree } from 'vuex'
 import IAnimationState from '@/interfaces/IAnimationState'
 import IRootState from '@/interfaces/IRootState'
 import Pair from '@/models/Pair'
+import { ActionContext, ActionTree, MutationTree } from 'vuex'
 
 const state: IAnimationState = {
   cardId: null, // the card being moved

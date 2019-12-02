@@ -4,13 +4,15 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: 'Tableau'
-}
+<script lang="ts">
+import Vue from 'vue'
+import Component from 'vue-class-component'
+
+@Component
+export default class Tableau extends Vue {}
 </script>
 
-<style>
+<style lang="scss">
 .tableau {
   display: flex;
   justify-content: space-around;
@@ -20,12 +22,12 @@ export default {
 }
 
 .tableau .card-container {
-  margin-top: 20px;
+  margin-top: $card-fanning-space;
   box-sizing: border-box;
 }
 
 .tableau .card-container:not(.card-container--revealed) {
-  margin-top: 10px;
+  margin-top: $card-fanning-space / 2;
 }
 
 .tableau > .card-draggable > .card-container {

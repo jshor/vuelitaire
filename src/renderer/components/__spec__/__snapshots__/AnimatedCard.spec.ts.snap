@@ -1,0 +1,7 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Animated Card component should render contents correctly 1`] = `
+<div class="animated-card" style="left: 0px; top: 0px;">
+  <div class="animated-card__inner" style="left: 0px; top: 0px;"></div>
+</div>
+`;

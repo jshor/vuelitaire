@@ -17,11 +17,8 @@ export default function findNextPromotion ({ cards, dealt }: IDeckState): Pair {
     moveableCards.push(dealt.slice(-1).pop())
   }
 
-  console.log('*************** FOUNDATIONS: ', foundations.length, moveableCards.length)
-
   for (const i in moveableCards) {
     const target: ICard = foundations.find((c: ICard): boolean => {
-      console.log('CAN', c.toString(), ' ACCEPT ', moveableCards[i].toString(), c.canAcceptCard(moveableCards[i]))
       return c.canAcceptCard(moveableCards[i])
     })
 

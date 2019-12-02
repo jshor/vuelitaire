@@ -1,14 +1,14 @@
+import { Scoring } from '@/constants'
+import IStatsState from '@/interfaces/IStatsState'
 import stats from '../stats'
 import invokeAction from './__helpers__/invokeAction'
-import IStatsState from '@/interfaces/IStatsState'
-import { Scoring } from '@/constants'
 
 const {
   actions,
   mutations
 } = stats
 
-const createState = (): IStatsState => (<IStatsState>{ ...stats.state })
+const createState = (): IStatsState => ({ ...stats.state } as IStatsState)
 
 describe('Vuex hints module', () => {
   describe('actions', () => {

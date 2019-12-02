@@ -44,11 +44,11 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
 .card-draggable {
   display: block;
-  width: 10vw;
-  height: 14vw;
+  width: $card-width;
+  height: $card-height;
   box-sizing: border-box;
   position: relative;
   border-radius: 3px;
@@ -64,8 +64,8 @@ export default {
 }
 
 .card-draggable--space {
-  width: 10vw;
-  height: 14vw;
+  width: $card-width;
+  height: $card-height;
   box-sizing: border-box;
 }
 

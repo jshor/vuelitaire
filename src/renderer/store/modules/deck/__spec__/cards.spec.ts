@@ -1,11 +1,11 @@
+import { Suits } from '@/constants'
 import ICard from '@/interfaces/ICard'
 import ICardsState from '@/interfaces/ICardsState'
 import Card from '@/models/Card'
 import FoundationSpace from '@/models/FoundationSpace'
+import LaneSpace from '@/models/LaneSpace'
 import Pair from '@/models/Pair'
 import cards from '../cards'
-import { Suits } from '@/constants'
-import LaneSpace from '@/models/LaneSpace'
 
 const { mutations } = cards
 
@@ -43,7 +43,7 @@ describe('Vuex cards module', () => {
           foundations: {},
           regular: {}
         }
-        const originalState: ICardsState = <ICardsState>{ ...state }
+        const originalState: ICardsState = { ...state } as ICardsState
 
         mutations.UNREVEAL_CARD(state, card.id)
 
@@ -76,7 +76,7 @@ describe('Vuex cards module', () => {
           foundations: {},
           regular: {}
         }
-        const originalState: ICardsState = <ICardsState>{ ...state }
+        const originalState: ICardsState = { ...state } as ICardsState
 
         mutations.SET_CARD_ERROR(state, { cardId: card.id, hasError: true })
 

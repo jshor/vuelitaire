@@ -1,7 +1,7 @@
-import { ActionContext, ActionTree, Module, MutationTree } from 'vuex'
+import { Scoring } from '@/constants'
 import IRootState from '@/interfaces/IRootState'
 import IStatsState from '@/interfaces/IStatsState'
-import { Scoring } from '@/constants'
+import { ActionContext, ActionTree, Module, MutationTree } from 'vuex'
 
 const state: IStatsState = {
   points: 0,

@@ -1,8 +1,8 @@
-import Card from '@/Card'
-import { shallowMount } from '@vue/test-utils'
 import { Suits } from '@/constants'
+import { shallowMount } from '@vue/test-utils'
+import Card from '../Card.vue'
 
-describe('Animated Card component', () => {
+describe('Card component', () => {
   let wrapper
 
   beforeAll(() => {

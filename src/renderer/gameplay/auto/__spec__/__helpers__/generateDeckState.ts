@@ -1,6 +1,6 @@
+import ICard from '@/interfaces/ICard'
 import ICardsMap from '@/interfaces/ICardsMap'
 import IDeckState from '@/interfaces/IDeckState'
-import ICard from '@/interfaces/ICard'
 
 const generateState = (regular: ICardsMap<ICard>): IDeckState => ({
   cards: {

@@ -1,10 +1,10 @@
+import { Suits } from '@/constants'
+import ICard from '@/interfaces/ICard'
+import IDeckState from '@/interfaces/IDeckState'
 import Card from '@/models/Card'
 import LaneSpace from '@/models/LaneSpace'
-import { Suits } from '@/constants'
 import getLaneCreationHints from '../getLaneCreationHints'
-import ICard from '@/interfaces/ICard'
 import createDeckState from './__helpers__/createDeckState'
-import IDeckState from '@/interfaces/IDeckState'
 
 describe('Lane creation', () => {
   it('should return multiple hints if multiple kings can be moved to a space', () => {

@@ -1,5 +1,5 @@
-import ICardsMap from './ICardsMap'
 import ICard from './ICard';
+import ICardsMap from './ICardsMap'
 
 export default interface ICardsState {
   foundations: ICardsMap<ICard>,

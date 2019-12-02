@@ -1,6 +1,3 @@
-import Vue from 'vue'
-import { GetterTree, Module, ModuleTree, MutationTree } from 'vuex'
-import shuffle from 'lodash.shuffle'
 import { Suits } from '@/constants'
 import ICard from '@/interfaces/ICard'
 import IDeckState from '@/interfaces/IDeckState'
@@ -8,6 +5,9 @@ import IRootState from '@/interfaces/IDeckState'
 import Card from '@/models/Card'
 import LaneSpace from '@/models/LaneSpace'
 import Pair from '@/models/Pair'
+import shuffle from 'lodash.shuffle'
+import Vue from 'vue'
+import { GetterTree, Module, ModuleTree, MutationTree } from 'vuex'
 import cards from './cards'
 
 const state: IDeckState = {

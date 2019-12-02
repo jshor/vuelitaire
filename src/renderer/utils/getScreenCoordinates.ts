@@ -6,7 +6,7 @@ import ScreenPoint from '@/models/ScreenPoint'
  * @param {String} selector - DOM selector for the element
  * @returns {ScreenPoint}
  */
-export default function getScreenCoordinates (selector) {
+export default function getScreenCoordinates (selector): ScreenPoint {
   const el = document.querySelector(selector)
 
   if (el) {

@@ -1,12 +1,12 @@
 import { Suits } from '@/constants'
+import auto from '@/gameplay/auto'
+import IDeckState from '@/interfaces/IDeckState'
+import IRootState from '@/interfaces/IRootState'
 import Card from '@/models/Card'
 import Pair from '@/models/Pair'
 import deck from '../deck'
 import root from '../root'
 import invokeAction from './__helpers__/invokeAction'
-import IRootState from '@/interfaces/IRootState'
-import IDeckState from '@/interfaces/IDeckState'
-import auto from '@/gameplay/auto'
 
 const {
   getters,
@@ -14,11 +14,11 @@ const {
   mutations
 } = root
 
-const createState = (): IRootState => (<IRootState>{
+const createState = (): IRootState => ({
   ...root.state,
   deck: { ...deck.state },
   hints: { ...deck.state }
-})
+} as IRootState)
 
 describe('Root Vuex module', () => {
   afterEach(() => jest.resetAllMocks())
@@ -191,7 +191,7 @@ describe('Root Vuex module', () => {
 
       describe('when the previous state does not have a move to reverse', () => {
         it('should revert to the previous state and clear hints', async () => {
-          state.revertibleStates.push(<IDeckState>{ ...deck.state })
+          state.revertibleStates.push({ ...deck.state } as IDeckState)
           state.revertibleStates[0].move = null
 
           await invokeAction(actions, 'undo', { commit, dispatch, state })
@@ -206,7 +206,7 @@ describe('Root Vuex module', () => {
         let prevState: IDeckState
 
         beforeEach(async () => {
-          prevState = <IDeckState>{ ...deck.state }
+          prevState = ({ ...deck.state } as IDeckState)
           prevState.move = new Pair(cardId, targetId)
           prevState.move.parentId = parentId
           state.revertibleStates.push(prevState)
@@ -345,7 +345,7 @@ describe('Root Vuex module', () => {
           .spyOn(auto, 'findNextPromotion')
           .mockReturnValue(null)
 
-          await invokeAction(actions, 'autoComplete', { state, dispatch })
+        await invokeAction(actions, 'autoComplete', { state, dispatch })
 
         expect(dispatch).toHaveBeenCalledTimes(2)
         expect(dispatch).toHaveBeenCalledWith('deal')
@@ -405,7 +405,7 @@ describe('Root Vuex module', () => {
   describe('RECORD_REVERTIBLE_STATE', () => {
     it('should push a cloned copy of the deck state into the list', () => {
       const state: IRootState = createState()
-      const deckState: IDeckState = <IDeckState>{ ...deck.state }
+      const deckState: IDeckState = { ...deck.state } as IDeckState
 
       deckState.stock = [new Card(Suits.CLUBS, 0)]
       state.revertibleStates = []
@@ -425,7 +425,7 @@ describe('Root Vuex module', () => {
   describe('REVERT_TO_PREV_STATE', () => {
     it('should push a cloned copy of the deck state into the list', () => {
       const state: IRootState = createState()
-      const deckState: IDeckState = <IDeckState>{ ...deck.state }
+      const deckState: IDeckState = { ...deck.state } as IDeckState
 
       deckState.stock = [new Card(Suits.CLUBS, 0)]
       state.revertibleStates = [deckState]

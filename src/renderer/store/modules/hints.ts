@@ -1,6 +1,6 @@
-import { ActionContext, ActionTree, MutationTree } from 'vuex'
 import IHintsState from '@/interfaces/IHintsState'
 import IRootState from '@/interfaces/IRootState'
+import { ActionContext, ActionTree, MutationTree } from 'vuex'
 
 import generateHints from '@/gameplay/hints'
 

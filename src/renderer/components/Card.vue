@@ -10,16 +10,23 @@
     class="card"
     ref="card">
     <div class="card__inner" v-if="!isSpace">
-      <div class="card__back"></div>
+      <card-back class="card__back" />
       <div class="card__front"></div>
     </div>
     <div class="space" v-else></div>
   </div>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import Vue from 'vue'
+import Component from 'vue-class-component'
+import CardBack from './CardBack.vue'
+
+@Component({
   name: 'Card',
+  components: {
+    CardBack
+  },
   props: {
     suit: {
       type: String,
@@ -45,16 +52,20 @@ export default {
       type: Number,
       default: 0
     }
-  },
-  data () {
-    return {
-      style: {}
-    }
-  },
-  mounted () {
-    const { left: bx, top: by } = this.$refs
-      .card
-      .getBoundingClientRect()
+  }
+})
+export default class Card extends Vue {
+  public style: {
+    '--left'?: string,
+    '--top'?: string,
+    '--index'?: number
+  } = {}
+
+  public animationIndex: number
+
+  public mounted (): void {
+    const el = this.$refs.card as HTMLElement
+    const { left: bx, top: by } = el.getBoundingClientRect()
     const { left: ax, top: ay } = document
       .querySelector('[data-id="DEAL_CARD"]')
       .getBoundingClientRect()
@@ -72,11 +83,9 @@ export default {
 .card {
   position: absolute;
   width: $card-width;
-  height: 14vw;
+  height: $card-height;
   perspective: 1000px;
   transition: 250ms margin;
-
-  // transform: translate(var(--left), var(--top));
 }
 
 .card--dealing {
@@ -102,29 +111,10 @@ export default {
   animation: shake 250ms cubic-bezier(.36,.07,.19,.97) forwards;
 }
 
-.card--ghost {
-  display: none;
-}
-
 @include create-card-variants('hearts');
 @include create-card-variants('spades');
 @include create-card-variants('diamonds');
 @include create-card-variants('clubs');
-
-.card__big {
-  padding-top: 2rem;
-  text-align: center;
-  font-size: 1.5rem;
-}
-
-.card__small {
-  padding-left: 0.5rem;
-}
-
-.card--hearts,
-.card--diamonds {
-  color: red;
-}
 
 .card__inner {
   position: absolute;
@@ -135,19 +125,11 @@ export default {
   transform-style: preserve-3d;
 }
 
-.card__inner--moving {
-  z-index: 100000000000000;
-}
-
 .card--revealed .card__inner {
   transform: rotateY(180deg);
 }
 
-.card--revealed .card-container {
-  border: 1px solid red;
-}
-
-.card__front, .card__back {
+.card__front {
   font: 1rem Arial, Helvetica, sans-serif;
   box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
   box-sizing: border-box;
@@ -159,14 +141,7 @@ export default {
 }
 
 .card__back {
-  border: 1px solid #000;
-  background: repeating-linear-gradient(
-    45deg,
-    #606dbc,
-    #606dbc 10px,
-    #465298 10px,
-    #465298 20px
-  );
+  position: absolute;
 }
 
 .card__front {
@@ -179,14 +154,12 @@ export default {
 }
 
 .space {
-  width: 10vw;
-  height: 14vw;
-  /* border: 1px solid #000; */
+  width: $card-width;
+  height: $card-height;
   border-width: 5px;
   border-style: solid;
   box-sizing: border-box;
   background-color: #000;
-  border-image: linear-gradient(115deg,#4fcf70,#fad648,#a767e5,#12bcfe,#44ce7b);
 }
 
 @keyframes shake {
