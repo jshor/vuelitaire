@@ -1,12 +1,12 @@
 import Vue from 'vue'
 import { Module, MutationTree } from 'vuex'
-import ICard from '../../../interfaces/ICard'
-// import ICardsMap from '../../../interfaces/ICardsMap'
-import ICardsState from '../../../interfaces/ICardsState'
-import IDeckState from '../../../interfaces/IDeckState'
-import FoundationSpace from '../../../models/FoundationSpace'
-// import LaneSpace from '../../../models/LaneSpace'
-import Pair from '../../../models/Pair'
+import ICard from '@/interfaces/ICard'
+// import ICardsMap from '@/interfaces/ICardsMap'
+import ICardsState from '@/interfaces/ICardsState'
+import IDeckState from '@/interfaces/IDeckState'
+import FoundationSpace from '@/models/FoundationSpace'
+// import LaneSpace from '@/models/LaneSpace'
+import Pair from '@/models/Pair'
 
 const state: ICardsState = {
   foundations: {},

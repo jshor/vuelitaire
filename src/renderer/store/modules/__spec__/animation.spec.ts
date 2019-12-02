@@ -1,6 +1,6 @@
-import Pair from '../../../models/Pair'
+import Pair from '@/models/Pair'
 import animation from '../animation'
-import IAnimationState from '../../../interfaces/IAnimationState'
+import IAnimationState from '@/interfaces/IAnimationState'
 import invokeAction from './__helpers__/invokeAction'
 
 const {

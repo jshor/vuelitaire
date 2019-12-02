@@ -1,6 +1,6 @@
-import ICard from '../../interfaces/ICard'
-import IDeckState from '../../interfaces/IDeckState'
-import IHint from '../../interfaces/IHint'
+import ICard from '@/interfaces/ICard'
+import IDeckState from '@/interfaces/IDeckState'
+import IHint from '@/interfaces/IHint'
 
 /**
  * Returns a list of all hints where a king can be moved onto an empty `LaneSpace`

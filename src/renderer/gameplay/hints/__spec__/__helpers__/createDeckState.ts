@@ -1,4 +1,4 @@
-import IDeckState from '../../../../interfaces/IDeckState'
+import IDeckState from '@/interfaces/IDeckState'
 
 const createDeckState = (cards = {
   foundations: {},

@@ -1,9 +1,9 @@
 import getDestructuringLaneHints from '../getDestructuringLaneHints'
-import Card from '../../../models/Card'
-import FoundationSpace from '../../../models/FoundationSpace'
-import IDeckState from '../../../interfaces/IDeckState'
-import ICard from '../../../interfaces/ICard'
-import { Suits } from '../../../constants'
+import Card from '@/models/Card'
+import FoundationSpace from '@/models/FoundationSpace'
+import IDeckState from '@/interfaces/IDeckState'
+import ICard from '@/interfaces/ICard'
+import { Suits } from '@/constants'
 import createDeckState from './__helpers__/createDeckState'
 
 function makePlayable (cards: ICard[]): void {

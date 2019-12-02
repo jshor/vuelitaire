@@ -1,7 +1,7 @@
 import generateId from 'uuid/v4'
-import isBuildable from '../gameplay/rules/isBuildable'
-import ICard from '../interfaces/ICard'
-import IRule from '../interfaces/IRule'
+import isBuildable from '@/gameplay/rules/isBuildable'
+import ICard from '@/interfaces/ICard'
+import IRule from '@/interfaces/IRule'
 
 export default abstract class BaseCard implements ICard {
   public id: string = generateId()

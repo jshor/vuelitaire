@@ -1,6 +1,6 @@
-import isDescendant from '../isDescendant'
-import Card from '../../models/Card'
-import { Suits } from '../../constants'
+import isDescendant from '@/isDescendant'
+import Card from '@/models/Card'
+import { Suits } from '@/constants'
 
 describe('getLineage()', () => {
   const cardA = new Card(Suits.DIAMONDS, 1)

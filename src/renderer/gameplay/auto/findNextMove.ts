@@ -1,9 +1,9 @@
-import ICard from '../../interfaces/ICard'
-import IDeckState from '../../interfaces/IDeckState'
-import FoundationSpace from '../../models/FoundationSpace'
-import LaneSpace from '../../models/LaneSpace'
-import Pair from '../../models/Pair'
-import getLineage from '../../utils/getLineage'
+import ICard from '@/interfaces/ICard'
+import IDeckState from '@/interfaces/IDeckState'
+import FoundationSpace from '@/models/FoundationSpace'
+import LaneSpace from '@/models/LaneSpace'
+import Pair from '@/models/Pair'
+import getLineage from '@/utils/getLineage'
 
 export default function findNextMove ({ cards }: IDeckState, child: ICard): Pair {
   const target: ICard = Object

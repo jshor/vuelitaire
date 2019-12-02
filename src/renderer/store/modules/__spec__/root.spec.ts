@@ -1,12 +1,12 @@
-import { Suits } from '../../../constants'
-import Card from '../../../models/Card'
-import Pair from '../../../models/Pair'
+import { Suits } from '@/constants'
+import Card from '@/models/Card'
+import Pair from '@/models/Pair'
 import deck from '../deck'
 import root from '../root'
 import invokeAction from './__helpers__/invokeAction'
-import IRootState from '../../../interfaces/IRootState'
-import IDeckState from '../../../interfaces/IDeckState'
-import auto from '../../../gameplay/auto'
+import IRootState from '@/interfaces/IRootState'
+import IDeckState from '@/interfaces/IDeckState'
+import auto from '@/gameplay/auto'
 
 const {
   getters,

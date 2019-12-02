@@ -1,4 +1,4 @@
-import ScreenPoint from '../models/ScreenPoint'
+import ScreenPoint from '@/models/ScreenPoint'
 
 /**
  * Returns the ScreenPoint of the element coordinates, or the origin if not found.

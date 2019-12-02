@@ -1,6 +1,6 @@
-import Card from '../Card'
+import Card from '@/Card'
 import { shallowMount } from '@vue/test-utils'
-import { Suits } from '../../constants'
+import { Suits } from '@/constants'
 
 describe('Animated Card component', () => {
   let wrapper

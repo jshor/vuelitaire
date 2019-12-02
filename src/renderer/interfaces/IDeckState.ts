@@ -1,7 +1,7 @@
-// import Pair from '../models/Pair'
+// import Pair from '@/models/Pair'
 import ICard from './ICard'
 import ICardsState from './ICardsState'
-import Pair from '../models/Pair'
+import Pair from '@/models/Pair'
 
 export default interface IDeckState {
   cards: ICardsState

@@ -1,7 +1,7 @@
 import stats from '../stats'
 import invokeAction from './__helpers__/invokeAction'
-import IStatsState from '../../../interfaces/IStatsState'
-import { Scoring } from '../../../constants'
+import IStatsState from '@/interfaces/IStatsState'
+import { Scoring } from '@/constants'
 
 const {
   actions,

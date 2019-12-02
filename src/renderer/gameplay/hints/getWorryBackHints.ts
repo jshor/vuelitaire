@@ -1,11 +1,10 @@
-import ICard from '../../interfaces/ICard'
-import IDeckState from '../../interfaces/IDeckState'
-import IHint from '../../interfaces/IHint'
-import FoundationSpace from '../../models/FoundationSpace'
-import LaneSpace from '../../models/LaneSpace'
-import getDealableCards from '../../utils/getDealableCards'
-import getLineage from '../../utils/getLineage'
-import hasAlternatingColor from '../rules/hasAlternatingColor'
+import ICard from '@/interfaces/ICard'
+import IDeckState from '@/interfaces/IDeckState'
+import IHint from '@/interfaces/IHint'
+import LaneSpace from '@/models/LaneSpace'
+import getDealableCards from '@/utils/getDealableCards'
+import getLineage from '@/utils/getLineage'
+import hasAlternatingColor from '@/gameplay/rules/hasAlternatingColor'
 
 /**
  * Finds all promoted cards that, when moved, will allow the playing of an untouched card.

@@ -4,6 +4,10 @@ module.exports = {
   coveragePathIgnorePatterns: [
     '<rootDir>/src/renderer/.*/__spec__/.*'
   ],
+  moduleDirectories: [
+    "<rootDir>/src/renderer",
+    "node_modules"
+  ],
   moduleFileExtensions: [
     'js',
     'ts',

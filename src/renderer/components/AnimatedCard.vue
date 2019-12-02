@@ -11,7 +11,7 @@
 </template>
 
 <script>
-import getScreenCoordinates from '../utils/getScreenCoordinates'
+import getScreenCoordinates from '@/utils/getScreenCoordinates'
 
 export default {
   props: {

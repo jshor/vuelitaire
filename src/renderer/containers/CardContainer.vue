@@ -45,13 +45,13 @@ import Component from 'vue-class-component'
 import { Container } from 'vue-smooth-dnd'
 import { mapActions, mapGetters } from 'vuex'
 
-import Card from '../components/Card.vue'
-import CardDraggable from '../components/CardDraggable.vue'
-import ICard from '../interfaces/ICard'
-import Pair from '../models/Pair'
-import getDescendants from '../utils/getLineage'
-import isAncestor from '../utils/isAncestor'
-import isDescendant from '../utils/isDescendant'
+import Card from '@/components/Card.vue'
+import CardDraggable from '@/components/CardDraggable.vue'
+import ICard from '@/interfaces/ICard'
+import Pair from '@/models/Pair'
+import getDescendants from '@/utils/getLineage'
+import isAncestor from '@/utils/isAncestor'
+import isDescendant from '@/utils/isDescendant'
 
 @Component({
   name: 'CardContainer',

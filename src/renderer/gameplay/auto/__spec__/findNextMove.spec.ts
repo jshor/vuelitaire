@@ -1,12 +1,12 @@
-import Card from '../../../models/Card'
-import { Suits } from '../../../constants'
-import Pair from '../../../models/Pair'
-import IDeckState from '../../../interfaces/IDeckState'
-import LaneSpace from '../../../models/LaneSpace'
-import FoundationSpace from '../../../models/FoundationSpace'
+import Card from '@/models/Card'
+import { Suits } from '@/constants'
+import Pair from '@/models/Pair'
+import IDeckState from '@/interfaces/IDeckState'
+import LaneSpace from '@/models/LaneSpace'
+import FoundationSpace from '@/models/FoundationSpace'
 import findNextMove from '../findNextMove'
 import generateDeckState from './__helpers__/generateDeckState'
-import ICard from '../../../interfaces/ICard'
+import ICard from '@/interfaces/ICard'
 
 describe('findNextMove()', () => {
   function assignFalseParents (deckState) {

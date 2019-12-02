@@ -1,8 +1,8 @@
 import { ActionContext, ActionTree, MutationTree } from 'vuex'
-import IHintsState from '../../interfaces/IHintsState'
-import IRootState from '../../interfaces/IRootState'
+import IHintsState from '@/interfaces/IHintsState'
+import IRootState from '@/interfaces/IRootState'
 
-import generateHints from '../../gameplay/hints'
+import generateHints from '@/gameplay/hints'
 
 const state: IHintsState = {
   entries: [],

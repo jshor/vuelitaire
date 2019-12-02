@@ -1,8 +1,8 @@
-import ICard from '../../interfaces/ICard'
-import IRule from '../../interfaces/IRule'
-import Card from '../../models/Card'
-import FoundationSpace from '../../models/FoundationSpace'
-import LaneSpace from '../../models/LaneSpace'
+import ICard from '@/interfaces/ICard'
+import IRule from '@/interfaces/IRule'
+import Card from '@/models/Card'
+import FoundationSpace from '@/models/FoundationSpace'
+import LaneSpace from '@/models/LaneSpace'
 
 /**
  * Determines whether or not the parent card is eligible to receive the child.

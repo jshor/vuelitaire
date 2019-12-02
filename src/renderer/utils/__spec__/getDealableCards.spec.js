@@ -1,6 +1,6 @@
-import getDealableCards from '../getDealableCards'
-import Card from '../../models/Card'
-import { Suits } from '../../constants'
+import getDealableCards from '@/getDealableCards'
+import Card from '@/models/Card'
+import { Suits } from '@/constants'
 
 describe('getDealableCards()', () => {
   const stock = Array(9)

@@ -1,11 +1,11 @@
 import getMoveableCardHints from '../getMoveableCardHints'
-import Card from '../../../models/Card'
-import LaneSpace from '../../../models/LaneSpace'
-import FoundationSpace from '../../../models/FoundationSpace'
-import ICard from '../../../interfaces/ICard'
-import { Suits } from '../../../constants'
+import Card from '@/models/Card'
+import LaneSpace from '@/models/LaneSpace'
+import FoundationSpace from '@/models/FoundationSpace'
+import ICard from '@/interfaces/ICard'
+import { Suits } from '@/constants'
 import createDeckState from './__helpers__/createDeckState'
-import IDeckState from '../../../interfaces/IDeckState'
+import IDeckState from '@/interfaces/IDeckState'
 
 describe('Hint: getMoveableCardHints', () => {
   const sixOfDiamonds: ICard = new Card(Suits.DIAMONDS, 5)

@@ -1,6 +1,6 @@
-import Card from '../../../models/Card'
-import { Suits } from '../../../constants'
-import IDeckState from '../../../interfaces/IDeckState'
+import Card from '@/models/Card'
+import { Suits } from '@/constants'
+import IDeckState from '@/interfaces/IDeckState'
 import getDeckHints from '../getDeckHints'
 import createDeckState from './__helpers__/createDeckState'
 

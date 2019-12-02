@@ -1,7 +1,7 @@
-import ICard from '../../interfaces/ICard'
-import IDeckState from '../../interfaces/IDeckState'
-import IHint from '../../interfaces/IHint'
-import getDealableCards from '../../utils/getDealableCards'
+import ICard from '@/interfaces/ICard'
+import IDeckState from '@/interfaces/IDeckState'
+import IHint from '@/interfaces/IHint'
+import getDealableCards from '@/utils/getDealableCards'
 import getMoveableCardHints from './getMoveableCardHints'
 
 /**

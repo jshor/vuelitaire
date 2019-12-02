@@ -1,11 +1,11 @@
-import Card from '../../../models/Card'
-import LaneSpace from '../../../models/LaneSpace'
-import ICard from '../../../interfaces/ICard'
-import { Suits } from '../../../constants'
+import Card from '@/models/Card'
+import LaneSpace from '@/models/LaneSpace'
+import ICard from '@/interfaces/ICard'
+import { Suits } from '@/constants'
 import getWorryBackHints from '../getWorryBackHints'
-import FoundationSpace from '../../../models/FoundationSpace'
+import FoundationSpace from '@/models/FoundationSpace'
 import createDeckState from './__helpers__/createDeckState'
-import IDeckState from '../../../interfaces/IDeckState'
+import IDeckState from '@/interfaces/IDeckState'
 
 describe('Hint: getWorryBackHints', () => {
   const laneSpace1: ICard = new LaneSpace()

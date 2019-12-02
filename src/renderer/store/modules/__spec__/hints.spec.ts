@@ -1,5 +1,5 @@
 import hints from '../hints'
-import IHintsState from '../../../interfaces/IHintsState'
+import IHintsState from '@/interfaces/IHintsState'
 import invokeAction from './__helpers__/invokeAction'
 
 const {
@@ -9,7 +9,7 @@ const {
 
 const createState = (): IHintsState => (<IHintsState>{ ...hints.state })
 
-jest.mock('../../../gameplay/hints/', () => () => [])
+jest.mock('@/gameplay/hints/', () => () => [])
 
 describe('Vuex hints module', () => {
   describe('actions', () => {

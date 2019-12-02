@@ -1,8 +1,8 @@
 import isBuildable from '../isBuildable'
-import Card from '../../../models/Card'
-import LaneSpace from '../../../models/LaneSpace'
-import { Suits } from '../../../constants'
-import FoundationSpace from '../../../models/FoundationSpace'
+import Card from '@/models/Card'
+import LaneSpace from '@/models/LaneSpace'
+import { Suits } from '@/constants'
+import FoundationSpace from '@/models/FoundationSpace'
 
 describe('Rule: isBuildable', () => {
   let parent: Card

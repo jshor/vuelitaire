@@ -1,11 +1,11 @@
 import deck from '..'
-import { Suits } from '../../../../constants'
-import getLineage from '../../../../utils/getLineage'
-import ICard from '../../../../interfaces/ICard'
-import Card from '../../../../models/Card'
-import LaneSpace from '../../../../models/LaneSpace'
-import Pair from '../../../../models/Pair'
-import IDeckState from '../../../../interfaces/IDeckState'
+import { Suits } from '@/constants'
+import getLineage from '@/utils/getLineage'
+import ICard from '@/interfaces/ICard'
+import Card from '@/models/Card'
+import LaneSpace from '@/models/LaneSpace'
+import Pair from '@/models/Pair'
+import IDeckState from '@/interfaces/IDeckState'
 
 const {
   getters,

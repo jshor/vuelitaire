@@ -1,5 +1,5 @@
-import ICard from '../../interfaces/ICard'
-import IRule from '../../interfaces/IRule'
+import ICard from '@/interfaces/ICard'
+import IRule from '@/interfaces/IRule'
 import hasAlternatingColor from './hasAlternatingColor'
 
 /**

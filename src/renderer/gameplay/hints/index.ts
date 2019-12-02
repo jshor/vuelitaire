@@ -1,11 +1,11 @@
-import getDeckHints from '../../gameplay/hints/getDeckHints'
-import getDestructuringLaneHints from '../../gameplay/hints/getDestructuringLaneHints'
-import getLaneCreationHints from '../../gameplay/hints/getLaneCreationHints'
-import getMoveableCardHints from '../../gameplay/hints/getMoveableCardHints'
-import getWorryBackHints from '../../gameplay/hints/getWorryBackHints'
-import ICard from '../../interfaces/ICard'
-import ICardsState from '../../interfaces/ICardsState'
-import IDeckState from '../../interfaces/IDeckState'
+import getDeckHints from '@/gameplay/hints/getDeckHints'
+import getDestructuringLaneHints from '@/gameplay/hints/getDestructuringLaneHints'
+import getLaneCreationHints from '@/gameplay/hints/getLaneCreationHints'
+import getMoveableCardHints from '@/gameplay/hints/getMoveableCardHints'
+import getWorryBackHints from '@/gameplay/hints/getWorryBackHints'
+import ICard from '@/interfaces/ICard'
+import ICardsState from '@/interfaces/ICardsState'
+import IDeckState from '@/interfaces/IDeckState'
 
 export default function generateHints (deck: IDeckState): string[][] {
   const { cards, waste }: {

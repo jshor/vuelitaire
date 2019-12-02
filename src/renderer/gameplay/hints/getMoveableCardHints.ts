@@ -1,7 +1,7 @@
-import ICard from '../../interfaces/ICard'
-import IDeckState from '../../interfaces/IDeckState'
-import IHint from '../../interfaces/IHint'
-import BaseCard from '../../models/BaseCard'
+import ICard from '@/interfaces/ICard'
+import IDeckState from '@/interfaces/IDeckState'
+import IHint from '@/interfaces/IHint'
+import BaseCard from '@/models/BaseCard'
 
 /**
  * Returns a list of all hints where a card can be moved onto another.

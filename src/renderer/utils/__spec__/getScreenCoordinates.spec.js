@@ -1,5 +1,5 @@
-import getScreenCoordinates from '../getScreenCoordinates'
-import ScreenPoint from '../../models/ScreenPoint'
+import getScreenCoordinates from '@/getScreenCoordinates'
+import ScreenPoint from '@/models/ScreenPoint'
 
 describe('getScreenCoordinates()', () => {
   const left = 20

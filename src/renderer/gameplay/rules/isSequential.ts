@@ -1,5 +1,5 @@
-import ICard from '../../interfaces/ICard'
-import IRule from '../../interfaces/IRule'
+import ICard from '@/interfaces/ICard'
+import IRule from '@/interfaces/IRule'
 
 /**
  * Determines if the child card is one rank above the parent if promoted, or below otherwise.

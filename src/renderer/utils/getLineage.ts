@@ -1,4 +1,4 @@
-import ICard from '../interfaces/ICard'
+import ICard from '@/interfaces/ICard'
 
 /**
  * Generates a list of all descendants of the given card, including itself.

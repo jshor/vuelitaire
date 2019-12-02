@@ -1,6 +1,6 @@
 import hasAlternatingColorBeforePromotion from '../hasAlternatingColorBeforePromotion'
-import Card from '../../../models/Card'
-import { Suits } from '../../../constants'
+import Card from '@/models/Card'
+import { Suits } from '@/constants'
 
 describe('Rule: hasAlternatingColorBeforePromotion', () => {
   it('should return false if the target is not promoted and colors are not alternating', () => {

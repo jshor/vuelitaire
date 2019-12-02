@@ -58,15 +58,15 @@ import Vue from 'vue'
 import Component from 'vue-class-component'
 import { mapActions, mapGetters, mapState } from 'vuex'
 
-import AnimatedCard from '../components/AnimatedCard.vue'
-import Foundations from '../components/Foundations.vue'
-import Tableau from '../components/Tableau.vue'
+import AnimatedCard from '@/components/AnimatedCard.vue'
+import Foundations from '@/components/Foundations.vue'
+import Tableau from '@/components/Tableau.vue'
 import CardContainer from './CardContainer.vue'
 import DeckContainer from './DeckContainer.vue'
 import StatsContainer from './StatsContainer.vue'
 
-import IAnimationState from '../interfaces/IAnimationState'
-import ICard from '../interfaces/ICard'
+import IAnimationState from '@/interfaces/IAnimationState'
+import ICard from '@/interfaces/ICard'
 
 @Component({
   computed: {

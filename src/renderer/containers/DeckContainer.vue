@@ -30,7 +30,7 @@ import Component from 'vue-class-component'
 import { Container } from 'vue-smooth-dnd'
 import { mapState } from 'vuex'
 
-import ICard from '../interfaces/ICard'
+import ICard from '@/interfaces/ICard'
 import CardContainer from './CardContainer.vue'
 
 @Component({

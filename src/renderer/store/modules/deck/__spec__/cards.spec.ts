@@ -1,11 +1,11 @@
-import ICard from '../../../../interfaces/ICard'
-import ICardsState from '../../../../interfaces/ICardsState'
-import Card from '../../../../models/Card'
-import FoundationSpace from '../../../../models/FoundationSpace'
-import Pair from '../../../../models/Pair'
+import ICard from '@/interfaces/ICard'
+import ICardsState from '@/interfaces/ICardsState'
+import Card from '@/models/Card'
+import FoundationSpace from '@/models/FoundationSpace'
+import Pair from '@/models/Pair'
 import cards from '../cards'
-import { Suits } from '../../../../constants'
-import LaneSpace from '../../../../models/LaneSpace'
+import { Suits } from '@/constants'
+import LaneSpace from '@/models/LaneSpace'
 
 const { mutations } = cards
 

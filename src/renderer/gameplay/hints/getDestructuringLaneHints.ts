@@ -1,7 +1,7 @@
-import ICard from '../../interfaces/ICard'
-import IDeckState from '../../interfaces/IDeckState'
-import IHint from '../../interfaces/IHint'
-import getLineage from '../../utils/getLineage'
+import ICard from '@/interfaces/ICard'
+import IDeckState from '@/interfaces/IDeckState'
+import IHint from '@/interfaces/IHint'
+import getLineage from '@/utils/getLineage'
 
 /**
  * Finds all moves where moving a card will allow its parent to be promoted.

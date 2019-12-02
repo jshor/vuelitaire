@@ -1,6 +1,6 @@
-import getLineage from '../getLineage'
-import Card from '../../models/Card'
-import { Suits } from '../../constants'
+import getLineage from '@/getLineage'
+import Card from '@/models/Card'
+import { Suits } from '@/constants'
 
 describe('getLineage()', () => {
   const cardA = new Card(Suits.DIAMONDS, 1)

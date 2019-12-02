@@ -6,9 +6,9 @@
 import Vue from 'vue'
 import Component from 'vue-class-component'
 import { mapActions, mapState } from 'vuex'
-import { Scoring } from '../constants'
-import Stopwatch from '../gameplay/Stopwatch'
-import IStatsState from '../interfaces/IStatsState'
+import { Scoring } from '@/constants'
+import Stopwatch from '@/gameplay/Stopwatch'
+import IStatsState from '@/interfaces/IStatsState'
 
 /**
  * The container for monitoring and broadcasting game time and score.
