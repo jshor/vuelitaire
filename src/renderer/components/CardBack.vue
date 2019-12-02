@@ -1,6 +1,6 @@
 <template>
   <div class="card-back">
-    <i class="fas fa-chess" />
+    <i class="fas fa-cat" />
   </div>
 </template>
 

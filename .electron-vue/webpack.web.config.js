@@ -69,7 +69,7 @@ let webConfig = {
         use: {
           loader: 'url-loader',
           query: {
-            limit: 10000,
+            limit: 10000000,
             name: 'imgs/[name]--[folder].[ext]'
           }
         }

@@ -22,10 +22,10 @@
         class="card-container__inner"
         orientation="horizontal"
         group-name="right"
-        non-drag-area-selector=".card:not(.card--revealed)"
         @drop="onDrop"
         @drag-enter="onDragEnter"
         @drag-leave="onDragLeave"
+        :non-drag-area-selector="nonDragSelector"
         :get-child-payload="() => card.child"
         :should-accept-drop="shouldAcceptDrop"
         :drag-begin-delay="0">
@@ -44,6 +44,7 @@ import Vue from 'vue'
 import Component from 'vue-class-component'
 import { Container } from 'vue-smooth-dnd'
 import { mapActions, mapGetters } from 'vuex'
+import { isMobile } from 'is-mobile'
 
 import Card from '@/components/Card.vue'
 import CardDraggable from '@/components/CardDraggable.vue'
@@ -101,11 +102,20 @@ class CardContainer extends Vue {
 
   public error: boolean = false
 
+  public isMobile: boolean = isMobile()
+
   public moveCard: (pair: Pair) => Promise<void>
 
   public setSelection: (card: ICard) => Promise<void>
 
   public autoplayCard: (card: ICard) => Promise<void>
+
+  get nonDragSelector (): string {
+    if (this.isMobile) {
+      return '.card-container'
+    }
+    return '.card:not(.card--revealed)'
+  }
 
   get descendants (): ICard[] {
     return getDescendants(this.card)
@@ -153,7 +163,7 @@ class CardContainer extends Vue {
     const card: ICard = this.card.child || this.card
 
     if (!this.ready && card.revealed) {
-      if (autoplay) {
+      if (autoplay || this.isMobile) {
         this.autoplayCard(card)
       } else {
         this.setSelection(card)

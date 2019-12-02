@@ -12,6 +12,7 @@
         :get-child-payload="() => card"
         :should-accept-drop="shouldAcceptDrop.bind(null, card)"
         :should-animate-drop="() => false"
+        :non-drag-area-selector="nonDragSelector"
         orientation="horizontal"
         group-name="right">
         <card-container
@@ -29,6 +30,7 @@ import Vue from 'vue'
 import Component from 'vue-class-component'
 import { Container } from 'vue-smooth-dnd'
 import { mapState } from 'vuex'
+import { isMobile } from 'is-mobile'
 
 import ICard from '@/interfaces/ICard'
 import CardContainer from './CardContainer.vue'
@@ -47,6 +49,15 @@ import CardContainer from './CardContainer.vue'
 })
 class DeckContainer extends Vue {
   public dealt: ICard[]
+
+  public isMobile: boolean = isMobile()
+
+  get nonDragSelector (): string {
+    if (this.isMobile) {
+      return '.card-container'
+    }
+    return '.card:not(.card--revealed)'
+  }
 
   public shouldAcceptDrop ({ id }: ICard, { getChildPayload }): boolean {
     // the only time a card in the waste should accept a child is when a card is being returned

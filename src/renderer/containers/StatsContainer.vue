@@ -1,9 +1,13 @@
 <template>
-  <stats>Points: {{ stats.points }} &middot; Time: {{ timeElapsed }}</stats>
+  <stats>
+    <i class="fas fa-chalkboard" />&nbsp;{{ stats.points }}
+    &middot;
+    <i class="fas fa-stopwatch" />&nbsp;{{ timeElapsed }}
+  </stats>
 </template>
 
 <script lang="ts">
-import Stats from '@/components/Stats'
+import Stats from '@/components/Stats.vue'
 import { Scoring } from '@/constants'
 import Stopwatch from '@/gameplay/Stopwatch'
 import IStatsState from '@/interfaces/IStatsState'

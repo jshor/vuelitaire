@@ -17,12 +17,15 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue'
+import Component from 'vue-class-component'
 import { Draggable } from 'vue-smooth-dnd'
 
-export default {
-  name: 'CardDraggable',
-  components: { Draggable },
+@Component({
+  components: {
+    Draggable
+  },
   props: {
     isSpace: {
       type: Boolean,
@@ -41,7 +44,8 @@ export default {
       default: null
     }
   }
-}
+})
+export default class CardDraggable extends Vue {}
 </script>
 
 <style lang="scss">
