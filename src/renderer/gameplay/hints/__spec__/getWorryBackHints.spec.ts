@@ -70,7 +70,8 @@ describe('Hint: getWorryBackHints', () => {
           [promotedChild.id]: promotedChild,
           [promotedParent.id]: promotedParent,
           [unplayedCard.id]: unplayedCard,
-        }
+        },
+        unrevealedCount: 52
       }
     })
 

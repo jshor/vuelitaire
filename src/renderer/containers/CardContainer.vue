@@ -40,11 +40,11 @@
 </template>
 
 <script lang="ts">
+import { isMobile } from 'is-mobile'
 import Vue from 'vue'
 import Component from 'vue-class-component'
 import { Container } from 'vue-smooth-dnd'
 import { mapActions, mapGetters } from 'vuex'
-import { isMobile } from 'is-mobile'
 
 import Card from '@/components/Card.vue'
 import CardDraggable from '@/components/CardDraggable.vue'

@@ -11,7 +11,8 @@ import { Module, MutationTree } from 'vuex'
 const state: ICardsState = {
   foundations: {},
   tableau: {},
-  regular: {}
+  regular: {},
+  unrevealedCount: 52
 }
 
 const namespaced: boolean = true
@@ -23,10 +24,12 @@ const mutations: MutationTree<ICardsState> = {
    * @param {ICardsState} state
    */
   REVEAL_CARDS (state: ICardsState): void {
-    Object.values(state.regular)
+    Object
+      .values(state.regular)
       .filter(({ child }: ICard): boolean => !child)
       .forEach(({ id }: ICard): void => {
-        Vue.set(state.regular[id], 'revealed', true)
+        state.regular[id].revealed = true
+        state.unrevealedCount--
       })
   },
 
@@ -39,6 +42,7 @@ const mutations: MutationTree<ICardsState> = {
   UNREVEAL_CARD (state: ICardsState, cardId: string): void {
     if (state.regular[cardId]) {
       state.regular[cardId].revealed = false
+      state.unrevealedCount++
     }
   },
 
@@ -93,9 +97,17 @@ const mutations: MutationTree<ICardsState> = {
       || state.tableau[targetId]
 
     if (card.parent) {
+      if (!card.parent.revealed) {
+        state.unrevealedCount--
+      }
+
       Vue.set(card.parent, 'child', null)
       Vue.set(card.parent, 'revealed', true)
       Vue.set(card, 'parent', null)
+    }
+
+    if (!target.revealed) {
+      state.unrevealedCount++ // in the case of 'undo'
     }
 
     Vue.set(card, 'parent', target)

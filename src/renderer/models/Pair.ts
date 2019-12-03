@@ -5,7 +5,7 @@ export default class Pair {
 
   public parentId: string = null
 
-  constructor (cardId = null, targetId = null) {
+  constructor (cardId: string = null, targetId: string = null) {
     this.cardId = cardId
     this.targetId = targetId
   }

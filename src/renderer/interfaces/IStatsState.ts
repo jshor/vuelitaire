@@ -4,4 +4,6 @@ export default interface IStatsState {
   paused: boolean
 
   isComplete: boolean
+
+  canAutocomplete: boolean
 }

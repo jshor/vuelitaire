@@ -8,8 +8,8 @@ export default interface IRootState {
   gameId: string
   revertibleStates: IDeckState[]
   selectedCard: ICard
-  deck: IDeckState
-  animation: IAnimationState
-  hints: IHintsState
-  stats: IStatsState
+  deck?: IDeckState
+  animation?: IAnimationState
+  hints?: IHintsState
+  stats?: IStatsState
 }

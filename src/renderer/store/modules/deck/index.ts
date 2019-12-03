@@ -10,14 +10,21 @@ import Vue from 'vue'
 import { GetterTree, Module, ModuleTree, MutationTree } from 'vuex'
 import cards from './cards'
 
-const state: IDeckState = {
-  cards: null,
+const createState = (): IDeckState => ({
+  cards: {
+    foundations: {},
+    tableau: {},
+    regular: {},
+    unrevealedCount: 52
+  },
   move: null,
   stock: [], // cards in the stock pile
   waste: [], // the pile of cards dealt
   dealt: [], // the last `dealCount` (or fewer) cards dealt
   dealCount: 1 // number of cards to deal at a time
-}
+})
+
+const state: IDeckState = createState()
 
 const namespaced: boolean = true
 
@@ -33,6 +40,15 @@ const getters: GetterTree<IDeckState, IRootState> = {
 }
 
 const mutations: MutationTree<IDeckState> = {
+  /**
+   * Resets the deck state.
+   *
+   * @param {IDeckState} state
+   */
+  RESET_DECK (state: IDeckState): void {
+    Object.assign(state, createState())
+  },
+
   /**
    * Creates a new deck with 4 suits of 13 ranks each.
    *

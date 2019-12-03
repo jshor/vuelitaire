@@ -19,7 +19,8 @@ describe('Lane creation', () => {
       regular: {
         [kingOfHearts.id]: kingOfHearts,
         [kingOfSpades.id]: kingOfSpades
-      }
+      },
+      unrevealedCount: 52
     })
     const cards = Object.values(deck.cards.regular)
 
@@ -45,7 +46,8 @@ describe('Lane creation', () => {
       },
       regular: {
         [kingOfHearts.id]: kingOfHearts
-      }
+      },
+      unrevealedCount: 52
     })
     const cards = Object.values(deck.cards.regular)
 
@@ -73,7 +75,8 @@ describe('Lane creation', () => {
       regular: {
         [kingOfHearts.id]: kingOfHearts,
         [kingOfSpades.id]: kingOfSpades
-      }
+      },
+      unrevealedCount: 52
     })
     const cards = Object.values(deck.cards.regular)
 
@@ -101,7 +104,8 @@ describe('Lane creation', () => {
       regular: {
         [kingOfHearts.id]: kingOfHearts,
         [kingOfSpades.id]: kingOfSpades
-      }
+      },
+      unrevealedCount: 52
     })
     const cards = Object.values(deck.cards.regular)
 
@@ -128,7 +132,8 @@ describe('Lane creation', () => {
       regular: {
         [kingOfHearts.id]: kingOfHearts,
         [queenOfSpades.id]: queenOfSpades
-      }
+      },
+      unrevealedCount: 52
     })
     const cards = Object.values(deck.cards.regular)
 
@@ -155,7 +160,8 @@ describe('Lane creation', () => {
       regular: {
         [kingOfHearts.id]: kingOfHearts,
         [queenOfSpades.id]: queenOfSpades
-      }
+      },
+      unrevealedCount: 52
     })
     const cards = Object.values(deck.cards.regular)
 

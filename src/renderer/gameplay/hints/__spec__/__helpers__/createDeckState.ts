@@ -3,7 +3,8 @@ import IDeckState from '@/interfaces/IDeckState'
 const createDeckState = (cards = {
   foundations: {},
   tableau: {},
-  regular: {}
+  regular: {},
+  unrevealedCount: 52
 }): IDeckState => ({
   cards,
   move: null,

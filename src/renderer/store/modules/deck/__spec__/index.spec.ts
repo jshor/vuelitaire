@@ -18,7 +18,8 @@ const createState = (): IDeckState => {
   state.cards = {
     foundations: {},
     tableau: {},
-    regular: {}
+    regular: {},
+    unrevealedCount: 52
   }
 
   return state

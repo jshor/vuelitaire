@@ -22,7 +22,8 @@ describe('Vuex cards module', () => {
           regular: {
             [a.id]: a,
             [b.id]: b
-          }
+          },
+          unrevealedCount: 52
         }
 
         b.child = c
@@ -41,7 +42,8 @@ describe('Vuex cards module', () => {
         const state: ICardsState = {
           tableau: {},
           foundations: {},
-          regular: {}
+          regular: {},
+          unrevealedCount: 52
         }
         const originalState: ICardsState = { ...state } as ICardsState
 
@@ -57,7 +59,8 @@ describe('Vuex cards module', () => {
           foundations: {},
           regular: {
             [card.id]: card
-          }
+          },
+          unrevealedCount: 52
         }
 
         card.revealed = true
@@ -74,7 +77,8 @@ describe('Vuex cards module', () => {
         const state: ICardsState = {
           tableau: {},
           foundations: {},
-          regular: {}
+          regular: {},
+          unrevealedCount: 52
         }
         const originalState: ICardsState = { ...state } as ICardsState
 
@@ -90,7 +94,8 @@ describe('Vuex cards module', () => {
           foundations: {},
           regular: {
             [card.id]: card
-          }
+          },
+          unrevealedCount: 52
         }
 
         card.hasError = true
@@ -113,7 +118,8 @@ describe('Vuex cards module', () => {
             [a.id]: a,
             [b.id]: b,
             [c.id]: c
-          }
+          },
+          unrevealedCount: 52
         }
 
         a.animationIndex = 1
@@ -133,7 +139,8 @@ describe('Vuex cards module', () => {
         const state: ICardsState = {
           tableau: {},
           foundations: {},
-          regular: {}
+          regular: {},
+          unrevealedCount: 52
         }
 
         mutations.INIT_FOUNDATIONS(state)
@@ -157,7 +164,8 @@ describe('Vuex cards module', () => {
             [oldParent.id]: oldParent,
             [newParent.id]: newParent,
             [card.id]: card
-          }
+          },
+          unrevealedCount: 52
         }
 
         oldParent.child = card
@@ -180,7 +188,8 @@ describe('Vuex cards module', () => {
           },
           regular: {
             [card.id]: card
-          }
+          },
+          unrevealedCount: 52
         }
 
         mutations.MOVE_CARD(state, new Pair(card.id, lane.id))
@@ -199,7 +208,8 @@ describe('Vuex cards module', () => {
           tableau: {},
           regular: {
             [card.id]: card
-          }
+          },
+          unrevealedCount: 52
         }
 
         mutations.MOVE_CARD(state, new Pair(card.id, foundation.id))

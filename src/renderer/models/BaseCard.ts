@@ -22,7 +22,7 @@ export default abstract class BaseCard implements ICard {
 
   public hasError: boolean = false
 
-  public rules: IRule[] = [isBuildable]
+  public rules: IRule[] = [isBuildable] // TODO: should be protected
 
   public canAcceptCard (card: ICard): boolean {
     return this.rules.reduce((result: boolean, rule: IRule): boolean => {

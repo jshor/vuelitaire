@@ -50,11 +50,11 @@
         <stats-container />
       </div>
       <div class="game__action-bar--right">
-        <action-button @click="autoComplete(0)">
+        <action-button @click="autoComplete(0)" v-if="stats.canAutocomplete">
           <i class="fas fa-magic" />
           Auto
         </action-button>
-        <action-button @click="undo" :disabled="!canUndo">
+        <action-button @click="undo" :disabled="!canUndo" v-else>
           <i class="fas fa-reply" />
           Undo
         </action-button>
@@ -68,6 +68,8 @@
         </action-button>
       </div>
     </div>
+
+    <winner v-if="stats.isComplete" />
   </div>
 </template>
 
@@ -81,6 +83,7 @@ import AnimatedCard from '@/components/AnimatedCard.vue'
 import CardBack from '@/components/CardBack.vue'
 import Foundations from '@/components/Foundations.vue'
 import Tableau from '@/components/Tableau.vue'
+import Winner from '@/components/Winner.vue'
 import CardContainer from './CardContainer.vue'
 import DeckContainer from './DeckContainer.vue'
 import StatsContainer from './StatsContainer.vue'
@@ -99,7 +102,8 @@ import ICard from '@/interfaces/ICard'
       'canUndo'
     ]),
     ...mapState([
-      'animation'
+      'animation',
+      'stats'
     ])
   },
   methods: {
@@ -122,7 +126,8 @@ import ICard from '@/interfaces/ICard'
     DeckContainer,
     Foundations,
     Tableau,
-    StatsContainer
+    StatsContainer,
+    Winner
   }
 })
 class GameContainer extends Vue {

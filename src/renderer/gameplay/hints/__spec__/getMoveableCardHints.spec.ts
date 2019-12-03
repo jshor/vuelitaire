@@ -37,7 +37,8 @@ describe('Hint: getMoveableCardHints', () => {
       [sevenOfSpades.id]: sevenOfSpades,
       [aceOfHearts.id]: aceOfHearts,
       [kingOfSpades.id]: kingOfSpades
-    }
+    },
+    unrevealedCount: 52
   })
   let hints: string[][]
 

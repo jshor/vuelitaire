@@ -27,8 +27,17 @@ import { mapActions, mapState } from 'vuex'
   },
   methods: {
     ...mapActions('stats', [
+      'computeBonus',
       'deductByEpoch'
     ])
+  },
+  watch: {
+    stats: {
+      handler (oldValue, newValue) {
+        this.handleStatsUpdate()
+      },
+      deep: true
+    }
   }
 })
 class StatsContainer extends Vue {
@@ -36,6 +45,11 @@ class StatsContainer extends Vue {
    * Stopwatch to monitor the game time.
    */
   public stopwatch: Stopwatch = new Stopwatch()
+
+  /**
+   * Stopwatch to monitor the game time.
+   */
+  public gameEnded: boolean = false
 
   /**
    * Stats store module state.
@@ -60,6 +74,13 @@ class StatsContainer extends Vue {
   public deductByEpoch: (epochs: number) => void
 
   /**
+   * Store action to compute the user's bonus.
+   *
+   * @param {number} secondsElapsed
+   */
+  public computeBonus: (secondsElapsed: number) => void
+
+  /**
    * Updates the time elapsed, and updates the store to deduct from score if an epoch has passed.
    *
    * @param {number} timeElapsed - number of seconds passed
@@ -81,6 +102,14 @@ class StatsContainer extends Vue {
 
   public beforeDestroy () {
     this.stopwatch.stop()
+  }
+
+  public handleStatsUpdate () {
+    if (!this.gameEnded) {
+      this.stopwatch.stop()
+      this.computeBonus(this.stopwatch.getTimeElapsed())
+      this.gameEnded = true
+    }
   }
 }
 

@@ -1,5 +1,10 @@
 <h1 align="center">Vuelitaire</h1>
-<p align="center">Solitaire for Windows, Linux, and macOS.</p>
+
+<p align="center">
+  <img src="./static/vuelitaire.svg" alt="logo" width="200">
+</p>
+
+<p align="center">Simple, elegant Solitaire game.</p>
 
 <br>
 
@@ -27,11 +32,13 @@
 
 ## Demo
 
-TODO
+[**Vuelitaire.com**](https://vuelitaire.com)
 
 ## Screenshot
 
-TODO
+<p align="center">
+  <img src="./static/screenshot.png" alt="screenshot">
+</p>
 
 ## Development
 

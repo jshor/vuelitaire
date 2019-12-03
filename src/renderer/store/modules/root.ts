@@ -14,7 +14,7 @@ import hints from './hints'
 import stats from './stats'
 
 const state: IRootState = {
-  gameId: uuid(),
+  gameId: null,
   revertibleStates: [],
   selectedCard: null,
   animation: null,
@@ -59,8 +59,9 @@ const actions: ActionTree<IRootState, IRootState> = {
    * @returns {Promise<void>}
    */
   async newGame ({ commit }: ActionContext<IRootState, IRootState>): Promise<void> {
-    commit('CLEAR_GAME')
     commit('animation/SET_IN_PROGRESS', true)
+    commit('SET_GAME_ID')
+    commit('deck/RESET_DECK')
     commit('deck/INIT_DECK')
     commit('deck/INIT_TABLEAU')
     commit('deck/cards/INIT_FOUNDATIONS')
@@ -86,8 +87,10 @@ const actions: ActionTree<IRootState, IRootState> = {
     dispatch('clearSelection')
     commit('deck/SET_MOVE', pair)
     commit('RECORD_REVERTIBLE_STATE')
+    dispatch('stats/accruePointsByMove', pair)
     commit('deck/cards/MOVE_CARD', pair)
     commit('deck/REMOVE_FROM_DECK', pair.cardId)
+    dispatch('stats/determineWinningStatus', pair)
   },
 
   /**
@@ -104,6 +107,7 @@ const actions: ActionTree<IRootState, IRootState> = {
     commit('RECORD_REVERTIBLE_STATE')
     commit('deck/DEAL')
     await dispatch('animation/wait')
+    dispatch('stats/deductByDeal')
   },
 
   /**
@@ -196,7 +200,9 @@ const actions: ActionTree<IRootState, IRootState> = {
       await dispatch('deal')
     }
 
-    await dispatch('autoComplete')
+    if (!state.stats.isComplete) {
+      await dispatch('autoComplete')
+    }
   }
 }
 
@@ -212,18 +218,12 @@ const mutations: MutationTree<IRootState> = {
   },
 
   /**
-   * Resets the existing game data.
+   * Sets the game ID to a random UUID.
    *
    * @param {IRootState} state
    */
-  CLEAR_GAME (state: IRootState): void {
-    Vue.set(state, 'deck', deck.state)
-    Vue.set(state.deck, 'cards', {
-      foundations: {},
-      tableau: {},
-      regular: {}
-    })
-    Vue.set(state, 'gameId', uuid())
+  SET_GAME_ID (state: IRootState): void {
+    state.gameId = uuid()
   },
 
   /**

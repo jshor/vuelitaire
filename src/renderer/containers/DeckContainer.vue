@@ -26,11 +26,11 @@
 </template>
 
 <script lang="ts">
+import { isMobile } from 'is-mobile'
 import Vue from 'vue'
 import Component from 'vue-class-component'
 import { Container } from 'vue-smooth-dnd'
 import { mapState } from 'vuex'
-import { isMobile } from 'is-mobile'
 
 import ICard from '@/interfaces/ICard'
 import CardContainer from './CardContainer.vue'

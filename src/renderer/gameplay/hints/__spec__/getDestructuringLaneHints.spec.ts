@@ -29,7 +29,8 @@ describe('getDestructuringLaneHints()', () => {
         [twoOfSpades.id]: twoOfSpades,
         [aceOfHearts.id]: aceOfHearts,
         [twoOfClubs.id]: twoOfClubs
-      }
+      },
+      unrevealedCount: 0
     })
     const cards = Object.values(deck.cards.regular)
 
@@ -62,7 +63,8 @@ describe('getDestructuringLaneHints()', () => {
         [aceOfSpades.id]: aceOfSpades,
         [twoOfSpades.id]: twoOfSpades,
         [aceOfHearts.id]: aceOfHearts
-      }
+      },
+      unrevealedCount: 0
     })
     const cards = Object.values(deck.cards.regular)
 
@@ -93,7 +95,8 @@ describe('getDestructuringLaneHints()', () => {
       regular: {
         [aceOfSpades.id]: aceOfSpades,
         [twoOfSpades.id]: twoOfSpades
-      }
+      },
+      unrevealedCount: 0
     })
     const cards = Object.values(deck.cards.regular)
 

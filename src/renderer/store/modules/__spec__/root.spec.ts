@@ -6,6 +6,7 @@ import Card from '@/models/Card'
 import Pair from '@/models/Pair'
 import deck from '../deck'
 import root from '../root'
+import stats from '../stats'
 import invokeAction from './__helpers__/invokeAction'
 
 const {
@@ -17,8 +18,9 @@ const {
 const createState = (): IRootState => ({
   ...root.state,
   deck: { ...deck.state },
-  hints: { ...deck.state }
-} as IRootState)
+  hints: { ...deck.state },
+  stats: { ...stats.state }
+})
 
 describe('Root Vuex module', () => {
   afterEach(() => jest.resetAllMocks())
@@ -87,8 +89,12 @@ describe('Root Vuex module', () => {
           expect(commit).toHaveBeenCalledWith('animation/SET_IN_PROGRESS', true)
         })
 
-        it('should clear the existing game', () => {
-          expect(commit).toHaveBeenCalledWith('CLEAR_GAME')
+        it('should update the game ID', () => {
+          expect(commit).toHaveBeenCalledWith('SET_GAME_ID')
+        })
+
+        it('should reset the deck', () => {
+          expect(commit).toHaveBeenCalledWith('deck/RESET_DECK')
         })
 
         it('should initialize a deck of cards', () => {
@@ -97,6 +103,10 @@ describe('Root Vuex module', () => {
 
         it('should initialize the tableau with the deck of cards', () => {
           expect(commit).toHaveBeenCalledWith('deck/INIT_TABLEAU')
+        })
+
+        it('should reveal the tableaux top cards', () => {
+          expect(commit).toHaveBeenCalledWith('deck/cards/REVEAL_CARDS')
         })
 
         it('should initialize the foundation spaces', () => {
@@ -111,7 +121,6 @@ describe('Root Vuex module', () => {
           invokeAction(actions, 'newGame', { commit })
             .then(() => {
               expect(commit).toHaveBeenCalledWith('deck/cards/CLEAR_ANIMATION_INDICES')
-              expect(commit).toHaveBeenCalledWith('deck/cards/REVEAL_CARDS')
               expect(commit).toHaveBeenCalledWith('animation/SET_IN_PROGRESS', false)
               done()
             })
@@ -121,8 +130,8 @@ describe('Root Vuex module', () => {
     })
 
     describe('deal()', () => {
-      beforeEach(() => {
-        invokeAction(actions, 'deal', { commit, dispatch })
+      beforeEach(async () => {
+        await invokeAction(actions, 'deal', { commit, dispatch })
       })
 
       it('should clear the existing selected cards', () => {
@@ -142,7 +151,11 @@ describe('Root Vuex module', () => {
       })
 
       it('should halt UI until the deal animation completes', () => {
-        expect(dispatch).toHaveBeenLastCalledWith('animation/wait')
+        expect(dispatch).toHaveBeenCalledWith('animation/wait')
+      })
+
+      it('should deduct points for resetting the deck', () => {
+        expect(dispatch).toHaveBeenLastCalledWith('stats/deductByDeal')
       })
     })
 
@@ -154,8 +167,15 @@ describe('Root Vuex module', () => {
       })
 
       it('should clear the existing selected cards', () => {
-        expect(dispatch).toHaveBeenCalledTimes(1)
         expect(dispatch).toHaveBeenCalledWith('clearSelection')
+      })
+
+      it('should record the deck state', () => {
+        expect(commit).toHaveBeenCalledWith('RECORD_REVERTIBLE_STATE')
+      })
+
+      it('should update the points with the result computed from the given move', () => {
+        expect(dispatch).toHaveBeenCalledWith('stats/accruePointsByMove', pair)
       })
 
       it('should move the card', () => {
@@ -164,8 +184,8 @@ describe('Root Vuex module', () => {
         expect(commit).toHaveBeenCalledWith('deck/REMOVE_FROM_DECK', pair.cardId)
       })
 
-      it('should record the deck state', () => {
-        expect(commit).toHaveBeenCalledWith('RECORD_REVERTIBLE_STATE')
+      it('should dispatch `determineWinningStatus` to determine if the game is autoplayable or won', () => {
+        expect(dispatch).toHaveBeenCalledWith('stats/determineWinningStatus', pair)
       })
     })
 
@@ -322,7 +342,7 @@ describe('Root Vuex module', () => {
     })
 
     describe('autoComplete()', () => {
-      const state: IDeckState = createState().deck
+      const state: IRootState = createState()
 
       it('should move the card and then temporarily halt UI if a pair is found before re-attempt', async () => {
         const pair: Pair = new Pair('some-card-id', 'some-target-id')
@@ -333,11 +353,9 @@ describe('Root Vuex module', () => {
 
         await invokeAction(actions, 'autoComplete', { state, dispatch })
 
-        expect(dispatch).toHaveBeenCalledTimes(4)
         expect(dispatch).toHaveBeenCalledWith('animation/move', pair)
         expect(dispatch).toHaveBeenCalledWith('moveCard', pair)
         expect(dispatch).toHaveBeenCalledWith('animation/wait')
-        expect(dispatch).toHaveBeenCalledWith('autoComplete')
       })
 
       it('should trigger a deal if no pair is found before re-attempt', async () => {
@@ -347,9 +365,31 @@ describe('Root Vuex module', () => {
 
         await invokeAction(actions, 'autoComplete', { state, dispatch })
 
-        expect(dispatch).toHaveBeenCalledTimes(2)
         expect(dispatch).toHaveBeenCalledWith('deal')
+      })
+
+      it('should autocomplete again if the game is still incomplete', async () => {
+        jest
+          .spyOn(auto, 'findNextPromotion')
+          .mockReturnValue(null)
+
+        state.stats.isComplete = false
+
+        await invokeAction(actions, 'autoComplete', { state, dispatch })
+
         expect(dispatch).toHaveBeenCalledWith('autoComplete')
+      })
+
+      it('should not autocomplete again if the game is won', async () => {
+        jest
+          .spyOn(auto, 'findNextPromotion')
+          .mockReturnValue(null)
+
+        state.stats.isComplete = true
+
+        await invokeAction(actions, 'autoComplete', { state, dispatch })
+
+        expect(dispatch).not.toHaveBeenCalledWith('autoComplete')
       })
     })
   })
@@ -365,37 +405,13 @@ describe('Root Vuex module', () => {
     })
   })
 
-  describe('CLEAR_GAME', () => {
-    const card: Card = new Card(Suits.DIAMONDS, 1)
-    const state: IRootState = createState()
-
-    beforeEach(() => {
-      state.deck.cards = {
-        foundations: {},
-        tableau: {},
-        regular: {
-          [card.id]: card
-        }
-      }
-      state.deck.stock = [card]
-      state.gameId = 'original-game-id'
-    })
-
-    it('should reset the deck store module to its original state', () => {
-      mutations.CLEAR_GAME(state)
-
-      expect(state.deck).toEqual({
-        ...createState().deck,
-        cards: {
-          foundations: {},
-          tableau: {},
-          regular: {}
-        }
-      })
-    })
-
+  describe('SET_GAME_ID', () => {
     it('should set a new game id', () => {
-      mutations.CLEAR_GAME(state)
+      const state: IRootState = createState()
+
+      state.gameId = 'original-game-id'
+
+      mutations.SET_GAME_ID(state)
 
       expect(state.gameId).not.toEqual('original-game-id')
       expect(typeof state.gameId).toBe('string')
