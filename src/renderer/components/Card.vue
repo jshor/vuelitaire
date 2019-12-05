@@ -1,7 +1,6 @@
 <template>
   <div
     :class="{
-      [`card--${this.suit.toLowerCase()}-${this.rank + 1}`]: true,
       ['card--revealed']: revealed,
       ['card--error']: error,
       ['card--dealing']: animationIndex
@@ -9,38 +8,20 @@
     :style="style"
     class="card"
     ref="card">
-    <div class="card__inner" v-if="!isSpace">
-      <card-back class="card__back" />
-      <div class="card__front"></div>
+    <div class="card__inner">
+      <slot />
     </div>
-    <div class="space" v-else></div>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
 import Component from 'vue-class-component'
-import CardBack from './CardBack.vue'
 
 @Component({
   name: 'Card',
-  components: {
-    CardBack
-  },
   props: {
-    suit: {
-      type: String,
-      default: '?'
-    },
-    rank: {
-      type: Number,
-      default: 0
-    },
     revealed: {
-      type: Boolean,
-      default: false
-    },
-    isSpace: {
       type: Boolean,
       default: false
     },
@@ -127,39 +108,6 @@ export default class Card extends Vue {
 
 .card--revealed .card__inner {
   transform: rotateY(180deg);
-}
-
-.card__front {
-  font: 1rem Arial, Helvetica, sans-serif;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
-  box-sizing: border-box;
-  border-radius: 3px;
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  backface-visibility: hidden;
-}
-
-.card__back {
-  position: absolute;
-}
-
-.card__front {
-  background-size: cover;
-  // background-color: #fff;
-}
-
-.card__front {
-  transform: rotateY(180deg);
-}
-
-.space {
-  width: $card-width;
-  height: $card-height;
-  border-width: 5px;
-  border-style: solid;
-  box-sizing: border-box;
-  background-color: #000;
 }
 
 @keyframes shake {

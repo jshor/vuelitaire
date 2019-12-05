@@ -6,12 +6,14 @@
     <card
       v-if="!isSpace"
       :animation-index="card.animationIndex"
-      :suit="card.suit"
-      :rank="card.rank"
       :revealed="card.revealed"
-      :card-id="card.id"
-      :error="card.hasError"
-    />
+      :error="card.hasError">
+      <card-back :backface="backface" />
+      <card-front
+        :suit="card.suit"
+        :rank="card.rank"
+      />
+    </card>
     <div
       @click.stop="selectCard(false)"
       @dblclick.stop="selectCard(true)"
@@ -44,10 +46,13 @@ import { isMobile } from 'is-mobile'
 import Vue from 'vue'
 import Component from 'vue-class-component'
 import { Container } from 'vue-smooth-dnd'
-import { mapActions, mapGetters } from 'vuex'
+import { mapActions, mapGetters, mapState } from 'vuex'
 
 import Card from '@/components/Card.vue'
+import CardBack from '@/components/CardBack.vue'
 import CardDraggable from '@/components/CardDraggable.vue'
+import CardFront from '@/components/CardFront.vue'
+
 import ICard from '@/interfaces/ICard'
 import Pair from '@/models/Pair'
 import getDescendants from '@/utils/getLineage'
@@ -73,12 +78,17 @@ import isDescendant from '@/utils/isDescendant'
   computed: {
     ...mapGetters([
       'highlightedCards'
+    ]),
+    ...mapGetters('settings', [
+      'backface'
     ])
   },
   components: {
     Card,
-    CardDraggable,
+    CardBack,
     CardContainer,
+    CardDraggable,
+    CardFront,
     Container
   },
   methods: {

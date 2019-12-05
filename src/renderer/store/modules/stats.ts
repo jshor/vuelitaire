@@ -81,6 +81,13 @@ const actions: ActionTree<IStatsState, IRootState> = {
 }
 
 const mutations: MutationTree<IStatsState> = {
+  RESET_STATS (state: IStatsState) {
+    state.points = 0
+    state.paused = false
+    state.isComplete = false
+    state.canAutocomplete = false
+  },
+
   /**
    * Accrues points with the given value.
    *

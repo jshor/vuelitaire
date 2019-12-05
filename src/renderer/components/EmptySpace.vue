@@ -1,5 +1,5 @@
 <template>
-  <div class="empty-space">
+  <div class="empty-space" @click="$emit('click')">
     <slot />
   </div>
 </template>
@@ -14,11 +14,20 @@ export default class EmptySpace extends Vue {}
 
 <style lang="scss">
 .empty-space {
+  position: relative;
   width: $card-width;
   height: $card-height;
-  border-width: 5px;
-  border-style: solid;
   box-sizing: border-box;
-  background-color: #000;
+
+  &::before {
+    position: absolute;
+    content: ' ';
+    display: block;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    border: 2px solid rgba(255,255,255,0.4);
+    border-radius: 3px;
+  }
 }
 </style>

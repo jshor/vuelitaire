@@ -12,6 +12,9 @@ cache:
 
 script:
   - yarn
+  - yarn lint
+  - yarn unit
+  - codecov -f test/coverage/*.json
   - yarn build:web
   - yarn deploy
 

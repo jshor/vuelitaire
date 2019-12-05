@@ -30,7 +30,7 @@ export default class Tableau extends Vue {}
   margin-top: $card-fanning-space / 2;
 }
 
-.tableau > .card-draggable > .card-container {
+.tableau > .empty-space > .card-container {
   margin-top: 0;
 }
 </style>

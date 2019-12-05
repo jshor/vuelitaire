@@ -6,9 +6,9 @@
  * @returns {string}
  */
 function leadZero (t: number): string {
-	const f: string = Math.floor(t).toString()
+  const f: string = Math.floor(t).toString()
 
-	return f.length >= 2 ? f : `0${f}`
+  return f.length >= 2 ? f : `0${f}`
 }
 
 /**
@@ -22,14 +22,14 @@ function leadZero (t: number): string {
  * @returns {string}
  */
 export default function formatClock (s: number) {
-	const ss: string = leadZero(s % 60)
-	const mm: string = leadZero((s / 60) % 60)
+  const ss: string = leadZero(s % 60)
+  const mm: string = leadZero((s / 60) % 60)
   const hh: number = Math.floor(s / 3600)
 
-	if (hh > 0) {
-		return `${hh}:${mm}:${ss}`
+  if (hh > 0) {
+    return `${hh}:${mm}:${ss}`
   } else if (mm !== '00') {
-    return `${parseInt(mm)}:${ss}`
+    return `${parseInt(mm, 10)}:${ss}`
   }
-	return parseInt(ss)
+  return parseInt(ss, 10)
 }

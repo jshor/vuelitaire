@@ -1,20 +1,20 @@
 <template>
   <div class="game" @click="clearSelection">
     <div
-      v-if="animation.inProgress"
+      v-if="animation.inProgress || stats.isComplete"
       class="animation-cover"
     />
     <div class="game__top">
       <foundations>
-        <div
+        <empty-space
           data-id="DEAL_CARD"
-          class="game__spacer game__spacer--deal"
           :class="{
             'game__spacer--active': highlightedCards.includes('DEAL_CARD')
           }"
           @click="deal">
-          <card :is-space="true" />
-        </div>
+          <card-back :backface="backface" v-if="deck.stock.length" />
+          <empty-stock-icon v-else />
+        </empty-space>
         <div class="game__spacer game__spacer--deck"  data-id="WASTE_PILE">
           <deck-container />
         </div>
@@ -66,10 +66,19 @@
           <i class="fas fa-layer-group" />
           Deal
         </action-button>
+        <action-button @click="toggleDialog(true)">
+          <i class="fas fa-cog" />
+          Settings
+        </action-button>
       </div>
     </div>
 
-    <winner v-if="stats.isComplete" />
+    <settings-container v-if="settings.showDialog" />
+
+    <winner
+      :is-complete="stats.isComplete"
+      @redeal="newGame"
+    />
   </div>
 </template>
 
@@ -83,15 +92,22 @@ import AnimatedCard from '@/components/AnimatedCard.vue'
 import Card from '@/components/Card.vue'
 import CardBack from '@/components/CardBack.vue'
 import EmptySpace from '@/components/EmptySpace.vue'
+import EmptyStockIcon from '@/components/EmptyStockIcon.vue'
 import Foundations from '@/components/Foundations.vue'
+import Modal from '@/components/Modal.vue'
 import Tableau from '@/components/Tableau.vue'
 import Winner from '@/components/Winner.vue'
 import CardContainer from './CardContainer.vue'
 import DeckContainer from './DeckContainer.vue'
+import SettingsContainer from './SettingsContainer.vue'
 import StatsContainer from './StatsContainer.vue'
+
+import { CardBacks } from '@/constants'
 
 import IAnimationState from '@/interfaces/IAnimationState'
 import ICard from '@/interfaces/ICard'
+import IBackface from '../interfaces/IBackface'
+import ISettingsState from '../interfaces/ISettingsState'
 
 @Component({
   computed: {
@@ -103,14 +119,22 @@ import ICard from '@/interfaces/ICard'
       'highlightedCards',
       'canUndo'
     ]),
+    ...mapGetters('settings', [
+      'backface'
+    ]),
     ...mapState([
       'animation',
-      'stats'
+      'stats',
+      'settings',
+      'deck'
     ])
   },
   methods: {
     ...mapActions('hints', [
       'showHint'
+    ]),
+    ...mapActions('settings', [
+      'toggleDialog'
     ]),
     ...mapActions([
       'deal',
@@ -128,9 +152,12 @@ import ICard from '@/interfaces/ICard'
     CardContainer,
     DeckContainer,
     EmptySpace,
+    EmptyStockIcon,
     Foundations,
+    Modal,
     Tableau,
     StatsContainer,
+    SettingsContainer,
     Winner
   }
 })
@@ -145,10 +172,16 @@ class GameContainer extends Vue {
 
   public animation: IAnimationState
 
+  public settings: ISettingsState
+
   public newGame: () => Promise<void>
 
   public beforeCreate () {
-    this.$store.dispatch('newGame')
+    this.$store.dispatch('init')
+  }
+
+  get backface (): IBackface {
+    return CardBacks[this.settings.backfaceId]
   }
 }
 

@@ -1,8 +1,10 @@
 import { Suits } from '@/constants'
 import ICard from '@/interfaces/ICard'
-import IDeckState from '@/interfaces/IDeckState'
+import ICardsState from '@/interfaces/ICardsState'
 import IRootState from '@/interfaces/IDeckState'
+import IDeckState from '@/interfaces/IDeckState'
 import Card from '@/models/Card'
+import FoundationSpace from '@/models/FoundationSpace'
 import LaneSpace from '@/models/LaneSpace'
 import Pair from '@/models/Pair'
 import shuffle from 'lodash.shuffle'
@@ -102,6 +104,25 @@ const mutations: MutationTree<IDeckState> = {
   },
 
   /**
+   * Creates 4 new foundations.
+   *
+   * @param {ICardsState} state
+   */
+  INIT_EMPTY_DECK (state: IDeckState): void {
+    for (let i: number = 0; i < 4; i++) {
+      const space: FoundationSpace = new FoundationSpace()
+
+      state.cards.foundations[space.id] = new FoundationSpace()
+    }
+
+    for (let i: number = 0; i < 7; i++) {
+      const space: LaneSpace = new LaneSpace()
+
+      state.cards.tableau[space.id] = space
+    }
+  },
+
+  /**
    * Deals `dealCount` cards into the waste and dealt piles.
    *
    * @param {IDeckState} state
@@ -165,6 +186,10 @@ const mutations: MutationTree<IDeckState> = {
       }
     }
     state.move = move
+  },
+
+  SET_DEAL_COUNT (state: IDeckState, dealCount: number): void {
+    Vue.set(state, 'dealCount', dealCount)
   }
 }
 

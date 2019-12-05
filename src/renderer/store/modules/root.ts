@@ -11,6 +11,7 @@ import { ActionContext, ActionTree, GetterTree, MutationTree, StoreOptions } fro
 import animation from './animation'
 import deck from './deck'
 import hints from './hints'
+import settings from './settings'
 import stats from './stats'
 
 const state: IRootState = {
@@ -20,7 +21,8 @@ const state: IRootState = {
   animation: null,
   deck: null,
   hints: null,
-  stats: null
+  stats: null,
+  settings: null
 }
 
 const getters: GetterTree<IRootState, IRootState> = {
@@ -53,19 +55,34 @@ function wait (ms) {
 
 const actions: ActionTree<IRootState, IRootState> = {
   /**
+   * Initiates an empty state after loading settings.
+   *
+   * @param {ActionContext<IRootState, IRootState>} context
+   * @returns {Promise<void>}
+   */
+  init ({ commit, dispatch }: ActionContext<IRootState, IRootState>): void {
+    commit('deck/RESET_DECK')
+    commit('deck/INIT_EMPTY_DECK')
+    dispatch('settings/loadLocalStorageSettings')
+  },
+
+  /**
    * Initiates a new game.
    *
    * @param {ActionContext<IRootState, IRootState>} context
    * @returns {Promise<void>}
    */
-  async newGame ({ commit }: ActionContext<IRootState, IRootState>): Promise<void> {
+  async newGame ({ commit, dispatch }: ActionContext<IRootState, IRootState>): Promise<void> {
     commit('animation/SET_IN_PROGRESS', true)
     commit('SET_GAME_ID')
+    commit('stats/RESET_STATS')
     commit('deck/RESET_DECK')
     commit('deck/INIT_DECK')
     commit('deck/INIT_TABLEAU')
     commit('deck/cards/INIT_FOUNDATIONS')
     commit('deck/cards/REVEAL_CARDS')
+
+    dispatch('settings/loadLocalStorageSettings')
 
     // wait for the initial load animation to complete
     await wait(35 * 50) // 35 cards at 50 ms each
@@ -101,7 +118,7 @@ const actions: ActionTree<IRootState, IRootState> = {
    *  * This will clear all visible hints from the state
    * @param {ActionContext<IRootState, IRootState>} context
    */
-  async deal ({ commit, dispatch }: ActionContext<IRootState, IRootState>): Promise<void> {
+  async deal ({ commit, dispatch, state }: ActionContext<IRootState, IRootState>): Promise<void> {
     dispatch('clearSelection')
     commit('deck/SET_MOVE', null)
     commit('RECORD_REVERTIBLE_STATE')
@@ -256,7 +273,8 @@ const store: StoreOptions<any> = {
     animation,
     deck,
     hints,
-    stats
+    stats,
+    settings
   },
   strict
 }

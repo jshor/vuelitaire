@@ -7,9 +7,9 @@
 </template>
 
 <script lang="ts">
+import formatClock from '@/utils/formatClock'
 import Vue from 'vue'
 import Component from 'vue-class-component'
-import formatClock from '@/utils/formatClock'
 
 @Component({
   name: 'Stats',

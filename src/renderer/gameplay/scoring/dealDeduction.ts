@@ -7,6 +7,11 @@ import IDeckState from '@/interfaces/IDeckState'
  * @returns {number} negative point deduction
  */
 export default function dealDeduction (deckState: IDeckState): number {
+  if ((deckState.waste.length + deckState.stock.length) === 0) {
+    // no cards left, so don't deduct any points
+    return 0
+  }
+
   if (deckState.dealt.length > 0) {
     // we haven't reached the end of the deck yet, so don't deduct points
     return 0

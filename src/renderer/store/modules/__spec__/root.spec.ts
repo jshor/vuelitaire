@@ -82,7 +82,7 @@ describe('Root Vuex module', () => {
     describe('newGame()', () => {
       describe('before the animation completes', () => {
         beforeEach(() => {
-          invokeAction(actions, 'newGame', { commit })
+          invokeAction(actions, 'newGame', { commit, dispatch })
         })
 
         it('should toggle on the animation flag', () => {
@@ -118,7 +118,7 @@ describe('Root Vuex module', () => {
         it('should complete the animation', (done) => {
           jest.useFakeTimers()
 
-          invokeAction(actions, 'newGame', { commit })
+          invokeAction(actions, 'newGame', { commit, dispatch })
             .then(() => {
               expect(commit).toHaveBeenCalledWith('deck/cards/CLEAR_ANIMATION_INDICES')
               expect(commit).toHaveBeenCalledWith('animation/SET_IN_PROGRESS', false)
