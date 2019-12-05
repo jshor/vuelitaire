@@ -1,24 +1,41 @@
 <template>
   <div class="stats">
-    <slot />
+    <i class="fas fa-chalkboard" />&nbsp;{{ score }}
+    &middot;
+    <i class="fas fa-stopwatch" />&nbsp;{{ clock }}
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
 import Component from 'vue-class-component'
+import formatClock from '@/utils/formatClock'
 
 @Component({
   name: 'Stats',
   props: {
-    theme: {
-      type: String,
-      default: 'green'
+    timeElapsed: {
+      type: Number,
+      default: 0
+    },
+    points: {
+      type: Number,
+      default: 0
     }
   }
 })
 export default class Stats extends Vue {
-  public theme: string
+  public timeElapsed: number
+
+  public points: number
+
+  get clock () {
+    return formatClock(this.timeElapsed)
+  }
+
+  get score () {
+    return this.points.toLocaleString()
+  }
 }
 </script>
 

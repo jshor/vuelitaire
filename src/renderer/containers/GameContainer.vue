@@ -13,7 +13,7 @@
             'game__spacer--active': highlightedCards.includes('DEAL_CARD')
           }"
           @click="deal">
-          <card-back />
+          <card :is-space="true" />
         </div>
         <div class="game__spacer game__spacer--deck"  data-id="WASTE_PILE">
           <deck-container />
@@ -49,7 +49,7 @@
       <div class="game__action-bar--left">
         <stats-container />
       </div>
-      <div class="game__action-bar--right">
+      <div class="game__action-bar--right" v-if="!stats.isComplete">
         <action-button @click="autoComplete(0)" v-if="stats.canAutocomplete">
           <i class="fas fa-magic" />
           Auto
@@ -80,7 +80,9 @@ import { mapActions, mapGetters, mapState } from 'vuex'
 
 import ActionButton from '@/components/ActionButton.vue'
 import AnimatedCard from '@/components/AnimatedCard.vue'
+import Card from '@/components/Card.vue'
 import CardBack from '@/components/CardBack.vue'
+import EmptySpace from '@/components/EmptySpace.vue'
 import Foundations from '@/components/Foundations.vue'
 import Tableau from '@/components/Tableau.vue'
 import Winner from '@/components/Winner.vue'
@@ -121,9 +123,11 @@ import ICard from '@/interfaces/ICard'
   components: {
     ActionButton,
     AnimatedCard,
+    Card,
     CardBack,
     CardContainer,
     DeckContainer,
+    EmptySpace,
     Foundations,
     Tableau,
     StatsContainer,
@@ -152,6 +156,10 @@ export default GameContainer
 </script>
 
 <style lang="scss">
+.empty-deck {
+  background-color: transparent;
+}
+
 .animation-cover {
   z-index: 1000;
   position: absolute;

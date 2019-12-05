@@ -1,9 +1,8 @@
 <template>
-  <stats>
-    <i class="fas fa-chalkboard" />&nbsp;{{ stats.points }}
-    &middot;
-    <i class="fas fa-stopwatch" />&nbsp;{{ timeElapsed }}
-  </stats>
+  <stats
+    :points="points"
+    :time-elapsed="timeElapsed"
+  />
 </template>
 
 <script lang="ts">
@@ -23,7 +22,10 @@ import { mapActions, mapState } from 'vuex'
     Stats
   },
   computed: {
-    ...mapState(['stats'])
+    ...mapState('stats', [
+      'points',
+      'isComplete'
+    ])
   },
   methods: {
     ...mapActions('stats', [
@@ -32,11 +34,10 @@ import { mapActions, mapState } from 'vuex'
     ])
   },
   watch: {
-    stats: {
-      handler (oldValue, newValue) {
+    isComplete: {
+      handler () {
         this.handleStatsUpdate()
-      },
-      deep: true
+      }
     }
   }
 })
@@ -47,9 +48,9 @@ class StatsContainer extends Vue {
   public stopwatch: Stopwatch = new Stopwatch()
 
   /**
-   * Stopwatch to monitor the game time.
+   * Flag for completion of the game.
    */
-  public gameEnded: boolean = false
+  public isComplete: boolean
 
   /**
    * Stats store module state.
@@ -105,10 +106,9 @@ class StatsContainer extends Vue {
   }
 
   public handleStatsUpdate () {
-    if (!this.gameEnded) {
+    if (this.isComplete) {
       this.stopwatch.stop()
       this.computeBonus(this.stopwatch.getTimeElapsed())
-      this.gameEnded = true
     }
   }
 }
