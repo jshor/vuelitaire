@@ -6,7 +6,7 @@
 </template>
 
 <script lang="ts">
-import Stats from '@/components/Stats.vue'
+import Stats from '@/components/Stats'
 import { Scoring } from '@/constants'
 import Stopwatch from '@/gameplay/Stopwatch'
 import IStatsState from '@/interfaces/IStatsState'

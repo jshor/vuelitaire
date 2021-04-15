@@ -19,7 +19,7 @@ import IConfetti from '@/interfaces/IConfetti'
 import confetti from 'canvas-confetti'
 import Vue from 'vue'
 import Component from 'vue-class-component'
-import Congratulations from './Congratulations.vue'
+import Congratulations from './Congratulations'
 
 @Component({
   name: 'Winner',

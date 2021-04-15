@@ -1,7 +1,7 @@
 import { Scoring } from '@/constants'
 import { createLocalVue, shallowMount } from '@vue/test-utils'
 import Vuex from 'vuex'
-import StatsContainer from '../StatsContainer.vue'
+import StatsContainer from '../StatsContainer'
 
 const localVue = createLocalVue()
 

@@ -61,11 +61,11 @@
 </template>
 
 <script lang="ts">
-import Checkbox from '@/components/Checkbox.vue'
-import Gallery from '@/components/Gallery.vue'
-import Modal from '@/components/Modal.vue'
-import ModalNav from '@/components/ModalNav.vue'
-import RadioGroup from '@/components/RadioGroup.vue'
+import Checkbox from '@/components/Checkbox'
+import Gallery from '@/components/Gallery'
+import Modal from '@/components/Modal'
+import ModalNav from '@/components/ModalNav'
+import RadioGroup from '@/components/RadioGroup'
 import ISettingsState from '@/interfaces/ISettingsState'
 import Vue from 'vue'
 import Component from 'vue-class-component'

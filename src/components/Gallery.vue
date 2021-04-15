@@ -16,7 +16,7 @@ import { CardBacks } from '@/constants'
 import IBackface from '@/interfaces/IBackface'
 import Vue from 'vue'
 import Component from 'vue-class-component'
-import CardBack from './CardBack.vue'
+import CardBack from './CardBack'
 
 @Component({
   name: 'Stats',

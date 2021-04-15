@@ -19,7 +19,7 @@
 import Vue from 'vue'
 import Component from 'vue-class-component'
 import { Draggable } from 'vue-smooth-dnd'
-import EmptySpace from './EmptySpace.vue'
+import EmptySpace from './EmptySpace'
 
 @Component({
   components: {

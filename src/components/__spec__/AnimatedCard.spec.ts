@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils'
-import AnimatedCard from '../AnimatedCard.vue'
+import AnimatedCard from '../AnimatedCard'
 
 describe('Animated Card component', () => {
   let wrapper

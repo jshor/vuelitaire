@@ -2,7 +2,7 @@ import { Suits } from '@/constants'
 import Card from '@/models/Card'
 import { createLocalVue, shallowMount } from '@vue/test-utils'
 import Vuex from 'vuex'
-import DeckContainer from '../DeckContainer.vue'
+import DeckContainer from '../DeckContainer'
 
 const localVue = createLocalVue()
 

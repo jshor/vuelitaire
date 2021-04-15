@@ -4,7 +4,7 @@ import Card from '@/models/Card'
 import Pair from '@/models/Pair'
 import { createLocalVue, shallowMount } from '@vue/test-utils'
 import Vuex from 'vuex'
-import CardContainer from '../CardContainer.vue'
+import CardContainer from '../CardContainer'
 
 const localVue = createLocalVue()
 

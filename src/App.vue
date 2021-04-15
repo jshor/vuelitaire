@@ -5,7 +5,7 @@
 </template>
 
 <script lang="ts">
-import GameContainer from './containers/GameContainer.vue'
+import GameContainer from './containers/GameContainer'
 
 export default {
   name: 'app',
