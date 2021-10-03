@@ -22,7 +22,7 @@ module.exports = {
     '^.+\\.ts$': 'ts-jest'
   },
   moduleNameMapper: {
-    "^lodash-es$": "lodash",
+    '^lodash-es$': 'lodash',
     '^@/(.*)$': '<rootDir>/src/$1'
   },
   snapshotSerializers: [
