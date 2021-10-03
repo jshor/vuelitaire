@@ -26,7 +26,6 @@ describe('Stats Container', () => {
 
     wrapper = shallowMount(StatsContainer, {
       localVue,
-      sync: false,
       store: new Vuex.Store({
         modules: {
           stats

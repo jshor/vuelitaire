@@ -1,4 +1,3 @@
-// import Pair from '@/models/Pair'
 import Pair from '@/models/Pair'
 import ICard from './ICard'
 import ICardsState from './ICardsState'

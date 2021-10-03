@@ -44,6 +44,8 @@ export default {
   computed: {
     /**
      * Computes absolute positioning using the screen coordinates of the original element.
+     *
+     * @returns {ScreenPoint}
      */
     outerStyle () {
       return getScreenCoordinates(`[data-id="${this.cardId}"]`)
@@ -51,6 +53,8 @@ export default {
 
     /**
      * Computes positioning relative to the target, for animation purposes.
+     *
+     * @returns {ScreenPoint}
      */
     innerStyle () {
       const sel = `[data-id="${this.targetId}"]`

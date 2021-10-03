@@ -4,8 +4,8 @@ import IDeckState from '@/interfaces/IDeckState'
 import IRootState from '@/interfaces/IRootState'
 import Card from '@/models/Card'
 import Pair from '@/models/Pair'
-import cloneDeep from 'lodash.clonedeep'
-import uuid from 'uuid/v4'
+import { cloneDeep } from 'lodash-es'
+// import uuid from 'uuid/v4'
 import Vue from 'vue'
 import { ActionContext, ActionTree, GetterTree, MutationTree, StoreOptions } from 'vuex'
 import animation from './animation'
@@ -240,7 +240,7 @@ const mutations: MutationTree<IRootState> = {
    * @param {IRootState} state
    */
   SET_GAME_ID (state: IRootState): void {
-    state.gameId = uuid()
+    state.gameId = Math.random().toString() // generateId() // TODO: TS not supported
   },
 
   /**

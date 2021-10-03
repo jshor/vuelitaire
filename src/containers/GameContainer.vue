@@ -179,10 +179,6 @@ class GameContainer extends Vue {
   public beforeCreate () {
     this.$store.dispatch('init')
   }
-
-  get backface (): IBackface {
-    return CardBacks[this.settings.backfaceId]
-  }
 }
 
 export default GameContainer

@@ -3,7 +3,7 @@ import IDeckState from '@/interfaces/IDeckState'
 /**
  * Computes the point deduction for the given deal move, based on the deal count.
  *
- * @param deckState
+ * @param {IDeckState} deckState
  * @returns {number} negative point deduction
  */
 export default function dealDeduction (deckState: IDeckState): number {

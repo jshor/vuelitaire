@@ -50,9 +50,9 @@ export default class Winner extends Vue {
   public mounted () {
     this.canvas = this.$refs.winner as IConfetti
 
-    this.canvas.confetti = this.canvas.confetti || confetti.create(this.canvas, {
-      resize: true
-    })
+    // this.canvas.confetti = this.canvas.confetti || confetti.create(this.canvas, {
+    //   resize: true
+    // })
   }
 
   public assignConfettiFromTrajectory (trajectory: {
@@ -64,11 +64,11 @@ export default class Winner extends Vue {
   }) {
     const colors: string[] = ['#133315', '#ffffff']
 
-    this.canvas.confetti({
-      particleCount: 2,
-      colors,
-      ...trajectory
-    })
+    // this.canvas.confetti({
+    //   particleCount: 2,
+    //   colors,
+    //   ...trajectory
+    // })
   }
 
   public animateConfetti () {

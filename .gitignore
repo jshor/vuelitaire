@@ -1,15 +1,4 @@
-.DS_Store
-dist/electron/*
-coverage
-dist/web/*
-build/*
-!build/icons
-node_modules/
-npm-debug.log
-npm-debug.log.*
-thumbs.db
-!.gitkeep
+dist
+node_modules
 *.log
-*.tgz
 coverage
-docs

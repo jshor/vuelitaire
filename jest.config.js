@@ -2,10 +2,10 @@ module.exports = {
   collectCoverage: true,
   coverageDirectory: '<rootDir>/test/coverage',
   coveragePathIgnorePatterns: [
-    '<rootDir>/src/renderer/.*/__spec__/.*'
+    '<rootDir>/src/.*/__spec__/.*'
   ],
   moduleDirectories: [
-    "<rootDir>/src/renderer",
+    "<rootDir>/src",
     "node_modules"
   ],
   moduleFileExtensions: [
@@ -22,13 +22,14 @@ module.exports = {
     '^.+\\.ts$': 'ts-jest'
   },
   moduleNameMapper: {
-    '^@/(.*)$': '<rootDir>/src/renderer/$1'
+    "^lodash-es$": "lodash",
+    '^@/(.*)$': '<rootDir>/src/$1'
   },
   snapshotSerializers: [
     'jest-serializer-vue'
   ],
   testMatch: [
-    '<rootDir>/src/renderer/**/*.spec.(js|ts)'
+    '<rootDir>/src/**/*.spec.(js|ts)'
   ],
   testURL: 'http://localhost/'
 }

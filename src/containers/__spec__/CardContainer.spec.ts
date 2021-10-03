@@ -18,7 +18,6 @@ describe('Card Container', () => {
     return shallowMount(CardContainer, {
       propsData,
       localVue,
-      sync: false,
       store: new Vuex.Store({
         actions: {
           moveCard: jest.fn(),
@@ -27,6 +26,14 @@ describe('Card Container', () => {
         },
         getters: {
           highlightedCards: jest.fn(() => [])
+        },
+        modules: {
+          settings: {
+            namespaced: true,
+            getters: {
+              backface: jest.fn(() => ({}))
+            }
+          }
         }
       })
     })

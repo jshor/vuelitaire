@@ -46,7 +46,7 @@ import { isMobile } from 'is-mobile'
 import Vue from 'vue'
 import Component from 'vue-class-component'
 import { Container } from 'vue-smooth-dnd'
-import { mapActions, mapGetters, mapState } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 
 import Card from '@/components/Card'
 import CardBack from '@/components/CardBack'

@@ -1,10 +1,10 @@
 import isBuildable from '@/gameplay/rules/isBuildable'
 import ICard from '@/interfaces/ICard'
 import IRule from '@/interfaces/IRule'
-import generateId from 'uuid/v4'
+// import generateId from 'uuid/v4'
 
 export default abstract class BaseCard implements ICard {
-  public id: string = generateId()
+  public id: string = Math.random().toString() // generateId() // TODO: TS not supported
 
   public child: ICard = null
 

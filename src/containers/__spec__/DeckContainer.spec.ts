@@ -18,7 +18,6 @@ describe('Deck Container', () => {
   beforeEach(() => {
     wrapper = shallowMount(DeckContainer, {
       localVue,
-      sync: false,
       store: new Vuex.Store({
         modules: {
           deck: {
