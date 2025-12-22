@@ -61,20 +61,16 @@
 </template>
 
 <script lang="ts">
-import Checkbox from '@/components/Checkbox'
-import Gallery from '@/components/Gallery'
-import Modal from '@/components/Modal'
-import ModalNav from '@/components/ModalNav'
-import RadioGroup from '@/components/RadioGroup'
-import ISettingsState from '@/interfaces/ISettingsState'
-import Vue from 'vue'
-import Component from 'vue-class-component'
-import { mapActions, mapState } from 'vuex'
+import { defineComponent } from 'vue';
+import { mapActions, mapState } from 'vuex';
+import Checkbox from '@/components/Checkbox';
+import Gallery from '@/components/Gallery';
+import Modal from '@/components/Modal';
+import ModalNav from '@/components/ModalNav';
+import RadioGroup from '@/components/RadioGroup';
 
-@Component({
-  computed: {
-    ...mapState(['settings'])
-  },
+export default defineComponent({
+  name: 'SettingsContainer',
   components: {
     Gallery,
     Checkbox,
@@ -82,34 +78,30 @@ import { mapActions, mapState } from 'vuex'
     ModalNav,
     RadioGroup
   },
+  computed: {
+    ...mapState(['settings'])
+  },
   methods: {
-    ...mapActions('settings', [
-      'updateSettings',
-      'toggleDialog'
-    ])
+    ...mapActions('settings', ['updateSettings', 'toggleDialog'])
   },
   watch: {
     userSettings: {
-      handler () {
-        this.updateSettings(this.userSettings)
+      handler() {
+        this.updateSettings(this.userSettings);
       },
       deep: true
     }
+  },
+  data() {
+    return {
+      userSettings: {
+        ...this.$store.state.settings
+      },
+      sections: ['Game', 'Appearance', 'About'],
+      activeSection: 'Game'
+    };
   }
-})
-export default class SettingsContainer extends Vue {
-  public userSettings: ISettingsState = {
-    ...this.$store.state.settings
-  }
-
-  public settings: ISettingsState
-
-  public sections: string[] = ['Game', 'Appearance', 'About']
-
-  public activeSection: string = 'Game'
-
-  public updateSettings: () => void
-}
+});
 </script>
 
 <style lang="scss">

@@ -15,10 +15,9 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import Component from 'vue-class-component'
+import { defineComponent } from 'vue';
 
-@Component({
+export default defineComponent({
   name: 'Card',
   props: {
     revealed: {
@@ -33,38 +32,32 @@ import Component from 'vue-class-component'
       type: Number,
       default: 0
     }
-  }
-})
-export default class Card extends Vue {
-  public style: {
-    '--left'?: string,
-    '--top'?: string,
-    '--index'?: number
-  } = {}
-
-  public animationIndex: number
-
-  public mounted (): void {
-    const el = this.$refs.card as HTMLElement
-    const { left: bx, top: by } = el.getBoundingClientRect()
+  },
+  data() {
+    return {
+      style: {}
+    };
+  },
+  mounted() {
+    const el = this.$refs.card as HTMLElement;
+    const { left: bx, top: by } = el.getBoundingClientRect();
     const { left: ax, top: ay } = document
       .querySelector('[data-id="DEAL_CARD"]')
-      .getBoundingClientRect()
-
+      .getBoundingClientRect();
     this.style = {
       '--left': `${ax - bx}px`,
       '--top': `${ay - by}px`,
       '--index': this.animationIndex
-    }
+    };
   }
-}
+});
 </script>
 
 <style lang="scss">
 .card {
   position: absolute;
-  width: $card-width;
-  height: $card-height;
+  width: var(--card-width);
+  height: var(--card-height);
   perspective: 1000px;
   transition: 250ms margin;
 }
@@ -90,6 +83,14 @@ export default class Card extends Vue {
 
 .card--error {
   animation: shake 250ms cubic-bezier(.36,.07,.19,.97) forwards;
+}
+
+@mixin create-card-variants($suit) {
+  @for $rank from 1 through 13 {
+    .card-front--#{$suit}-#{$rank} {
+      background-image: url('../assets/cards/#{$suit}/#{$rank}.svg');
+    }
+  }
 }
 
 @include create-card-variants('hearts');

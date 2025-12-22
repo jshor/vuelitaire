@@ -5,11 +5,11 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import Component from 'vue-class-component'
+import { defineComponent } from 'vue';
 
-@Component
-export default class Tableau extends Vue {}
+export default defineComponent({
+  name: 'Tableau',
+});
 </script>
 
 <style lang="scss">
@@ -22,12 +22,12 @@ export default class Tableau extends Vue {}
 }
 
 .tableau .card-container {
-  margin-top: $card-fanning-space;
+  margin-top: var(--card-fanning-space);
   box-sizing: border-box;
 }
 
 .tableau .card-container:not(.card-container--revealed) {
-  margin-top: $card-fanning-space / 2;
+  margin-top: calc(var(--card-fanning-space) / 2);
 }
 
 .tableau > .empty-space > .card-container {

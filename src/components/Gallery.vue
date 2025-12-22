@@ -12,20 +12,21 @@
 </template>
 
 <script lang="ts">
-import { CardBacks } from '@/constants'
-import IBackface from '@/interfaces/IBackface'
-import Vue from 'vue'
-import Component from 'vue-class-component'
-import CardBack from './CardBack'
+import { defineComponent } from 'vue';
+import { CardBacks } from '@/constants';
+import IBackface from '@/interfaces/IBackface';
+import CardBack from './CardBack';
 
-@Component({
-  name: 'Stats',
+export default defineComponent({
+  name: 'Gallery',
   components: { CardBack },
-  props: ['value']
-})
-export default class Gallery extends Vue {
-  public backfaces: IBackface = CardBacks
-}
+  props: ['value'],
+  data() {
+    return {
+      backfaces: CardBacks,
+    };
+  },
+});
 </script>
 
 <style lang="scss">
@@ -38,8 +39,8 @@ export default class Gallery extends Vue {
   margin-top: 1rem;
 
   &__card {
-    width: $card-width;
-    height: $card-height;
+    width: var(--card-width);
+    height: var(--card-height);
     margin: 0.5rem;
     box-sizing: border-box;
     position: relative;

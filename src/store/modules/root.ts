@@ -17,12 +17,7 @@ import stats from './stats'
 const state: IRootState = {
   gameId: null,
   revertibleStates: [],
-  selectedCard: null,
-  animation: null,
-  deck: null,
-  hints: null,
-  stats: null,
-  settings: null
+  selectedCard: null
 }
 
 const getters: GetterTree<IRootState, IRootState> = {

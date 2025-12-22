@@ -10,10 +10,11 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import { defineComponent } from 'vue'
 import getScreenCoordinates from '@/utils/getScreenCoordinates'
 
-export default {
+export default defineComponent({
   props: {
     cardId: {
       type: String,
@@ -71,7 +72,7 @@ export default {
       this.cloneCard(id)
     }
   }
-}
+})
 </script>
 
 <style lang="scss">
@@ -91,11 +92,11 @@ export default {
 }
 
 .animated-card__inner .card-container {
-  margin-top: $card-fanning-space;
+  margin-top: var(--card-fanning-space);
 }
 
 .animated-card__inner > .card-draggable > .card {
-  margin-top: -$card-fanning-space;
+  margin-top: calc(-1 * var(--card-fanning-space));
 }
 
 /* disable highlighting */

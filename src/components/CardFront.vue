@@ -1,15 +1,14 @@
 <template>
   <div
-    :class="`card-front--${this.suit.toLowerCase()}-${this.rank + 1}`"
+    :class="`card-front--${suit.toLowerCase()}-${rank + 1}`"
     class="card-front"
   />
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import Component from 'vue-class-component'
+import { defineComponent } from 'vue';
 
-@Component({
+export default defineComponent({
   name: 'CardFront',
   props: {
     suit: {
@@ -21,8 +20,7 @@ import Component from 'vue-class-component'
       default: 0
     }
   }
-})
-export default class CardFront extends Vue {}
+});
 </script>
 
 <style lang="scss">
@@ -38,6 +36,14 @@ export default class CardFront extends Vue {}
   backface-visibility: hidden;
   background-size: cover;
   transform: rotateY(180deg);
+}
+
+@mixin create-card-variants($suit) {
+  @for $rank from 1 through 13 {
+    .card-front--#{$suit}-#{$rank} {
+      background-image: url('../assets/cards/#{$suit}/#{$rank}.svg');
+    }
+  }
 }
 
 @include create-card-variants('hearts');

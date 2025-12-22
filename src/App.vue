@@ -14,6 +14,12 @@ export default {
 </script>
 
 <style>
+:root {
+  --card-width: 10vmin;
+  --card-height: 14vmin;
+  --card-fanning-space: 3.25vmin;
+}
+
 body, html {
   height: 100%;
   padding: 0;
@@ -30,8 +36,5 @@ body, html {
   justify-content: space-between;
   background: rgb(2,201,2);
   background: radial-gradient(circle, rgba(2,201,2,1) 0%, rgba(3,121,19,1) 100%);
-}
-
-.game-cont {
 }
 </style>

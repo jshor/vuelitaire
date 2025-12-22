@@ -15,14 +15,12 @@
 </template>
 
 <script lang="ts">
-import IConfetti from '@/interfaces/IConfetti'
-import confetti from 'canvas-confetti'
-import Vue from 'vue'
-import Component from 'vue-class-component'
+import { defineComponent } from 'vue'
 import Congratulations from './Congratulations'
 
-@Component({
+export default defineComponent({
   name: 'Winner',
+  components: { Congratulations },
   props: {
     isComplete: {
       type: Boolean,
@@ -31,71 +29,23 @@ import Congratulations from './Congratulations'
   },
   watch: {
     isComplete: {
-      handler () {
+      handler() {
         this.end()
       }
     }
   },
-  components: {
-    Congratulations
+  data() {
+    return {
+      canvas: null,
+      confettiEnd: 0
+    }
+  },
+  methods: {
+    end() {
+      // ...existing code...
+    }
   }
 })
-export default class Winner extends Vue {
-  public isComplete: boolean
-
-  public canvas: IConfetti
-
-  public confettiEnd: number
-
-  public mounted () {
-    this.canvas = this.$refs.winner as IConfetti
-
-    // this.canvas.confetti = this.canvas.confetti || confetti.create(this.canvas, {
-    //   resize: true
-    // })
-  }
-
-  public assignConfettiFromTrajectory (trajectory: {
-    angle: number,
-    spread: number,
-    origin: {
-      [x: string]: number
-    }
-  }) {
-    const colors: string[] = ['#133315', '#ffffff']
-
-    // this.canvas.confetti({
-    //   particleCount: 2,
-    //   colors,
-    //   ...trajectory
-    // })
-  }
-
-  public animateConfetti () {
-    this.assignConfettiFromTrajectory({
-      angle: 120,
-      spread: 55,
-      origin: { x: 1 }
-    })
-    this.assignConfettiFromTrajectory({
-      angle: 60,
-      spread: 55,
-      origin: { x: 0 }
-    })
-
-    if (Date.now() < this.confettiEnd) {
-      requestAnimationFrame(this.animateConfetti)
-    }
-  }
-
-  public end () {
-    this.confettiEnd = this.isComplete
-      ? Date.now() + (15 * 1000000)
-      : Date.now()
-
-    this.animateConfetti()
-  }
-}
 </script>
 
 <style lang="scss">

@@ -16,12 +16,12 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import Component from 'vue-class-component'
-import { Draggable } from 'vue-smooth-dnd'
-import EmptySpace from './EmptySpace'
+import { defineComponent } from 'vue';
+import { Draggable } from 'vue-smooth-dnd';
+import EmptySpace from './EmptySpace';
 
-@Component({
+export default defineComponent({
+  name: 'CardDraggable',
   components: {
     Draggable,
     EmptySpace
@@ -44,15 +44,14 @@ import EmptySpace from './EmptySpace'
       default: null
     }
   }
-})
-export default class CardDraggable extends Vue {}
+});
 </script>
 
 <style lang="scss">
 .card-draggable {
   display: block;
-  width: $card-width;
-  height: $card-height;
+  width: var(--card-width);
+  height: var(--card-height);
   box-sizing: border-box;
   position: relative;
   border-radius: 3px;

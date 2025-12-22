@@ -8,25 +8,21 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import Component from 'vue-class-component'
+import { defineComponent } from 'vue';
 
-@Component({
+export default defineComponent({
   name: 'ActionButton',
   props: {
     theme: {
       type: String,
-      default: 'green'
+      default: 'green',
     },
     disabled: {
       type: Boolean,
-      default: false
-    }
-  }
-})
-export default class Button extends Vue {
-  public theme: string
-}
+      default: false,
+    },
+  },
+});
 </script>
 
 <style lang="scss">

@@ -27,49 +27,41 @@
 
 <script lang="ts">
 import { isMobile } from 'is-mobile'
-import Vue from 'vue'
-import Component from 'vue-class-component'
-import { Container } from 'vue-smooth-dnd'
-import { mapState } from 'vuex'
+import { defineComponent } from 'vue';
+import { Container } from 'vue-smooth-dnd';
+import { mapState } from 'vuex';
+import ICard from '@/interfaces/ICard';
+import CardContainer from './CardContainer';
 
-import ICard from '@/interfaces/ICard'
-import CardContainer from './CardContainer'
-
-@Component({
-  components: {
-    CardContainer,
-    Container
-  },
+export default defineComponent({
+  name: 'DeckContainer',
+  components: { Container, CardContainer },
   computed: {
     ...mapState('deck', [
       'waste',
       'dealt'
-    ])
-  }
-})
-class DeckContainer extends Vue {
-  public dealt: ICard[]
-
-  public isMobile: boolean = isMobile()
-
-  get nonDragSelector (): string {
-    if (this.isMobile) {
-      return '.card-container'
+    ]),
+    nonDragSelector(): string {
+      if (this.isMobile) {
+        return '.card-container';
+      }
+      return '.card:not(.card--revealed)';
     }
-    return '.card:not(.card--revealed)'
-  }
-
-  public shouldAcceptDrop ({ id }: ICard, { getChildPayload }): boolean {
-    // the only time a card in the waste should accept a child is when a card is being returned
-    return id === getChildPayload().id
-  }
-
-  public isNth (card: ICard, n: number): boolean {
-    return this.dealt.findIndex(({ id }: ICard) => id === card.id) === n
-  }
-}
-
-export default DeckContainer
+  },
+  data() {
+    return {
+      isMobile: isMobile()
+    };
+  },
+  methods: {
+    isNth(card: ICard, n: number) {
+      return this.dealt.findIndex(({ id }: ICard) => id === card.id) === n;
+    },
+    shouldAcceptDrop({ id }: ICard, { getChildPayload }) {
+      return id === getChildPayload().id;
+    }
+  },
+});
 </script>
 
 <style lang="scss">
@@ -123,7 +115,33 @@ export default DeckContainer
   animation: fanning-third 250ms forwards;
 }
 
-@include fanning-deck-card('first', 0px);
-@include fanning-deck-card('second', $card-fanning-space);
-@include fanning-deck-card('third', $card-fanning-space * 2);
+@keyframes fanning-first {
+  from {
+    padding-left: 0;
+  }
+  to {
+    padding-left: 0;
+    margin-left: 0px;
+  }
+}
+
+@keyframes fanning-second {
+  from {
+    padding-left: 0;
+  }
+  to {
+    padding-left: calc(var(--card-fanning-space));
+    margin-left: 0px;
+  }
+}
+
+@keyframes fanning-third {
+  from {
+    padding-left: 0;
+  }
+  to {
+    padding-left: calc(var(--card-fanning-space) * 2);
+    margin-left: 0px;
+  }
+}
 </style>

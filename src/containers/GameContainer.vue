@@ -83,67 +83,25 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import Component from 'vue-class-component'
-import { mapActions, mapGetters, mapState } from 'vuex'
+import { defineComponent } from 'vue';
+import { mapActions, mapGetters, mapState } from 'vuex';
+import ActionButton from '@/components/ActionButton';
+import AnimatedCard from '@/components/AnimatedCard';
+import Card from '@/components/Card';
+import CardBack from '@/components/CardBack';
+import EmptySpace from '@/components/EmptySpace';
+import EmptyStockIcon from '@/components/EmptyStockIcon';
+import Foundations from '@/components/Foundations';
+import Modal from '@/components/Modal';
+import Tableau from '@/components/Tableau';
+import Winner from '@/components/Winner';
+import CardContainer from './CardContainer';
+import DeckContainer from './DeckContainer';
+import SettingsContainer from './SettingsContainer';
+import StatsContainer from './StatsContainer';
 
-import ActionButton from '@/components/ActionButton'
-import AnimatedCard from '@/components/AnimatedCard'
-import Card from '@/components/Card'
-import CardBack from '@/components/CardBack'
-import EmptySpace from '@/components/EmptySpace'
-import EmptyStockIcon from '@/components/EmptyStockIcon'
-import Foundations from '@/components/Foundations'
-import Modal from '@/components/Modal'
-import Tableau from '@/components/Tableau'
-import Winner from '@/components/Winner'
-import CardContainer from './CardContainer'
-import DeckContainer from './DeckContainer'
-import SettingsContainer from './SettingsContainer'
-import StatsContainer from './StatsContainer'
-
-import { CardBacks } from '@/constants'
-
-import IAnimationState from '@/interfaces/IAnimationState'
-import ICard from '@/interfaces/ICard'
-import IBackface from '../interfaces/IBackface'
-import ISettingsState from '../interfaces/ISettingsState'
-
-@Component({
-  computed: {
-    ...mapState('deck/cards', [
-      'tableau',
-      'foundations'
-    ]),
-    ...mapGetters([
-      'highlightedCards',
-      'canUndo'
-    ]),
-    ...mapGetters('settings', [
-      'backface'
-    ]),
-    ...mapState([
-      'animation',
-      'stats',
-      'settings',
-      'deck'
-    ])
-  },
-  methods: {
-    ...mapActions('hints', [
-      'showHint'
-    ]),
-    ...mapActions('settings', [
-      'toggleDialog'
-    ]),
-    ...mapActions([
-      'deal',
-      'newGame',
-      'undo',
-      'clearSelection',
-      'autoComplete'
-    ])
-  },
+export default defineComponent({
+  name: 'GameContainer',
   components: {
     ActionButton,
     AnimatedCard,
@@ -159,29 +117,22 @@ import ISettingsState from '../interfaces/ISettingsState'
     StatsContainer,
     SettingsContainer,
     Winner
+  },
+  computed: {
+    ...mapState('deck/cards', ['tableau', 'foundations']),
+    ...mapGetters(['highlightedCards', 'canUndo']),
+    ...mapGetters('settings', ['backface']),
+    ...mapState(['animation', 'stats', 'settings', 'deck'])
+  },
+  methods: {
+    ...mapActions('hints', ['showHint']),
+    ...mapActions('settings', ['toggleDialog']),
+    ...mapActions(['deal', 'newGame', 'undo', 'clearSelection', 'autoComplete'])
+  },
+  beforeCreate() {
+    this.$store.dispatch('init');
   }
-})
-class GameContainer extends Vue {
-  public tableau: ICard[]
-
-  public foundations: ICard[]
-
-  public highlightedCards: string[]
-
-  public canUndo: boolean
-
-  public animation: IAnimationState
-
-  public settings: ISettingsState
-
-  public newGame: () => Promise<void>
-
-  public beforeCreate () {
-    this.$store.dispatch('init')
-  }
-}
-
-export default GameContainer
+});
 </script>
 
 <style lang="scss">
@@ -214,8 +165,8 @@ export default GameContainer
 
 .game__spacer {
   margin-top: 0;
-  width: $card-width;
-  height: $card-height;
+  width: var(--card-width);
+  height: var(--card-height);
   box-sizing: border-box;
 }
 

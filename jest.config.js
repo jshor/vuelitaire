@@ -14,11 +14,10 @@ module.exports = {
     'json',
     'vue'
   ],
-  setupFiles: ['<rootDir>/test/setup.js'],
+  setupFiles: ['<rootDir>/test/setup.ts'],
   transform: {
     '^.+\\.vue$': 'vue-jest',
     '.+\\.(css|styl|less|sass|scss|svg|png|jpg|ttf|woff|woff2)$': 'jest-transform-stub',
-    '^.+\\.js$': 'babel-jest',
     '^.+\\.ts$': 'ts-jest'
   },
   moduleNameMapper: {

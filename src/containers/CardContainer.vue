@@ -43,23 +43,20 @@
 
 <script lang="ts">
 import { isMobile } from 'is-mobile'
-import Vue from 'vue'
-import Component from 'vue-class-component'
-import { Container } from 'vue-smooth-dnd'
-import { mapActions, mapGetters } from 'vuex'
+import { defineComponent } from 'vue';
+import { Container } from 'vue-smooth-dnd';
+import { mapActions, mapGetters } from 'vuex';
+import Card from '@/components/Card';
+import CardBack from '@/components/CardBack';
+import CardDraggable from '@/components/CardDraggable';
+import CardFront from '@/components/CardFront';
+import ICard from '@/interfaces/ICard';
+import Pair from '@/models/Pair';
+import getDescendants from '@/utils/getLineage';
+import isAncestor from '@/utils/isAncestor';
+import isDescendant from '@/utils/isDescendant';
 
-import Card from '@/components/Card'
-import CardBack from '@/components/CardBack'
-import CardDraggable from '@/components/CardDraggable'
-import CardFront from '@/components/CardFront'
-
-import ICard from '@/interfaces/ICard'
-import Pair from '@/models/Pair'
-import getDescendants from '@/utils/getLineage'
-import isAncestor from '@/utils/isAncestor'
-import isDescendant from '@/utils/isDescendant'
-
-@Component({
+export default defineComponent({
   name: 'CardContainer',
   props: {
     card: {
@@ -81,115 +78,90 @@ import isDescendant from '@/utils/isDescendant'
     ]),
     ...mapGetters('settings', [
       'backface'
-    ])
+    ]),
+
+    nonDragSelector (): string {
+      if (this.isMobile) {
+        return '.card-container'
+      }
+      return '.card:not(.card--revealed)'
+    },
+    descendants (): ICard[] {
+      return getDescendants(this.card)
+    },
+    canReveal (): boolean {
+      return this.card.child === null && !this.card.revealed
+    },
+    isHighlighted (): boolean {
+      return (this.ready || this.highlightedCards.includes(this.card.id)) && this.card.revealed
+    },
   },
   components: {
     Card,
     CardBack,
-    CardContainer,
     CardDraggable,
     CardFront,
     Container
+  },
+  data() {
+    return {
+      ready: false,
+      error: false,
+      isMobile: isMobile()
+    };
   },
   methods: {
     ...mapActions([
       'moveCard',
       'setSelection',
       'autoplayCard'
-    ])
-  }
-})
-class CardContainer extends Vue {
-  public card: ICard
+    ]),
+    shouldAcceptDrop ({ getChildPayload }: { getChildPayload: () => ICard }) {
+      const parent: ICard = this.card
+      const card: ICard = getChildPayload()
 
-  public hasChild: boolean
+      if (parent.child) {
+        // if the child card is being returned, always accept it
+        return parent.child.id === card.id
+      }
+      return !isAncestor(this.$parent, card) && parent.canAcceptCard(card)
+    },
+    onDragEnter (): void {
+      this.ready = true
+    },
+    onDragLeave (): void {
+      this.ready = false
+    },
+    onDrop ({ payload }: { payload: ICard }): void {
+      if (!this.ready) {
+        return
+      }
 
-  public isSpace: boolean
+      if (!isDescendant(this.card, payload.id)) {
+        this.moveCard(new Pair(payload.id, this.card.id))
+      }
+      this.ready = false
+    },
+    selectCard (autoplay: boolean): void {
+      const card: ICard = this.card.child || this.card
 
-  public highlightedCards: string[]
-
-  public ready: boolean = false
-
-  public error: boolean = false
-
-  public isMobile: boolean = isMobile()
-
-  public moveCard: (pair: Pair) => Promise<void>
-
-  public setSelection: (card: ICard) => Promise<void>
-
-  public autoplayCard: (card: ICard) => Promise<void>
-
-  get nonDragSelector (): string {
-    if (this.isMobile) {
-      return '.card-container'
-    }
-    return '.card:not(.card--revealed)'
-  }
-
-  get descendants (): ICard[] {
-    return getDescendants(this.card)
-  }
-
-  get canReveal (): boolean {
-    return this.card.child === null && !this.card.revealed
-  }
-
-  get isHighlighted (): boolean {
-    return (this.ready || this.highlightedCards.includes(this.card.id)) && this.card.revealed
-  }
-
-  public shouldAcceptDrop ({ getChildPayload }: { getChildPayload: () => ICard }) {
-    const parent: ICard = this.card
-    const card: ICard = getChildPayload()
-
-    if (parent.child) {
-      // if the child card is being returned, always accept it
-      return parent.child.id === card.id
-    }
-    return !isAncestor(this.$parent, card) && parent.canAcceptCard(card)
-  }
-
-  public onDragEnter (): void {
-    this.ready = true
-  }
-
-  public onDragLeave (): void {
-    this.ready = false
-  }
-
-  public onDrop ({ payload }: { payload: ICard }): void {
-    if (!this.ready) {
-      return
-    }
-
-    if (!isDescendant(this.card, payload.id)) {
-      this.moveCard(new Pair(payload.id, this.card.id))
-    }
-    this.ready = false
-  }
-
-  public selectCard (autoplay: boolean): void {
-    const card: ICard = this.card.child || this.card
-
-    if (!this.ready && card.revealed) {
-      if (autoplay || this.isMobile) {
-        this.autoplayCard(card)
-      } else {
-        this.setSelection(card)
+      if (!this.ready && card.revealed) {
+        if (autoplay || this.isMobile) {
+          this.autoplayCard(card)
+        } else {
+          this.setSelection(card)
+        }
       }
     }
   }
-}
-
-export default CardContainer
+});
 </script>
 
 <style lang="scss">
 .card-container,
 .card-container__inner {
-  width: $card-width;
-  min-height: calc(#{$card-height} - #{$card-fanning-space});
+  width: var(--card-width);
+  min-height: calc(#{var(--card-height)} - #{var(--card-fanning-space)});
   box-sizing: border-box;
 }
 </style>

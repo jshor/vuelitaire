@@ -3,11 +3,11 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import Component from 'vue-class-component'
+import { defineComponent } from 'vue';
 
-@Component
-export default class EmptyStockIcon extends Vue {}
+export default defineComponent({
+  name: 'EmptyStockIcon',
+});
 </script>
 
 <style lang="scss">

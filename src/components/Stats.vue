@@ -7,11 +7,10 @@
 </template>
 
 <script lang="ts">
+import { defineComponent } from 'vue'
 import formatClock from '@/utils/formatClock'
-import Vue from 'vue'
-import Component from 'vue-class-component'
 
-@Component({
+export default defineComponent({
   name: 'Stats',
   props: {
     timeElapsed: {
@@ -22,21 +21,16 @@ import Component from 'vue-class-component'
       type: Number,
       default: 0
     }
+  },
+  computed: {
+    clock() {
+      return formatClock(this.timeElapsed)
+    },
+    score() {
+      return this.points.toLocaleString()
+    }
   }
 })
-export default class Stats extends Vue {
-  public timeElapsed: number
-
-  public points: number
-
-  get clock () {
-    return formatClock(this.timeElapsed)
-  }
-
-  get score () {
-    return this.points.toLocaleString()
-  }
-}
 </script>
 
 <style lang="scss">

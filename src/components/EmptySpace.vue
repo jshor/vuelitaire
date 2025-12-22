@@ -5,18 +5,18 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import Component from 'vue-class-component'
+import { defineComponent } from 'vue'
 
-@Component
-export default class EmptySpace extends Vue {}
+export default defineComponent({
+  name: 'EmptySpace'
+})
 </script>
 
 <style lang="scss">
 .empty-space {
   position: relative;
-  width: $card-width;
-  height: $card-height;
+  width: var(--card-width);
+  height: var(--card-height);
   box-sizing: border-box;
 
   &::before {

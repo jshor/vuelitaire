@@ -20,10 +20,9 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import Component from 'vue-class-component'
+import { defineComponent } from 'vue'
 
-@Component({
+export default defineComponent({
   name: 'RadioGroup',
   props: {
     name: {
@@ -32,14 +31,13 @@ import Component from 'vue-class-component'
     },
     values: {
       type: Array,
-      default: []
+      default: () => []
     },
     value: {
       required: true
     }
   }
 })
-export default class RadioGroup extends Vue {}
 </script>
 
 <style lang="scss">
