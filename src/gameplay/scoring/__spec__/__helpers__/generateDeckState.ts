@@ -1,19 +1,12 @@
-import ICard from '@/interfaces/ICard'
-import ICardsMap from '@/interfaces/ICardsMap'
-import IDeckState from '@/interfaces/IDeckState'
+import { ICard } from '@/interfaces/ICard'
+import { ICardsMap } from '@/interfaces/ICardsMap'
+import { State } from '@/store/state'
 
-const generateState = (regular: ICardsMap<ICard>): IDeckState => ({
-  cards: {
-    tableau: {},
-    foundations: {},
-    regular,
-    unrevealedCount: 52
-  },
-  move: null,
+export const generateDeckState = (regular: ICardsMap<ICard>): State => ({
+  cards: regular,
+  tableau: {},
+  foundations: {},
   waste: [],
   stock: [],
-  dealt: [],
-  dealCount: 1
-})
+} as unknown as State)
 
-export default generateState

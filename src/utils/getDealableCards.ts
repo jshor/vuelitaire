@@ -1,5 +1,5 @@
-import ICard from '@/interfaces/ICard'
-import IDeckState from '@/interfaces/IDeckState'
+import { ICard } from '@/interfaces/ICard'
+import { State } from '@/store/state'
 
 /**
  * Computes all cards that, at the time of computation, can be moved from the deck to the tableaux.
@@ -12,13 +12,13 @@ import IDeckState from '@/interfaces/IDeckState'
  * @param {Number} deck.dealCount - number of cards to be dealt at a time (1 or 3)
  * @returns {Card[]}
  */
-export default function getDealableCards ({ stock, waste, dealCount }: IDeckState) {
+export function getDealableCards ({ stock, waste, settings }: State) {
   const deckCards: ICard[] = [
     ...stock,
     ...waste.concat().reverse()
   ].reverse()
 
   return deckCards.filter((c: ICard, index: number): boolean => {
-    return (index + dealCount + 1) % dealCount === 0 || index === deckCards.length - 1
+    return (index + settings.dealCount + 1) % settings.dealCount === 0 || index === deckCards.length - 1
   })
 }

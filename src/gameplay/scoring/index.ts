@@ -1,8 +1,8 @@
-import bonus from './bonus'
-import cardMove from './cardMove'
-import dealDeduction from './dealDeduction'
+import { bonus } from './bonus'
+import { cardMove } from './cardMove'
+import { dealDeduction } from './dealDeduction'
 
-export default {
+export {
   bonus,
   cardMove,
   dealDeduction

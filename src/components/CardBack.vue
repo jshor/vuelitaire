@@ -9,13 +9,13 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { CardBacks } from '@/constants';
-import IBackface from '@/interfaces/IBackface';
+import { type Backface } from '@/types/Backface';
 
 export default defineComponent({
   name: 'CardBack',
   props: {
     backface: {
-      type: Object as () => IBackface,
+      type: Object as () => Backface,
       default: () => CardBacks.A1
     }
   }

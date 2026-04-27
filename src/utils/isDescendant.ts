@@ -1,5 +1,5 @@
-import ICard from '@/interfaces/ICard'
-import getLineage from './getLineage'
+import {ICard} from '@/interfaces/ICard'
+import {getLineage} from './getLineage'
 
 /**
  * Asserts that the card having the given `targetId` is a descendant of `card`.
@@ -8,7 +8,7 @@ import getLineage from './getLineage'
  * @param {String} targetId
  * @returns {Boolean}
  */
-export default function isDescendant (card: ICard, targetId: string): boolean {
+export function isDescendant (card: ICard, targetId: string): boolean {
   return getLineage(card)
     .map(({ id }) => id)
     .includes(targetId)

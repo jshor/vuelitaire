@@ -1,4 +1,4 @@
-import ICard from '@/interfaces/ICard'
+import { type ICard } from '@/interfaces/ICard'
 
 /**
  * Generates a list of all descendants of the given card, including itself.
@@ -6,14 +6,19 @@ import ICard from '@/interfaces/ICard'
  * @param {ICard} card
  * @returns {ICard[]} list of descendants
  */
-export default function getLineage (card: ICard): ICard[] {
+export function getLineage (card?: ICard): ICard[] {
   const findChildren = (cards: ICard[]): ICard[] => {
     const last: ICard = cards[cards.length - 1]
 
     if (last.child) {
-      return findChildren(cards.concat(last.child))
+      return findChildren(cards.concat(last.child as ICard))
     }
     return cards
   }
-  return findChildren([card])
+
+  if (card) {
+    return findChildren([card])
+  }
+
+  return []
 }

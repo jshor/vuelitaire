@@ -1,12 +1,13 @@
-import { Suits } from '@/constants'
-import Card from '@/models/Card'
-import hasAlternatingColor from '../hasAlternatingColor'
+﻿import { Suits } from '@/constants'
+import { Card } from '@/types/Card'
+import { createCard } from '@/models/Card'
+import { hasAlternatingColor } from '../hasAlternatingColor'
 
 describe('Rule: hasAlternatingColor', () => {
   function testRule (parentSuit, childSuit, value) {
     it(`should return true if the child card's suit is ${parentSuit} and the parent's suit is ${childSuit}`, () => {
-      const parent: Card = new Card(parentSuit, 0)
-      const child: Card = new Card(childSuit, 0)
+      const parent: Card = createCard({ suit: parentSuit })
+      const child: Card = createCard({ suit: childSuit })
 
       expect(hasAlternatingColor(parent, child)).toEqual(value)
     })

@@ -1,227 +1,109 @@
 <template>
-  <div class="game" @click="clearSelection">
-    <div
-      v-if="animation.inProgress || stats.isComplete"
-      class="animation-cover"
-    />
-    <div class="game__top">
-      <foundations>
-        <empty-space
-          data-id="DEAL_CARD"
-          :class="{
-            'game__spacer--active': highlightedCards.includes('DEAL_CARD')
-          }"
-          @click="deal">
-          <card-back :backface="backface" v-if="deck.stock.length" />
-          <empty-stock-icon v-else />
-        </empty-space>
-        <div class="game__spacer game__spacer--deck"  data-id="WASTE_PILE">
-          <deck-container />
+  <div class="game">
+    <div class="game">
+      <div class="game__top">
+        <div class="game__foundations">
+          <!-- deal card -->
+          <div class="game__lane" @click="deal">
+            <card-back v-if="hasStockCards" />
+            <empty-space v-else>
+              <empty-stock-icon />
+            </empty-space>
+            <card-highlight v-if="isDealHint" />
+          </div>
+
+          <!-- dealt pile -->
+          <div class="game__lane game__lane--dealt">
+            <card-container :card="dealSpace" is-foundary is-dealable is-revealed :is-selectable="false" />
+          </div>
+
+          <!-- empty space (4 foundations + 1 deal card + 1 dealt pile + 1 empty space) = 7 lanes -->
+          <div class="game__lane" />
+
+          <!-- foundations pile (4) -->
+          <div
+            v-for="(card, key) in foundations"
+            :key="key"
+            class="game__lane"
+          >
+            <foundation :suit="card.suit" />
+            <card-container :card="card" is-foundary :is-selectable="false" />
+          </div>
         </div>
-        <div class="game__spacer" />
-        <card-container
-          v-for="space in foundations"
-          :key="space.id"
-          :card="space"
-          :is-space="true"
-          :has-child="space.child !== null"
-        />
-      </foundations>
-    </div>
-    <div class="game__tableau">
-      <tableau>
-        <card-container
-          v-for="space in tableau"
-          :key="space.id"
-          :card="space"
-          :is-space="true"
-          :has-child="space.child !== null"
-        />
-      </tableau>
-    </div>
-
-    <animated-card
-      :card-id="animation.cardId"
-      :target-id="animation.targetId"
-    />
-
-    <div class="game__action-bar">
-      <div class="game__action-bar--left">
-        <stats-container />
       </div>
-      <div class="game__action-bar--right" v-if="!stats.isComplete">
-        <action-button @click="autoComplete(0)" v-if="stats.canAutocomplete">
-          <i class="fas fa-magic" />
-          Auto
-        </action-button>
-        <action-button @click="undo" :disabled="!canUndo" v-else>
-          <i class="fas fa-reply" />
-          Undo
-        </action-button>
-        <action-button @click="showHint">
-          <i class="fas fa-lightbulb" />
-          Hint
-        </action-button>
-        <action-button @click="newGame">
-          <i class="fas fa-layer-group" />
-          Deal
-        </action-button>
-        <action-button @click="toggleDialog(true)">
-          <i class="fas fa-cog" />
-          Settings
-        </action-button>
+
+      <!-- tableau -->
+      <div class="game__tableau">
+        <div
+          v-for="(card, key) in tableau"
+          :key="key"
+          class="game__lane"
+        >
+          <card-container :card="card" is-foundary is-fannable :is-selectable="false" />
+        </div>
       </div>
     </div>
-
-    <settings-container v-if="settings.showDialog" />
-
-    <winner
-      :is-complete="stats.isComplete"
-      @redeal="newGame"
-    />
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
-import { mapActions, mapGetters, mapState } from 'vuex';
-import ActionButton from '@/components/ActionButton';
-import AnimatedCard from '@/components/AnimatedCard';
-import Card from '@/components/Card';
-import CardBack from '@/components/CardBack';
-import EmptySpace from '@/components/EmptySpace';
-import EmptyStockIcon from '@/components/EmptyStockIcon';
-import Foundations from '@/components/Foundations';
-import Modal from '@/components/Modal';
-import Tableau from '@/components/Tableau';
-import Winner from '@/components/Winner';
-import CardContainer from './CardContainer';
-import DeckContainer from './DeckContainer';
-import SettingsContainer from './SettingsContainer';
-import StatsContainer from './StatsContainer';
+<script lang="ts" setup>
+import CardBack from '@/components/CardBack.vue'
+import EmptySpace from '@/components/EmptySpace.vue'
+import CardHighlight from '@/components/CardHighlight.vue'
+import EmptyStockIcon from '@/components/EmptyStockIcon.vue'
+import CardContainer from './CardContainer.vue'
+import { useStore } from '@/store/main'
+import { storeToRefs } from 'pinia'
+import { computed } from 'vue'
+import Foundation from '@/components/Foundation.vue'
+import { overrideAnimation } from '@/utils/overrideAnimation'
 
-export default defineComponent({
-  name: 'GameContainer',
-  components: {
-    ActionButton,
-    AnimatedCard,
-    Card,
-    CardBack,
-    CardContainer,
-    DeckContainer,
-    EmptySpace,
-    EmptyStockIcon,
-    Foundations,
-    Modal,
-    Tableau,
-    StatsContainer,
-    SettingsContainer,
-    Winner
-  },
-  computed: {
-    ...mapState('deck/cards', ['tableau', 'foundations']),
-    ...mapGetters(['highlightedCards', 'canUndo']),
-    ...mapGetters('settings', ['backface']),
-    ...mapState(['animation', 'stats', 'settings', 'deck'])
-  },
-  methods: {
-    ...mapActions('hints', ['showHint']),
-    ...mapActions('settings', ['toggleDialog']),
-    ...mapActions(['deal', 'newGame', 'undo', 'clearSelection', 'autoComplete'])
-  },
-  beforeCreate() {
-    this.$store.dispatch('init');
-  }
-});
+const store = useStore()
+const { tableau, hasStockCards, foundations, dealSpace } = storeToRefs(store)
+const isDealHint = computed(() => store.currentHint.some(hint => hint.includes('DEAL_CARD')))
+
+/** Deals a new card. */
+function deal() {
+  overrideAnimation(() => store.deal())
+}
 </script>
 
 <style lang="scss">
-.empty-deck {
-  background-color: transparent;
-}
-
-.animation-cover {
-  z-index: 1000;
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-}
 .game {
   display: flex;
   flex-direction: column;
-  height: 100%;
-  width: 100vmin;
-  margin: auto;
-}
+  width: 100%;
 
-.game__top {
-  margin: 2rem 0;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-}
-
-.game__spacer {
-  margin-top: 0;
-  width: var(--card-width);
-  height: var(--card-height);
-  box-sizing: border-box;
-}
-
-.game__spacer--deal {
-  z-index: 1000;
-}
-
-.game__spacer--active {
-  box-shadow: 0px 0 30px orange;
-}
-
-.game__spacer--deck {
-  position: relative;
-}
-
-.game__foundations {
-  flex: 1;
-}
-
-.game__tableau {
-  flex: 1;
-}
-
-.game__action-bar {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  display: flex;
-  flex-direction: row;
-  margin: 0.5rem;
-
-  &--left, &--right {
-    display: flex;
-    align-items: center;
+  &__top {
     flex: 1;
+    display: flex;
+    padding: 4vmin 0;
   }
 
-  &--right {
+  &__foundations {
+    flex: 1;
+    display: flex;
     justify-content: flex-end;
+    justify-content: space-around;
   }
-}
 
-@media screen and (max-width: 600px) {
-  .game__action-bar {
+  &__tableau {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+    justify-content: space-around;
+  }
+
+  &__lane {
+    display: flex;
+    box-sizing: border-box;
+    width: var(--card-width);
     flex-direction: column;
+    position: relative;
 
-    &--left {
-      text-align: center;
-    }
-
-    &--right {
-      > * {
-        flex: 1;
-      }
+    &--dealt {
+      left: calc(-1 * var(--card-fanning-space));
     }
   }
 }

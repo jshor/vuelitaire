@@ -1,6 +1,6 @@
-import ICard from './ICard'
-import IDeckState from './IDeckState'
+import { ICard } from './ICard'
+import { State } from '../store/state'
 
-export default interface IHint {
-  (allCards: ICard[], playableCards: ICard[], deckState: IDeckState, ignoreRank?: boolean): string[][]
+export interface IHint {
+  (allCards: ICard[], playableCards: ICard[], gameState: State, ignoreRank?: boolean): string[][]
 }

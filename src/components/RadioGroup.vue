@@ -5,7 +5,7 @@
       :key="data.value">
       <input
         :name="name"
-        :checked="data.value === value"
+        :checked="data.value === modelValue"
         :id="`${name}_${data.value}`"
         @change="$emit('input', data.value)"
         type="radio"
@@ -19,25 +19,19 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue'
+<script lang="ts" generic="T" setup>
+import { defineProps } from 'vue'
 
-export default defineComponent({
-  name: 'RadioGroup',
-  props: {
-    name: {
-      type: String,
-      required: true
-    },
-    values: {
-      type: Array,
-      default: () => []
-    },
-    value: {
-      required: true
-    }
-  }
-})
+defineProps<{
+  name: string
+  values: {
+    label: string
+    // value: T
+    value: any // TODO
+  }[]
+  // modelValue: T
+  modelValue: any // TODO
+}>()
 </script>
 
 <style lang="scss">

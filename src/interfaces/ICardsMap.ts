@@ -1,3 +1,3 @@
-export default interface ICardsMap<CardType> {
+export interface ICardsMap<CardType> {
   [id: string]: CardType
 }

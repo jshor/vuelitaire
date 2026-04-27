@@ -21,7 +21,7 @@ function leadZero (t: number): string {
  * @param {number} s - number of seconds elapsed
  * @returns {string}
  */
-export default function formatClock (s: number) {
+export function formatClock (s: number) {
   const ss: string = leadZero(s % 60)
   const mm: string = leadZero((s / 60) % 60)
   const hh: number = Math.floor(s / 3600)

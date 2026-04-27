@@ -1,17 +1,19 @@
-import { Suits } from '@/constants'
-import ICard from '@/interfaces/ICard'
-import IDeckState from '@/interfaces/IDeckState'
-import Card from '@/models/Card'
-import LaneSpace from '@/models/LaneSpace'
-import getLaneCreationHints from '../getLaneCreationHints'
-import createDeckState from './__helpers__/createDeckState'
+﻿import { Suits } from '@/constants'
+import { ICard } from '@/interfaces/ICard'
+import { State } from '@/store/state'
+import { Card } from '@/types/Card'
+import { createCard } from '@/models/Card'
+import { LaneSpace } from '@/types/LaneSpace'
+import { createLaneSpace } from '@/models/LaneSpace'
+import { getLaneCreationHints } from '../getLaneCreationHints'
+import { createDeckState } from './__helpers__/createDeckState'
 
 describe('Lane creation', () => {
   it('should return multiple hints if multiple kings can be moved to a space', () => {
-    const space: ICard = new LaneSpace()
-    const kingOfHearts: ICard = new Card(Suits.HEARTS, 12)
-    const kingOfSpades: ICard = new Card(Suits.SPADES, 12)
-    const deck: IDeckState = createDeckState({
+    const space: ICard = createLaneSpace()
+    const kingOfHearts: ICard = createCard({ suit: Suits.HEARTS, rank: 12 })
+    const kingOfSpades: ICard = createCard({ suit: Suits.SPADES, rank: 12 })
+    const deck: State = createDeckState({
       foundations: {},
       tableau: {
         [space.id]: space
@@ -22,7 +24,7 @@ describe('Lane creation', () => {
       },
       unrevealedCount: 52
     })
-    const cards = Object.values(deck.cards.regular)
+    const cards = Object.values(deck.cards)
 
     const hints: string[][] = getLaneCreationHints(cards, [kingOfHearts, kingOfSpades], deck)
 
@@ -35,10 +37,10 @@ describe('Lane creation', () => {
   })
 
   it('should return multiple hints if one king can be moved to multiple spaces', () => {
-    const space1: ICard = new LaneSpace()
-    const space2: ICard = new LaneSpace()
-    const kingOfHearts: ICard = new Card(Suits.HEARTS, 12)
-    const deck: IDeckState = createDeckState({
+    const space1: ICard = createLaneSpace()
+    const space2: ICard = createLaneSpace()
+    const kingOfHearts: ICard = createCard({ suit: Suits.HEARTS, rank: 12 })
+    const deck: State = createDeckState({
       foundations: {},
       tableau: {
         [space1.id]: space1,
@@ -49,7 +51,7 @@ describe('Lane creation', () => {
       },
       unrevealedCount: 52
     })
-    const cards = Object.values(deck.cards.regular)
+    const cards = Object.values(deck.cards)
 
     const hints: string[][] = getLaneCreationHints(cards, [kingOfHearts], deck)
 
@@ -62,11 +64,11 @@ describe('Lane creation', () => {
   })
 
   it('should return multiple hints if multiple kings can be moved to multiple spaces', () => {
-    const space1: ICard = new LaneSpace()
-    const space2: ICard = new LaneSpace()
-    const kingOfHearts: ICard = new Card(Suits.HEARTS, 12)
-    const kingOfSpades: ICard = new Card(Suits.SPADES, 12)
-    const deck: IDeckState = createDeckState({
+    const space1: ICard = createLaneSpace()
+    const space2: ICard = createLaneSpace()
+    const kingOfHearts: ICard = createCard({ suit: Suits.HEARTS, rank: 12 })
+    const kingOfSpades: ICard = createCard({ suit: Suits.SPADES, rank: 12 })
+    const deck: State = createDeckState({
       foundations: {},
       tableau: {
         [space1.id]: space1,
@@ -78,7 +80,7 @@ describe('Lane creation', () => {
       },
       unrevealedCount: 52
     })
-    const cards = Object.values(deck.cards.regular)
+    const cards = Object.values(deck.cards)
 
     const hints: string[][] = getLaneCreationHints(cards, [kingOfHearts, kingOfSpades], deck)
 
@@ -93,10 +95,10 @@ describe('Lane creation', () => {
   })
 
   it('should not hint that a king should be moved to a space if the space already has a child', () => {
-    const space: ICard = new LaneSpace()
-    const kingOfHearts: ICard = new Card(Suits.HEARTS, 12)
-    const kingOfSpades: ICard = new Card(Suits.SPADES, 12)
-    const deck: IDeckState = createDeckState({
+    const space: ICard = createLaneSpace()
+    const kingOfHearts: ICard = createCard({ suit: Suits.HEARTS, rank: 12 })
+    const kingOfSpades: ICard = createCard({ suit: Suits.SPADES, rank: 12 })
+    const deck: State = createDeckState({
       foundations: {},
       tableau: {
         [space.id]: space
@@ -107,7 +109,7 @@ describe('Lane creation', () => {
       },
       unrevealedCount: 52
     })
-    const cards = Object.values(deck.cards.regular)
+    const cards = Object.values(deck.cards)
 
     space.child = kingOfSpades
 
@@ -121,10 +123,10 @@ describe('Lane creation', () => {
   })
 
   it('should not hint that a king should be moved to a space if the king has a child', () => {
-    const space: ICard = new LaneSpace()
-    const kingOfHearts: ICard = new Card(Suits.HEARTS, 12)
-    const queenOfSpades: ICard = new Card(Suits.SPADES, 11)
-    const deck: IDeckState = createDeckState({
+    const space: ICard = createLaneSpace()
+    const kingOfHearts: ICard = createCard({ suit: Suits.HEARTS, rank: 12 })
+    const queenOfSpades: ICard = createCard({ suit: Suits.SPADES, rank: 11 })
+    const deck: State = createDeckState({
       foundations: {},
       tableau: {
         [space.id]: space
@@ -135,7 +137,7 @@ describe('Lane creation', () => {
       },
       unrevealedCount: 52
     })
-    const cards = Object.values(deck.cards.regular)
+    const cards = Object.values(deck.cards)
 
     kingOfHearts.child = queenOfSpades
 
@@ -149,10 +151,10 @@ describe('Lane creation', () => {
   })
 
   it('should not hint that a card of another rank can be moved to a space', () => {
-    const space: ICard = new LaneSpace()
-    const kingOfHearts: ICard = new Card(Suits.HEARTS, 12)
-    const queenOfSpades: ICard = new Card(Suits.SPADES, 11)
-    const deck: IDeckState = createDeckState({
+    const space: ICard = createLaneSpace()
+    const kingOfHearts: ICard = createCard({ suit: Suits.HEARTS, rank: 12 })
+    const queenOfSpades: ICard = createCard({ suit: Suits.SPADES, rank: 11 })
+    const deck: State = createDeckState({
       foundations: {},
       tableau: {
         [space.id]: space
@@ -163,7 +165,7 @@ describe('Lane creation', () => {
       },
       unrevealedCount: 52
     })
-    const cards = Object.values(deck.cards.regular)
+    const cards = Object.values(deck.cards)
 
     const hints: string[][] = getLaneCreationHints(cards, [kingOfHearts, queenOfSpades], deck)
 

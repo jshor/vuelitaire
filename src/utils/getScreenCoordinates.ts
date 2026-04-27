@@ -1,16 +1,12 @@
-import ScreenPoint from '@/models/ScreenPoint'
+import { ScreenPoint } from '@/models/ScreenPoint'
 
-/**
- * Returns the ScreenPoint of the element coordinates, or the origin if not found.
- *
- * @param {string} selector - DOM selector for the element
- * @returns {ScreenPoint}
- */
 export default function getScreenCoordinates (selector: string): ScreenPoint {
-  const el = document.querySelector(selector)
+  const element = document.querySelector(selector)
 
-  if (el) {
-    return ScreenPoint.from(el.getBoundingClientRect())
+  if (!element) {
+    return new ScreenPoint(0, 0)
   }
-  return new ScreenPoint(0, 0)
+
+  const rect = element.getBoundingClientRect()
+  return new ScreenPoint(rect.left, rect.top)
 }

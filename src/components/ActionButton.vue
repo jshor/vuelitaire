@@ -1,8 +1,7 @@
 <template>
   <button
     :class="`action-button action-button--${theme}`"
-    :disabled="disabled"
-    @click.stop="$emit('click')">
+    :disabled="disabled">
     <slot />
   </button>
 </template>

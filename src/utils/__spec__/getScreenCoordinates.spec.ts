@@ -1,4 +1,4 @@
-import ScreenPoint from '@/models/ScreenPoint'
+import ScreenPoint from '@/types/ScreenPoint'
 import getScreenCoordinates from '../getScreenCoordinates'
 import DOMRect from './__helpers__/domRect'
 

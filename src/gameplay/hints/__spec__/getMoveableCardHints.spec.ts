@@ -1,20 +1,23 @@
-import { Suits } from '@/constants'
-import ICard from '@/interfaces/ICard'
-import IDeckState from '@/interfaces/IDeckState'
-import Card from '@/models/Card'
-import FoundationSpace from '@/models/FoundationSpace'
-import LaneSpace from '@/models/LaneSpace'
-import getMoveableCardHints from '../getMoveableCardHints'
-import createDeckState from './__helpers__/createDeckState'
+﻿import { Suits } from '@/constants'
+import { ICard } from '@/interfaces/ICard'
+import { State } from '@/store/state'
+import { Card } from '@/types/Card'
+import { createCard } from '@/models/Card'
+import { FoundationSpace } from '@/types/FoundationSpace'
+import { createFoundationSpace } from '@/models/FoundationSpace'
+import { LaneSpace } from '@/types/LaneSpace'
+import { createLaneSpace } from '@/models/LaneSpace'
+import { getMoveableCardHints } from '../getMoveableCardHints'
+import { createDeckState } from './__helpers__/createDeckState'
 
 describe('Hint: getMoveableCardHints', () => {
-  const sixOfDiamonds: ICard = new Card(Suits.DIAMONDS, 5)
-  const sevenOfClubs: ICard = new Card(Suits.CLUBS, 6)
-  const sevenOfSpades: ICard = new Card(Suits.SPADES, 6)
-  const aceOfHearts: ICard = new Card(Suits.HEARTS, 0)
-  const kingOfSpades: ICard = new Card(Suits.SPADES, 12)
-  const laneSpace: ICard = new LaneSpace()
-  const foundationSpace: ICard = new FoundationSpace()
+  const sixOfDiamonds: ICard = createCard({ suit: Suits.DIAMONDS, rank: 5 })
+  const sevenOfClubs: ICard = createCard({ suit: Suits.CLUBS, rank: 6 })
+  const sevenOfSpades: ICard = createCard({ suit: Suits.SPADES, rank: 6 })
+  const aceOfHearts: ICard = createCard({ suit: Suits.HEARTS, rank: 0 })
+  const kingOfSpades: ICard = createCard({ suit: Suits.SPADES, rank: 12 })
+  const laneSpace: ICard = createLaneSpace()
+  const foundationSpace: ICard = createFoundationSpace(Suits.HEARTS)
   const cards: ICard[] = [
     sixOfDiamonds,
     sevenOfClubs,
@@ -24,7 +27,7 @@ describe('Hint: getMoveableCardHints', () => {
     laneSpace,
     foundationSpace
   ]
-  const deck: IDeckState = createDeckState({
+  const deck: State = createDeckState({
     foundations: {
       [foundationSpace.id]: foundationSpace
     },
@@ -44,15 +47,15 @@ describe('Hint: getMoveableCardHints', () => {
 
   cards.forEach((card: ICard): void => {
     card.revealed = true
-    card.parent = new Card(Suits.DIAMONDS, 2)
+    card.parent = createCard({ suit: Suits.DIAMONDS, rank: 2 })
   })
 
   beforeEach(() => {
     hints = getMoveableCardHints(cards, cards, deck)
   })
 
-  xit('should generate exactly three hints', () => {
-    expect(hints).toHaveLength(3)
+  it('should generate exactly four hints', () => {
+    expect(hints).toHaveLength(4)
   })
 
   it('should hint the 6 of Diamonds to be placed onto the 7 of Clubs', () => {

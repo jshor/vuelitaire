@@ -1,17 +1,24 @@
-import IDeckState from '@/interfaces/IDeckState'
+import { createSettings } from '@/models/Settings'
+import { State } from '@/store/state'
 
-const createDeckState = (cards = {
+interface DeckCards {
+  foundations?: Record<string, any>
+  tableau?: Record<string, any>
+  regular?: Record<string, any>
+  unrevealedCount?: number
+}
+
+export const createDeckState = (cards: DeckCards = {
   foundations: {},
   tableau: {},
   regular: {},
   unrevealedCount: 52
-}): IDeckState => ({
-  cards,
-  move: null,
-  stock: [], // cards in the stock pile
-  waste: [], // the pile of cards dealt
-  dealt: [], // the last `dealCount` (or fewer) cards dealt
-  dealCount: 1 // number of cards to deal at a time
-})
+}): State => ({
+  cards: cards.regular ?? {},
+  tableau: cards.tableau ?? {},
+  foundations: cards.foundations ?? {},
+  stock: [],
+  waste: [],
+  settings: createSettings(),
+} as unknown as State)
 
-export default createDeckState

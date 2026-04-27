@@ -14,8 +14,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { CardBacks } from '@/constants';
-import IBackface from '@/interfaces/IBackface';
-import CardBack from './CardBack';
+import CardBack from './CardBack.vue';
 
 export default defineComponent({
   name: 'Gallery',

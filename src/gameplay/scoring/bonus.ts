@@ -4,7 +4,7 @@
  * @param {number} secondsElapsed
  * @returns {number} bonus points
  */
-export default function bonus (secondsElapsed: number): number {
+export function bonus (secondsElapsed: number): number {
   if (secondsElapsed < 30) {
     // if the game takes less than 30 seconds, no bonus points are awarded
     return 0

@@ -1,32 +1,31 @@
-import hasAlternatingColorBeforePromotion from '@/gameplay/rules/hasAlternatingColorBeforePromotion'
-import hasSameSuitAfterPromotion from '@/gameplay/rules/hasSameSuitAfterPromotion'
-import isBuildable from '@/gameplay/rules/isBuildable'
-import isSequential from '@/gameplay/rules/isSequential'
-import IRule from '@/interfaces/IRule'
-import BaseCard from './BaseCard'
+import { v4 as uuid } from 'uuid'
+import { hasAlternatingColorBeforePromotion } from '@/gameplay/rules/hasAlternatingColorBeforePromotion'
+import { hasSameSuitAfterPromotion } from '@/gameplay/rules/hasSameSuitAfterPromotion'
+import { isBuildable } from '@/gameplay/rules/isBuildable'
+import { isSequential } from '@/gameplay/rules/isSequential'
+import type { Card } from '@/types/Card'
 
-export default class Card extends BaseCard {
-  public suit: string
+export function createCard(defaultProps: Partial<Card> = {}): Card {
+  const card: Card = {
+    type: 'Card',
+    id: uuid(),
+    suit: '',
+    rank: -1,
+    child: undefined,
+    parent: undefined,
+    promoted: false,
+    revealed: false,
+    animationIndex: 0,
+    index: 0,
+    hasError: false,
+    rules: [isBuildable, hasAlternatingColorBeforePromotion, hasSameSuitAfterPromotion, isSequential],
 
-  public rank: number
+    canAcceptCard (target?: Card) {
+      return this.rules.every(rule => Boolean(rule(this, target)))
+    },
 
-  public revealed: boolean = false
-
-  public rules: IRule[] = [
-    isBuildable,
-    hasAlternatingColorBeforePromotion,
-    hasSameSuitAfterPromotion,
-    isSequential
-  ]
-
-  constructor (suit: string, rank: number) {
-    super()
-
-    this.suit = suit
-    this.rank = rank
+    ...defaultProps
   }
 
-  public toString () {
-    return `${this.rank + 1} of ${this.suit}`
-  }
+  return card
 }

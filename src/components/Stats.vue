@@ -6,31 +6,20 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue'
-import formatClock from '@/utils/formatClock'
+<script lang="ts" setup>
+import { withDefaults, defineProps, computed } from 'vue'
+import { formatClock } from '@/utils/formatClock'
 
-export default defineComponent({
-  name: 'Stats',
-  props: {
-    timeElapsed: {
-      type: Number,
-      default: 0
-    },
-    points: {
-      type: Number,
-      default: 0
-    }
-  },
-  computed: {
-    clock() {
-      return formatClock(this.timeElapsed)
-    },
-    score() {
-      return this.points.toLocaleString()
-    }
-  }
+const props = withDefaults(defineProps<{
+  timeElapsed?: number
+  points?: number
+}>(), {
+  timeElapsed: 0,
+  points: 0
 })
+
+const clock = computed(() => formatClock(props.timeElapsed))
+const score = computed(() => props.points.toLocaleString())
 </script>
 
 <style lang="scss">

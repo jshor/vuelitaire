@@ -1,5 +1,6 @@
-import IDeckState from '@/interfaces/IDeckState'
-import Pair from '@/models/Pair'
+import { ICard } from '@/interfaces/ICard'
+import { State } from '@/store/state'
+import { Pair } from '@/types/Pair'
 
 /**
  * Computes points to deduct for reversing a card move.
@@ -9,7 +10,7 @@ import Pair from '@/models/Pair'
  * @param {ICard} target
  * @returns {number} negative points
  */
-function getPointsFromUndo (card, target): number {
+function getPointsFromUndo (card: ICard, target: ICard): number {
   if (!target) {
     // no target: the card is being returned to the waste (i.e., via undo)
 
@@ -39,7 +40,7 @@ function getPointsFromUndo (card, target): number {
  * @param {ICard} target
  * @returns {number} negative points
  */
-function getPointsFromPlay (card, target): number {
+function getPointsFromPlay (card: ICard, target: ICard): number {
   if (target.promoted) {
     // 10 points for each card moved to a foundation pile
 
@@ -61,18 +62,16 @@ function getPointsFromPlay (card, target): number {
  * Computes the points (positive or negative) to accrue for the given move.
  *
  * @param {Pair} move
- * @param {IDeckState} deckState
+ * @param { type State } gameState
  * @returns {number} points
  */
-export default function cardMove (move: Pair, deckState: IDeckState): number {
-  const getCard = (id) => deckState.cards.regular[id]
-    || deckState.cards.foundations[id]
-    || deckState.cards.tableau[id]
+export function cardMove (move: Pair, gameState: State): number {
+  const getCard = (id?: string) => id ? gameState.cards[id] : undefined
   const card = getCard(move.cardId)
   const target = getCard(move.targetId)
 
   if (!card) {
     return 0
   }
-  return getPointsFromUndo(card, target) || getPointsFromPlay(card, target)
+  return getPointsFromUndo(card, target as ICard) || getPointsFromPlay(card, target as ICard)
 }

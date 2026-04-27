@@ -1,9 +1,9 @@
-import Vue from 'vue'
-import App from './App'
-import store from './store'
+import { createApp } from 'vue'
+import { createPinia } from 'pinia'
+import App from './App.vue'
 
-new Vue({
-  components: { App },
-  store,
-  template: '<App/>'
-}).$mount('#app')
+const pinia = createPinia()
+const app = createApp(App)
+
+app.use(pinia)
+app.mount('#app')

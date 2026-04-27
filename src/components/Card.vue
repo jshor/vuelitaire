@@ -42,8 +42,8 @@ export default defineComponent({
     const el = this.$refs.card as HTMLElement;
     const { left: bx, top: by } = el.getBoundingClientRect();
     const { left: ax, top: ay } = document
-      .querySelector('[data-id="DEAL_CARD"]')
-      .getBoundingClientRect();
+      ?.querySelector('[data-id="DEAL_CARD"]')
+      ?.getBoundingClientRect() || { left: 0, top: 0 }
     this.style = {
       '--left': `${ax - bx}px`,
       '--top': `${ay - by}px`,
@@ -59,12 +59,12 @@ export default defineComponent({
   width: var(--card-width);
   height: var(--card-height);
   perspective: 1000px;
-  transition: 250ms margin;
+  transition: var(--animation-speed) margin;
 }
 
 .card--dealing {
   animation-delay: calc(var(--index) * 50ms);
-  animation-duration: 250ms;
+  animation-duration: var(--animation-speed);
   animation-fill-mode: forwards;
   animation-name: dealing;
   opacity: 0;
@@ -82,7 +82,7 @@ export default defineComponent({
 }
 
 .card--error {
-  animation: shake 250ms cubic-bezier(.36,.07,.19,.97) forwards;
+  animation: shake var(--animation-speed) cubic-bezier(.36,.07,.19,.97) forwards;
 }
 
 @mixin create-card-variants($suit) {

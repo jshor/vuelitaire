@@ -1,22 +1,25 @@
-import { Suits } from '@/constants'
-import ICard from '@/interfaces/ICard'
-import IDeckState from '@/interfaces/IDeckState'
-import Card from '@/models/Card'
-import FoundationSpace from '@/models/FoundationSpace'
-import LaneSpace from '@/models/LaneSpace'
-import getWorryBackHints from '../getWorryBackHints'
-import createDeckState from './__helpers__/createDeckState'
+﻿import { Suits } from '@/constants'
+import { ICard } from '@/interfaces/ICard'
+import { State } from '@/store/state'
+import { Card } from '@/types/Card'
+import { createCard } from '@/models/Card'
+import { FoundationSpace } from '@/types/FoundationSpace'
+import { createFoundationSpace } from '@/models/FoundationSpace'
+import { LaneSpace } from '@/types/LaneSpace'
+import { createLaneSpace } from '@/models/LaneSpace'
+import { getWorryBackHints } from '../getWorryBackHints'
+import { createDeckState } from './__helpers__/createDeckState'
 
 describe('Hint: getWorryBackHints', () => {
-  const laneSpace1: ICard = new LaneSpace()
-  const laneSpace2: ICard = new LaneSpace()
-  const foundationSpace: ICard = new FoundationSpace()
-  const unrevealedParent: ICard = new Card(Suits.SPADES, 11)
-  const untouchedTopCard: ICard = new Card(Suits.HEARTS, 6)
-  const receivableTopCard: ICard = new Card(Suits.DIAMONDS, 8)
-  const promotedChild: ICard = new Card(Suits.SPADES, 7)
-  const promotedParent: ICard = new Card(Suits.SPADES, 6)
-  const unplayedCard: ICard = new Card(Suits.DIAMONDS, 6)
+  const laneSpace1: ICard = createLaneSpace()
+  const laneSpace2: ICard = createLaneSpace()
+  const foundationSpace: ICard = createFoundationSpace()
+  const unrevealedParent: ICard = createCard({ suit: Suits.SPADES, rank: 11 })
+  const untouchedTopCard: ICard = createCard({ suit: Suits.HEARTS, rank: 6 })
+  const receivableTopCard: ICard = createCard({ suit: Suits.DIAMONDS, rank: 8 })
+  const promotedChild: ICard = createCard({ suit: Suits.SPADES, rank: 7 })
+  const promotedParent: ICard = createCard({ suit: Suits.SPADES, rank: 6 })
+  const unplayedCard: ICard = createCard({ suit: Suits.DIAMONDS, rank: 6 })
 
   beforeEach(() => {
     untouchedTopCard.revealed =
@@ -38,7 +41,7 @@ describe('Hint: getWorryBackHints', () => {
   ]
 
   describe('when a marryable card whose parent is unplayable exists in the tableaux', () => {
-    let deck: IDeckState
+    let deck: State
 
     beforeEach(() => {
       deck = createDeckState()
@@ -56,27 +59,17 @@ describe('Hint: getWorryBackHints', () => {
       untouchedTopCard.parent = unrevealedParent
       promotedChild.parent = promotedParent
 
-      deck.cards = {
-        foundations: {
-          [foundationSpace.id]: foundationSpace
-        },
-        tableau: {
-          [laneSpace1.id]: laneSpace1,
-          [laneSpace2.id]: laneSpace2
-        },
-        regular: {
-          [unrevealedParent.id]: unrevealedParent,
-          [receivableTopCard.id]: receivableTopCard,
-          [promotedChild.id]: promotedChild,
-          [promotedParent.id]: promotedParent,
-          [unplayedCard.id]: unplayedCard,
-        },
-        unrevealedCount: 52
+      deck.tableau = {
+        [laneSpace1.id]: laneSpace1,
+        [laneSpace2.id]: laneSpace2
+      }
+      deck.foundations = {
+        [foundationSpace.id]: foundationSpace
       }
     })
 
     it('should hint that a card should be worried back if its parent can marry one in the tableaux', () => {
-      deck.cards.tableau[untouchedTopCard.id] = untouchedTopCard
+      deck.tableau[untouchedTopCard.id] = untouchedTopCard
 
       const hints: string[][] = getWorryBackHints([
         ...cards,

@@ -15,17 +15,17 @@ export default class Stopwatch {
    * Time, in seconds, since the last time the elapsed time was checked.
    * This variable's value is updated in `elapse()`.
    */
-  private timeElapsed: number = 0
+  private timeElapsed = 0
 
   /**
    * `setInterval()` instance.
    */
-  private interval: number
+  private interval = 0
 
   /**
    * Time, in UNIX milliseconds, when the timer was started.
    */
-  private startTime: number = 0
+  private startTime = 0
 
   /**
    * Returns the number of seconds that have elapsed since the timer was started.

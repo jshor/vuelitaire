@@ -1,9 +1,14 @@
-export default interface ICard {
+import { Card } from "@/types/Card"
+import type { IRule } from '@/interfaces/IRule'
+
+export interface ICard {
+  type: 'Card' | 'FoundationSpace' | 'LaneSpace' | 'DealSpace'
+
   id: string
 
-  child: ICard
+  child: Card | undefined
 
-  parent: ICard
+  parent: ICard | undefined
 
   promoted: boolean
 
@@ -17,5 +22,9 @@ export default interface ICard {
 
   rank: number
 
-  canAcceptCard: (card: ICard) => boolean
+  rules: IRule[]
+
+  index: number // TODO: remove?
+
+  canAcceptCard: (this: ICard, card?: ICard) => boolean
 }

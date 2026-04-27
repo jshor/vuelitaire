@@ -5,57 +5,42 @@
   />
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
-import { mapActions, mapState } from 'vuex';
-import Stats from '@/components/Stats';
+<script lang="ts" setup>
+import { onBeforeUnmount, ref, watch } from 'vue';
+import Stats from '@/components/Stats.vue';
 import Stopwatch from '@/gameplay/Stopwatch';
 import { Scoring } from '@/constants';
+import { useStore } from '@/store/main';
+import { storeToRefs } from 'pinia';
 
-export default defineComponent({
-  name: 'StatsContainer',
-  components: { Stats },
-  computed: {
-    ...mapState('stats', ['points', 'isComplete'])
-  },
-  watch: {
-    isComplete: {
-      handler() {
-        this.handleStatsUpdate();
-      }
-    }
-  },
-  data() {
-    return {
-      stopwatch: new Stopwatch(),
-      lastEpoch: 0,
-      timeElapsed: 0
-    };
-  },
-  methods: {
-    ...mapActions('stats', ['deductByEpoch', 'computeBonus']),
-    tick(timeElapsed: number) {
-      const epochs: number = Math.floor((timeElapsed - this.lastEpoch) / Scoring.TIME_PENALTY_MS);
+const store = useStore()
+const { points, isComplete } = storeToRefs(store)
+const { deductByEpoch, computeBonus } = store
+const stopwatch = new Stopwatch()
+const lastEpoch = ref(0)
+const timeElapsed = ref(0)
 
-      if (epochs > 0) {
-        this.lastEpoch = timeElapsed;
-        this.deductByEpoch(epochs);
-      }
-      this.timeElapsed = timeElapsed;
-    },
-    handleStatsUpdate() {
-      if (this.isComplete) {
-        this.stopwatch.stop();
-        this.computeBonus(this.stopwatch.getTimeElapsed());
-      }
-    }
-  },
-  created() {
-    this.stopwatch.emitter.on('tick', this.tick.bind(this));
-    this.stopwatch.start();
-  },
-  beforeDestroy() {
-    this.stopwatch.stop();
+watch(isComplete, handleStatsUpdate)
+
+onBeforeUnmount(stopwatch.stop)
+
+stopwatch.emitter.on('tick', tick);
+stopwatch.start();
+
+function tick(tickElapsed: number) {
+  const epochs: number = Math.floor((tickElapsed - lastEpoch.value) / Scoring.TIME_PENALTY_MS);
+
+  if (epochs > 0) {
+    lastEpoch.value = tickElapsed
+    deductByEpoch(epochs);
   }
-});
+  timeElapsed.value = tickElapsed
+}
+
+function handleStatsUpdate() {
+  if (isComplete.value) {
+    stopwatch.stop();
+    computeBonus(stopwatch.getTimeElapsed());
+  }
+}
 </script>

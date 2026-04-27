@@ -1,265 +1,288 @@
+import { describe, it, expect, beforeEach, vi } from 'vitest'
+import { shallowMount } from '@vue/test-utils'
+import { createPinia, setActivePinia } from 'pinia'
+import { nextTick } from 'vue'
+import { useStore } from '@/store/main'
+import { createCard } from '@/models/Card'
 import { Suits } from '@/constants'
-import ICard from '@/interfaces/ICard'
-import Card from '@/models/Card'
-import Pair from '@/models/Pair'
-import { createLocalVue, shallowMount } from '@vue/test-utils'
-import Vuex from 'vuex'
-import CardContainer from '../CardContainer'
+import CardDraggable from '@/components/CardDraggable.vue'
+import CardContainer from '../CardContainer.vue'
 
-const localVue = createLocalVue()
+describe('CardContainer', () => {
+  let pinia: ReturnType<typeof createPinia>
+  let store: ReturnType<typeof useStore>
 
-localVue.use(Vuex)
+  beforeEach(() => {
+    pinia = createPinia()
+    setActivePinia(pinia)
+    store = useStore()
+  })
 
-describe('Card Container', () => {
-  let wrapper
-  let card: Card
+  function makeCard(overrides: Parameters<typeof createCard>[0] = {}) {
+    return createCard({ suit: Suits.DIAMONDS, rank: 1, revealed: true, ...overrides })
+  }
 
-  const createWrapper = (propsData) => {
+  function mountCard(card = makeCard(), props: Record<string, unknown> = {}) {
     return shallowMount(CardContainer, {
-      propsData,
-      localVue,
-      store: new Vuex.Store({
-        actions: {
-          moveCard: jest.fn(),
-          setSelection: jest.fn(),
-          autoplayCard: jest.fn()
-        },
-        getters: {
-          highlightedCards: jest.fn(() => [])
-        },
-        modules: {
-          settings: {
-            namespaced: true,
-            getters: {
-              backface: jest.fn(() => ({}))
-            }
-          }
-        }
-      })
+      global: { plugins: [pinia] },
+      props: { card, ...props }
     })
   }
 
-  beforeEach(() => {
-    card = new Card(Suits.DIAMONDS, 1)
-    card.child = new Card(Suits.DIAMONDS, 1)
-    card.revealed = true
+  /**
+   * Mounts a card and ensures the stubbed CardDraggable has a no-op `getHotspot`
+   * so the `draggableRef.value?.getHotspot()` call in onExternalCardDrag resolves safely.
+   */
+  function mountCardWithHotspotStub(card = makeCard(), hotspotReturn: unknown = undefined, props: Record<string, unknown> = {}) {
+    const wrapper = mountCard(card, props)
+    wrapper.findComponent(CardDraggable).vm.getHotspot = vi.fn(() => hotspotReturn)
+    return wrapper
+  }
 
-    wrapper = createWrapper({
-      card,
-      hasChild: true
+  /** Emits an event from the stubbed CardDraggable child and waits for the DOM to update. */
+  async function emitFromDraggable(wrapper: ReturnType<typeof mountCard>, event: string, ...args: unknown[]) {
+    wrapper.findComponent(CardDraggable).vm.$emit(event, ...args)
+    await nextTick()
+  }
+
+  describe('isSelected', () => {
+    it('is true when store.selectedCardId matches the card id', () => {
+      const card = makeCard()
+      store.selectedCardId = card.id
+      const wrapper = mountCard(card)
+      expect(wrapper.findComponent(CardDraggable).props('isSelected')).toBe(true)
+    })
+
+    it('is true when store.hoveredCardId matches the card id', () => {
+      const card = makeCard()
+      store.hoveredCardId = card.id
+      const wrapper = mountCard(card)
+      expect(wrapper.findComponent(CardDraggable).props('isSelected')).toBe(true)
+    })
+
+    it('is true when store.currentHint includes the card id', async () => {
+      const card = makeCard()
+      const wrapper = mountCard(card)
+      store.hints = [[card.id]]
+      store.currentHintIndex = 0
+      await nextTick()
+      expect(wrapper.findComponent(CardDraggable).props('isSelected')).toBe(true)
+    })
+
+    it('is false when the card has no active selection state', () => {
+      const wrapper = mountCard()
+      expect(wrapper.findComponent(CardDraggable).props('isSelected')).toBe(false)
     })
   })
 
-  describe('descendants property', () => {
-    it('should return a list of all of the descendants of the card', () => {
-      const descendants = (wrapper.vm as any).descendants
+  describe('hasError', () => {
+    it('is true when store.errorCardId matches the card id', () => {
+      const card = makeCard()
+      store.errorCardId = card.id
+      const wrapper = mountCard(card)
+      expect(wrapper.findComponent(CardDraggable).props('hasError')).toBe(true)
+    })
 
-      expect(descendants).toHaveLength(2)
-      expect(descendants).toContain(card)
-      expect(descendants).toContain(card.child)
+    it('is false when a different card has the error', () => {
+      const wrapper = mountCard()
+      store.errorCardId = 'some-other-id'
+      expect(wrapper.findComponent(CardDraggable).props('hasError')).toBe(false)
     })
   })
 
-  describe('canReveal property', () => {
-    it('should return false if the card has a child', () => {
-      expect((wrapper.vm as any).canReveal).toEqual(false)
+  describe('drag-start event', () => {
+    it('sets store.draggedCardId to the card id', async () => {
+      const card = makeCard()
+      const wrapper = mountCard(card)
+      await emitFromDraggable(wrapper, 'drag-start')
+      expect(store.draggedCardId).toBe(card.id)
     })
 
-    it('should return false if the card is already revealed', () => {
-      card.child = null
-      card.revealed = true
-
-      expect((wrapper.vm as any).canReveal).toEqual(false)
-    })
-  })
-
-  describe('onDragEnter()', () => {
-    it('should set the `ready` flag to true', () => {
-      wrapper.vm.onDragEnter()
-
-      expect(wrapper.vm.ready).toEqual(true)
+    it('clears any existing selections', async () => {
+      const card = makeCard()
+      store.selectedCardId = 'some-other-id'
+      const wrapper = mountCard(card)
+      await emitFromDraggable(wrapper, 'drag-start')
+      expect(store.selectedCardId).toBeUndefined()
     })
   })
 
-  describe('onDragLeave()', () => {
-    it('should set the `ready` flag to false', () => {
-      wrapper.vm.onDragLeave()
-
-      expect(wrapper.vm.ready).toEqual(false)
+  describe('drag-end event', () => {
+    it('clears all selections', async () => {
+      const card = makeCard()
+      store.selectedCardId = 'some-other-id'
+      const wrapper = mountCard(card)
+      await emitFromDraggable(wrapper, 'drag-end')
+      expect(store.selectedCardId).toBeUndefined()
     })
   })
 
-  describe('card drop acceptance', () => {
-    it('should accept a card drop if the dropped card is the parent card\'s child', () => {
-      const getChildPayload = () => card.child
-
-      expect(wrapper.vm.shouldAcceptDrop({ getChildPayload })).toEqual(true)
+  describe('drag event (onCurrentCardDrag)', () => {
+    it('sets hoveredCardId to undefined when no hotspots exist', async () => {
+      const card = makeCard()
+      store.hotspots = []
+      const wrapper = mountCard(card)
+      await emitFromDraggable(wrapper, 'drag', { top: 0, left: 0, right: 10, bottom: 10, width: 10, height: 10 })
+      expect(store.hoveredCardId).toBeUndefined()
     })
 
-    // it('should not accept a card drop if the card is an ancestor of the current card', () => {
-    //   const parentCard = new Card(Suits.DIAMONDS, 1)
-    //   const parentWrapper = createWrapper({
-    //     card: parentCard,
-    //     hasChild: true
-    //   })
-    //   wrapper = createWrapper({
-    //     card,
-    //     hasChild: true,
-    //     children: [parentWrapper]
-    //   })
-    //   const getChildPayload = () => card
-
-    //   expect(parentWrapper.vm.shouldAcceptDrop({ getChildPayload })).toEqual(false)
-    // })
-
-    it('should accept the card if the dropped card meets the parent card\'s requirements', () => {
-      const droppedCard = new Card(Suits.DIAMONDS, 1)
-      const getChildPayload = () => droppedCard
-
-      card.child = null
-      jest
-        .spyOn(card, 'canAcceptCard')
-        .mockReturnValue(true)
-
-      expect(wrapper.vm.shouldAcceptDrop({ getChildPayload })).toEqual(true)
+    it('runs without error when hotspots are present and boundingBox is passed', async () => {
+      const card = makeCard()
+      const targetCard = makeCard()
+      const box = { top: 0, left: 0, right: 10, bottom: 10, width: 10, height: 10 }
+      store.hotspots = [{ card: targetCard, highlightSpot: { top: 200, left: 200, right: 300, bottom: 300, width: 100, height: 100 }, dropSpot: box }]
+      const wrapper = mountCard(card)
+      await emitFromDraggable(wrapper, 'drag', box)
+      expect(store.hoveredCardId).toBeUndefined()
     })
   })
 
-  describe('when a card is dropped', () => {
-    beforeEach(() => {
-      jest.spyOn(wrapper.vm, 'moveCard')
+  describe('select event (onSelect)', () => {
+    it('sets selectedCardId when no card is currently selected', async () => {
+      const card = makeCard()
+      const wrapper = mountCard(card)
+      await emitFromDraggable(wrapper, 'select')
+      expect(store.selectedCardId).toBe(card.id)
     })
 
-    it('should not call moveCard() if the target card is not ready to accept yet', () => {
-      wrapper.setData({ ready: false })
-      wrapper.vm.onDrop({ payload: new Card(Suits.DIAMONDS, 1) })
-
-      expect(wrapper.vm.moveCard).not.toHaveBeenCalled()
+    it('calls moveCard when a different card is already selected', async () => {
+      const card = makeCard()
+      const otherCardId = 'other-card-id'
+      store.selectedCardId = otherCardId
+      const moveCardSpy = vi.spyOn(store, 'moveCard')
+      const wrapper = mountCard(card)
+      await emitFromDraggable(wrapper, 'select')
+      expect(moveCardSpy).toHaveBeenCalledWith(otherCardId, card.id)
     })
 
-    it('should not call moveCard() if the target card is descendant of the parent', () => {
-      wrapper.setData({ ready: true })
-      wrapper.vm.onDrop({ payload: card.child })
-
-      expect(wrapper.vm.moveCard).not.toHaveBeenCalled()
-    })
-
-    it('should move the card', () => {
-      const payload: ICard = new Card(Suits.DIAMONDS, 1)
-
-      wrapper.setData({ ready: true })
-      wrapper.vm.onDrop({ payload })
-
-      expect(wrapper.vm.moveCard).toHaveBeenCalledTimes(1)
-      expect(wrapper.vm.moveCard).toHaveBeenCalledWith(new Pair(payload.id, card.id))
-    })
-
-    it('should reset the `ready` flag', () => {
-      const payload: ICard = new Card(Suits.DIAMONDS, 1)
-
-      wrapper.setData({ ready: true })
-      wrapper.vm.onDrop({ payload })
-
-      expect(wrapper.vm.ready).toEqual(false)
+    it('does nothing when isSelectable is false', async () => {
+      const card = makeCard()
+      const wrapper = mountCard(card, { isSelectable: false })
+      await emitFromDraggable(wrapper, 'select')
+      expect(store.selectedCardId).toBeUndefined()
     })
   })
 
-  describe('selectCard()', () => {
-    const card: ICard = new Card(Suits.DIAMONDS, 1)
-    const child: ICard = new Card(Suits.DIAMONDS, 1)
-
-    beforeEach(() => {
-      card.child = child
-      card.revealed = true
-      child.revealed = true
+  describe('shaken event (onShaken)', () => {
+    it('clears errorCardId when it matches the card', async () => {
+      const card = makeCard()
+      store.errorCardId = card.id
+      const wrapper = mountCard(card)
+      await emitFromDraggable(wrapper, 'shaken')
+      expect(store.errorCardId).toBeUndefined()
     })
 
-    it('should not call autoplayCard() or setSelection() if the card is not ready', () => {
-      wrapper.setData({ ready: true })
-      jest.spyOn(wrapper.vm, 'autoplayCard')
-      jest.spyOn(wrapper.vm, 'setSelection')
+    it('leaves errorCardId unchanged for a different card', async () => {
+      const wrapper = mountCard()
+      store.errorCardId = 'other-id'
+      await emitFromDraggable(wrapper, 'shaken')
+      expect(store.errorCardId).toBe('other-id')
+    })
+  })
 
-      wrapper.vm.selectCard()
+  describe('autoplay event (onAutoplay)', () => {
+    it('calls store.autoplayCard with the card id', async () => {
+      const card = makeCard()
+      const autoplayCardSpy = vi.spyOn(store, 'autoplayCard')
+      const wrapper = mountCard(card)
+      await emitFromDraggable(wrapper, 'autoplay')
+      expect(autoplayCardSpy).toHaveBeenCalledWith(card.id)
+    })
+  })
 
-      expect(wrapper.vm.autoplayCard).not.toHaveBeenCalled()
-      expect(wrapper.vm.setSelection).not.toHaveBeenCalled()
+  describe('drop event (onDrop)', () => {
+    it('calls store.adoptNewCard with the card id and the drop target id', async () => {
+      const card = makeCard()
+      store.cards[card.id] = card
+      const targetId = 'target-card-id'
+      const adoptNewCardSpy = vi.spyOn(store, 'adoptNewCard').mockImplementation(() => {})
+      const wrapper = mountCard(card)
+      await emitFromDraggable(wrapper, 'drop', targetId)
+      expect(adoptNewCardSpy).toHaveBeenCalledWith(card.id, targetId)
     })
 
-    it('should not call autoplayCard() or setSelection() if the card is not ready', () => {
-      wrapper.setData({ ready: true })
-      jest.spyOn(wrapper.vm, 'autoplayCard')
-      jest.spyOn(wrapper.vm, 'setSelection')
+    it('uses hoveredCardId as the adopter when set', async () => {
+      const card = makeCard()
+      store.cards[card.id] = card
+      const hoveredId = 'hovered-id'
+      store.hoveredCardId = hoveredId
+      const adoptNewCardSpy = vi.spyOn(store, 'adoptNewCard').mockImplementation(() => {})
+      const wrapper = mountCard(card)
+      await emitFromDraggable(wrapper, 'drop', 'next-parent-id')
+      expect(adoptNewCardSpy).toHaveBeenCalled()
+    })
+  })
 
-      wrapper.vm.selectCard()
-
-      expect(wrapper.vm.autoplayCard).not.toHaveBeenCalled()
-      expect(wrapper.vm.setSelection).not.toHaveBeenCalled()
+  describe('onExternalCardDrag (watch on store.draggedCardId)', () => {
+    it('does nothing when draggedCardId becomes undefined', async () => {
+      const card = makeCard()
+      store.cards[card.id] = card
+      store.draggedCardId = card.id
+      const wrapper = mountCard(card)
+      store.draggedCardId = undefined
+      await nextTick()
+      expect(store.hotspots).toEqual([])
     })
 
-    describe('when the card is double-clicked', () => {
-      it('should call autoplayCard() with the card\'s child if it has one', () => {
-        wrapper = createWrapper({
-          card,
-          hasChild: true,
-          isSpace: false
-        })
-        jest.spyOn(wrapper.vm, 'autoplayCard')
-
-        wrapper.setData({ ready: false })
-        wrapper.vm.selectCard(true)
-
-        expect(wrapper.vm.autoplayCard).toHaveBeenCalledTimes(1)
-        expect(wrapper.vm.autoplayCard).toHaveBeenCalledWith(child)
-      })
-
-      it('should call autoplayCard() with the card itself if it does not have a child', () => {
-        card.child = null
-        wrapper = createWrapper({
-          card,
-          hasChild: false,
-          isSpace: false
-        })
-        jest.spyOn(wrapper.vm, 'autoplayCard')
-
-        wrapper.setData({ ready: false })
-        wrapper.vm.selectCard(true)
-
-        expect(wrapper.vm.autoplayCard).toHaveBeenCalledTimes(1)
-        expect(wrapper.vm.autoplayCard).toHaveBeenCalledWith(card)
-      })
+    it('does nothing when the card already has a child', async () => {
+      const child = makeCard()
+      const card = makeCard({ child })
+      store.cards[card.id] = card
+      const dragged = makeCard()
+      store.cards[dragged.id] = dragged
+      mountCard(card)
+      store.draggedCardId = dragged.id
+      await nextTick()
+      expect(store.hotspots).toEqual([])
     })
 
-    describe('when the card is clicked once', () => {
-      it('should call selectCard() with the card\'s child if it has one', () => {
-        wrapper = createWrapper({
-          card,
-          hasChild: true,
-          isSpace: false
-        })
-        jest.spyOn(wrapper.vm, 'setSelection')
+    it('does nothing when the dragged card is an ancestor of this card', async () => {
+      const parent = makeCard()
+      const card = makeCard({ child: undefined })
+      parent.child = card
+      card.parent = parent
+      store.cards[parent.id] = parent
+      store.cards[card.id] = card
+      mountCardWithHotspotStub(card)
+      store.draggedCardId = parent.id
+      await nextTick()
+      expect(store.hotspots).toEqual([])
+    })
 
-        wrapper.setData({ ready: false })
-        wrapper.vm.selectCard(false)
+    it('does not push a hotspot when canAcceptCard returns false', async () => {
+      const card = makeCard({ child: undefined })
+      store.cards[card.id] = card
+      const dragged = makeCard()
+      store.cards[dragged.id] = dragged
+      vi.spyOn(card, 'canAcceptCard').mockReturnValue(false)
+      const mockHotspot = { card, highlightSpot: { top: 0, left: 0, right: 10, bottom: 10, width: 10, height: 10 }, dropSpot: { top: 0, left: 0, right: 10, bottom: 10, width: 10, height: 10 } }
+      mountCardWithHotspotStub(card, mockHotspot)
+      store.draggedCardId = dragged.id
+      await nextTick()
+      expect(store.hotspots.length).toBe(0)
+    })
 
-        expect(wrapper.vm.setSelection).toHaveBeenCalledTimes(1)
-        expect(wrapper.vm.setSelection).toHaveBeenCalledWith(child)
-      })
+    it('pushes a hotspot when the card can accept the dragged card', async () => {
+      const card = makeCard({ child: undefined })
+      store.cards[card.id] = card
+      const dragged = makeCard()
+      store.cards[dragged.id] = dragged
+      vi.spyOn(card, 'canAcceptCard').mockReturnValue(true)
+      const mockHotspot = { card, highlightSpot: { top: 0, left: 0, right: 10, bottom: 10, width: 10, height: 10 }, dropSpot: { top: 0, left: 0, right: 10, bottom: 10, width: 10, height: 10 } }
+      mountCardWithHotspotStub(card, mockHotspot)
+      store.draggedCardId = dragged.id
+      await nextTick()
+      expect(store.hotspots.length).toBe(1)
+      expect(store.hotspots[0]).toMatchObject({ card })
+    })
+  })
 
-      it('should call selectCard() with the card itself if it does not have a child', () => {
-        card.child = null
-        wrapper = createWrapper({
-          card,
-          hasChild: false,
-          isSpace: false
-        })
-        jest.spyOn(wrapper.vm, 'setSelection')
-
-        wrapper.setData({ ready: false })
-        wrapper.vm.selectCard(false)
-
-        expect(wrapper.vm.setSelection).toHaveBeenCalledTimes(1)
-        expect(wrapper.vm.setSelection).toHaveBeenCalledWith(card)
-      })
+  describe('card with a child (recursive rendering)', () => {
+    it('renders CardDraggable when the card has a child', () => {
+      const child = makeCard()
+      const card = makeCard({ child })
+      const wrapper = mountCard(card)
+      expect(wrapper.findComponent(CardDraggable).exists()).toBe(true)
     })
   })
 })

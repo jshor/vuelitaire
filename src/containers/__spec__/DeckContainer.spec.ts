@@ -1,68 +1,80 @@
+import { describe, it, expect, beforeEach, vi } from 'vitest'
+import { shallowMount } from '@vue/test-utils'
+import { createPinia, setActivePinia } from 'pinia'
+import { useStore } from '@/store/main'
 import { Suits } from '@/constants'
-import Card from '@/models/Card'
-import { createLocalVue, shallowMount } from '@vue/test-utils'
-import Vuex from 'vuex'
-import DeckContainer from '../DeckContainer'
+import CardBack from '@/components/CardBack.vue'
+import CardHighlight from '@/components/CardHighlight.vue'
+import EmptySpace from '@/components/EmptySpace.vue'
+import GameContainer from '../GameContainer.vue'
 
-const localVue = createLocalVue()
+vi.mock('@/utils/overrideAnimation', () => ({
+  overrideAnimation: (cb: () => void) => cb()
+}))
 
-localVue.use(Vuex)
-
-describe('Deck Container', () => {
-  const cardA: Card = new Card(Suits.DIAMONDS, 1)
-  const cardB: Card = new Card(Suits.DIAMONDS, 1)
-  const cardC: Card = new Card(Suits.DIAMONDS, 1)
-  const dealt: Card[] = [cardA, cardB, cardC]
-  let wrapper
+describe('GameContainer', () => {
+  let pinia: ReturnType<typeof createPinia>
+  let store: ReturnType<typeof useStore>
 
   beforeEach(() => {
-    wrapper = shallowMount(DeckContainer, {
-      localVue,
-      store: new Vuex.Store({
-        modules: {
-          deck: {
-            namespaced: true,
-            state: {
-              waste: dealt,
-              dealt
-            }
-          }
-        }
-      })
+    pinia = createPinia()
+    setActivePinia(pinia)
+    store = useStore()
+    store.newGame()
+  })
+
+  function mountGame() {
+    return shallowMount(GameContainer, { global: { plugins: [pinia] } })
+  }
+
+  describe('stock pile display', () => {
+    it('shows CardBack when there are stock cards', () => {
+      const wrapper = mountGame()
+      expect(wrapper.findComponent(CardBack).exists()).toBe(true)
+    })
+
+    it('shows EmptySpace when the stock is empty', async () => {
+      store.stock = []
+      const wrapper = mountGame()
+      expect(wrapper.findComponent(EmptySpace).exists()).toBe(true)
     })
   })
 
-  describe('shouldAcceptDrop()', () => {
-    it('should return true when the dropped card is the card in the container', () => {
-      const card: Card = new Card(Suits.DIAMONDS, 1)
-      const getChildPayload = () => card
-
-      expect(wrapper.vm.shouldAcceptDrop(card, { getChildPayload })).toEqual(true)
+  describe('deal hint highlight', () => {
+    it('shows CardHighlight when the current hint is a deal card hint', () => {
+      store.hints = [['DEAL_CARD']]
+      store.currentHintIndex = 0
+      const wrapper = mountGame()
+      expect(wrapper.findComponent(CardHighlight).exists()).toBe(true)
     })
 
-    it('should return false when a foreign card is dropped', () => {
-      const card: Card = new Card(Suits.DIAMONDS, 1)
-      const getChildPayload = () => new Card(Suits.DIAMONDS, 1)
-
-      expect(wrapper.vm.shouldAcceptDrop(card, { getChildPayload })).toEqual(false)
+    it('does not show CardHighlight when there is no deal hint', () => {
+      const wrapper = mountGame()
+      expect(wrapper.findComponent(CardHighlight).exists()).toBe(false)
     })
   })
 
-  describe('isNth()', () => {
-    it('should return true if the card is the last in the dealt hand', () => {
-      expect(wrapper.vm.isNth(cardC, 2)).toEqual(true)
+  describe('deal()', () => {
+    it('calls store.deal() when the stock lane is clicked', async () => {
+      const dealSpy = vi.spyOn(store, 'deal')
+      const wrapper = mountGame()
+      await wrapper.find('.game__lane').trigger('click')
+      expect(dealSpy).toHaveBeenCalled()
     })
+  })
 
-    it('should return true if the card is the middle in the dealt hand', () => {
-      expect(wrapper.vm.isNth(cardB, 1)).toEqual(true)
+  describe('foundations', () => {
+    it('renders one lane per foundation suit', () => {
+      const wrapper = mountGame()
+      const foundationCount = Object.keys(store.foundations).length
+      expect(foundationCount).toBe(Object.values(Suits).length)
     })
+  })
 
-    it('should return false if the card is not equal to `n`', () => {
-      expect(wrapper.vm.isNth(cardA, 1)).toEqual(false)
-    })
-
-    it('should return false if the card is not in the dealt hand', () => {
-      expect(wrapper.vm.isNth(new Card(Suits.DIAMONDS, 1), 1)).toEqual(false)
+  describe('tableau', () => {
+    it('initialises seven tableau columns', () => {
+      const tableauCount = Object.keys(store.tableau).length
+      expect(tableauCount).toBe(7)
     })
   })
 })

@@ -1,6 +1,6 @@
-import ICard from '@/interfaces/ICard'
-import IRule from '@/interfaces/IRule'
-import hasAlternatingColor from './hasAlternatingColor'
+import { ICard } from '@/interfaces/ICard'
+import { IRule } from '@/interfaces/IRule'
+import { hasAlternatingColor } from './hasAlternatingColor'
 
 /**
  * Determines if the parent and child have opposite colors.
@@ -10,11 +10,10 @@ import hasAlternatingColor from './hasAlternatingColor'
  * @param {ICard} child
  * @returns {boolean}
  */
-const hasAlternatingColorBeforePromotion: IRule = (parent: ICard, child: ICard): boolean => {
+export const hasAlternatingColorBeforePromotion: IRule = (parent: ICard, child?: ICard): boolean => {
   if (parent.promoted) {
     return true
   }
   return hasAlternatingColor(parent, child)
 }
 
-export default hasAlternatingColorBeforePromotion

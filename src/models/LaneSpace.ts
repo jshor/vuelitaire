@@ -1,8 +1,16 @@
-import isBuildable from '@/gameplay/rules/isBuildable'
-import isKing from '@/gameplay/rules/isKing'
-import IRule from '@/interfaces/IRule'
-import BaseCard from './BaseCard'
+import { isBuildable } from '@/gameplay/rules/isBuildable'
+import { isKing } from '@/gameplay/rules/isKing'
 
-export default class LaneSpace extends BaseCard {
-  public rules: IRule[] = [isBuildable, isKing]
+export type { LaneSpace } from '@/types/LaneSpace'
+import type { LaneSpace } from '@/types/LaneSpace'
+import { createCard } from './Card'
+
+export function createLaneSpace (): LaneSpace {
+  return {
+    ...createCard({
+      revealed: true,
+      rules: [isBuildable, isKing]
+    }),
+    type: 'LaneSpace'
+  }
 }

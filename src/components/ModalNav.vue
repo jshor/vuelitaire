@@ -3,7 +3,7 @@
     <li
       v-for="key in sections"
       :key="key"
-      :class="{ 'modal-nav__link--active': value === key }"
+      :class="{ 'modal-nav__link--active': modelValue === key }"
       @click="$emit('input', key)"
       class="modal-nav__link"
     >{{ key }}</li>
@@ -20,7 +20,7 @@ import { defineComponent } from 'vue';
 
 export default defineComponent({
   name: 'ModalNav',
-  props: ['value', 'sections'],
+  props: ['modelValue', 'sections'],
 });
 </script>
 

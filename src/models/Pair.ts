@@ -1,12 +1,6 @@
-export default class Pair {
-  public cardId: string
+export type { Pair } from '@/types/Pair'
+import type { Pair } from '@/types/Pair'
 
-  public targetId: string
-
-  public parentId: string = null
-
-  constructor (cardId: string = null, targetId: string = null) {
-    this.cardId = cardId
-    this.targetId = targetId
-  }
+export function createPair (cardId?: string, targetId?: string): Pair {
+  return { cardId, targetId }
 }

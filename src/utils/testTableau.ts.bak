@@ -1,0 +1,16 @@
+
+// export const putAtFrontOfTableau = (suit: string, rank: number, lane: number) => {
+//   const cardIndex = this.stock.findIndex(card => card.suit === suit && card.rank === rank)
+//   const [ card ] = this.stock.splice(cardIndex, 1)
+//   const summation = (lane * (lane - 1)) / 2
+
+//   for (let i = 0; i < summation - 1; i++) {
+//     this.stock.push(this.stock.pop()!)
+//   }
+
+//   this.stock.push(card)
+// }
+
+// // putAtFrontOfTableau(Suits.HEARTS, 2, 3)
+// // putAtFrontOfTableau(Suits.HEARTS, 1, 2)
+// // putAtFrontOfTableau(Suits.HEARTS, 0, 1)

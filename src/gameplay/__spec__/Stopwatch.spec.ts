@@ -4,13 +4,13 @@ describe('Stopwatch', () => {
   let stopwatch: Stopwatch
 
   beforeEach(() => {
-    jest.useFakeTimers()
+    vi.useFakeTimers()
     stopwatch = new Stopwatch()
   })
 
   afterEach(() => {
-    jest.resetAllMocks()
-    jest.clearAllTimers()
+    vi.resetAllMocks()
+    vi.clearAllTimers()
   })
 
   describe('getTimeElapsed()', () => {
@@ -18,7 +18,7 @@ describe('Stopwatch', () => {
       const elapsed: number = 2000
       let time: number = 0
 
-      jest
+      vi
         .spyOn(Date, 'now')
         .mockImplementation(() => {
           time += 500
@@ -26,7 +26,7 @@ describe('Stopwatch', () => {
         })
 
       stopwatch.start()
-      jest.advanceTimersByTime(elapsed)
+      vi.advanceTimersByTime(elapsed)
       stopwatch.stop()
 
       expect(stopwatch.getTimeElapsed()).toEqual(2)
@@ -35,7 +35,7 @@ describe('Stopwatch', () => {
 
   describe('clear()', () => {
     it('should stop the stopwatch', () => {
-      jest.spyOn(stopwatch, 'stop')
+      vi.spyOn(stopwatch, 'stop')
       stopwatch.clear()
 
       expect(stopwatch.stop).toHaveBeenCalledTimes(1)
@@ -43,7 +43,7 @@ describe('Stopwatch', () => {
 
     it('should return 0 for the time elapsed', () => {
       stopwatch.start()
-      jest.advanceTimersByTime(4321)
+      vi.advanceTimersByTime(4321)
       stopwatch.clear()
 
       expect(stopwatch.getTimeElapsed()).toEqual(0)
@@ -51,7 +51,7 @@ describe('Stopwatch', () => {
   })
 
   describe('stop()', () => {
-    beforeEach(() => jest.spyOn(window, 'clearInterval'))
+    beforeEach(() => vi.spyOn(window, 'clearInterval'))
 
     it('should not clear the interval if the stopwatch was never started', () => {
       stopwatch.stop()

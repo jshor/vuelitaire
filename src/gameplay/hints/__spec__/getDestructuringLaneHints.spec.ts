@@ -1,10 +1,12 @@
-import { Suits } from '@/constants'
-import ICard from '@/interfaces/ICard'
-import IDeckState from '@/interfaces/IDeckState'
-import Card from '@/models/Card'
-import FoundationSpace from '@/models/FoundationSpace'
-import getDestructuringLaneHints from '../getDestructuringLaneHints'
-import createDeckState from './__helpers__/createDeckState'
+﻿import { Suits } from '@/constants'
+import { ICard } from '@/interfaces/ICard'
+import { State } from '@/store/state'
+import { Card } from '@/types/Card'
+import { createCard } from '@/models/Card'
+import { FoundationSpace } from '@/types/FoundationSpace'
+import { createFoundationSpace } from '@/models/FoundationSpace'
+import { getDestructuringLaneHints } from '../getDestructuringLaneHints'
+import { createDeckState } from './__helpers__/createDeckState'
 
 function makePlayable (cards: ICard[]): void {
   cards.forEach((card: ICard): void => {
@@ -13,13 +15,13 @@ function makePlayable (cards: ICard[]): void {
 }
 
 describe('getDestructuringLaneHints()', () => {
-  xit('should create a hint for making a five of hearts promotable', () => {
-    const foundation: ICard = new FoundationSpace()
-    const aceOfSpades: ICard = new Card(Suits.SPADES, 0) // promoted
-    const twoOfSpades: ICard = new Card(Suits.SPADES, 1) // card to promote
-    const aceOfHearts: ICard = new Card(Suits.HEARTS, 0) // card blocking the two of spades from promotion
-    const twoOfClubs: ICard = new Card(Suits.CLUBS, 1) // alternate card to move the ace of hearts onto
-    const deck: IDeckState = createDeckState({
+  it.skip('should create a hint for making a five of hearts promotable', () => {
+    const foundation: ICard = createFoundationSpace()
+    const aceOfSpades: ICard = createCard({ suit: Suits.SPADES, rank: 0 }) // promoted
+    const twoOfSpades: ICard = createCard({ suit: Suits.SPADES, rank: 1 }) // card to promote
+    const aceOfHearts: ICard = createCard({ suit: Suits.HEARTS, rank: 0 }) // card blocking the two of spades from promotion
+    const twoOfClubs: ICard = createCard({ suit: Suits.CLUBS, rank: 1 }) // alternate card to move the ace of hearts onto
+    const deck: State = createDeckState({
       foundations: {
         [foundation.id]: foundation
       },
@@ -32,7 +34,7 @@ describe('getDestructuringLaneHints()', () => {
       },
       unrevealedCount: 0
     })
-    const cards = Object.values(deck.cards.regular)
+    const cards = Object.values(deck.cards)
 
     makePlayable(cards)
 
@@ -50,11 +52,11 @@ describe('getDestructuringLaneHints()', () => {
   })
 
   it('should not create a hint if there is no alternate card to destructure the lane to', () => {
-    const foundation: ICard = new FoundationSpace()
-    const aceOfSpades: ICard = new Card(Suits.SPADES, 0) // promoted
-    const twoOfSpades: ICard = new Card(Suits.SPADES, 1) // card to promote
-    const aceOfHearts: ICard = new Card(Suits.HEARTS, 0) // card blocking the Ace of spades from promotion
-    const deck: IDeckState = createDeckState({
+    const foundation: ICard = createFoundationSpace()
+    const aceOfSpades: ICard = createCard({ suit: Suits.SPADES, rank: 0 }) // promoted
+    const twoOfSpades: ICard = createCard({ suit: Suits.SPADES, rank: 1 }) // card to promote
+    const aceOfHearts: ICard = createCard({ suit: Suits.HEARTS, rank: 0 }) // card blocking the Ace of spades from promotion
+    const deck: State = createDeckState({
       foundations: {
         [foundation.id]: foundation
       },
@@ -66,7 +68,7 @@ describe('getDestructuringLaneHints()', () => {
       },
       unrevealedCount: 0
     })
-    const cards = Object.values(deck.cards.regular)
+    const cards = Object.values(deck.cards)
 
     makePlayable(cards)
 
@@ -84,10 +86,10 @@ describe('getDestructuringLaneHints()', () => {
   })
 
   it('should not create a hint if there are no cards blocked from promotion', () => {
-    const foundation: ICard = new FoundationSpace()
-    const aceOfSpades: ICard = new Card(Suits.SPADES, 0) // promoted
-    const twoOfSpades: ICard = new Card(Suits.SPADES, 1) // card to promote
-    const deck: IDeckState = createDeckState({
+    const foundation: ICard = createFoundationSpace()
+    const aceOfSpades: ICard = createCard({ suit: Suits.SPADES, rank: 0 }) // promoted
+    const twoOfSpades: ICard = createCard({ suit: Suits.SPADES, rank: 1 }) // card to promote
+    const deck: State = createDeckState({
       foundations: {
         [foundation.id]: foundation
       },
@@ -98,7 +100,7 @@ describe('getDestructuringLaneHints()', () => {
       },
       unrevealedCount: 0
     })
-    const cards = Object.values(deck.cards.regular)
+    const cards = Object.values(deck.cards)
 
     makePlayable(cards)
 

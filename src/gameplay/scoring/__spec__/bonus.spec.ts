@@ -1,4 +1,4 @@
-import bonus from '../bonus'
+import { bonus } from '../bonus'
 
 describe('bonus()', () => {
   it('should return 0 when the time elapsed is less than 30 seconds', () => {

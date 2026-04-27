@@ -2,8 +2,8 @@
   <div class="checkbox">
     <input
       :name="name"
-      :value="value"
-      :checked="value"
+      :value="modelValue"
+      :checked="modelValue"
       :id="id"
       @change="$emit('input', $event.target.checked)"
       type="checkbox"
@@ -16,35 +16,18 @@
   </div>
 </template>
 
-<script lang="ts">
-import Vue from 'vue'
-import Component from 'vue-class-component'
+<script lang="ts" setup>
+import { computed, withDefaults, defineProps } from 'vue'
 
-@Component({
-  name: 'Checkbox',
-  props: {
-    label: {
-      type: String,
-      default: ' '
-    },
-    name: {
-      type: String,
-      required: true
-    },
-    value: {
-      required: true
-    }
-  }
+const props = withDefaults(defineProps<{
+  label?: string
+  name: string
+  modelValue: boolean
+}>(), {
+  label: ' '
 })
-export default class Checkbox extends Vue {
-  public name: string
 
-  public value: string
-
-  get id () {
-    return `${this.name}_${this.value}`
-  }
-}
+const id = computed(() => `${props.name}_${props.modelValue}`)
 </script>
 
 <style lang="scss">

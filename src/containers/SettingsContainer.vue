@@ -13,7 +13,7 @@
         <h3>Solitaire variation</h3>
 
         <radio-group
-          v-model="userSettings.dealCount"
+          v-model="settings.dealCount"
           :values="[
             { value: 1, label: 'Draw One' },
             { value: 3, label: 'Draw Three' }
@@ -23,33 +23,31 @@
       </div>
 
       <div class="settings__panel">
-        <h3>Solitaire variation</h3>
+        <h3>Preferences</h3>
         <checkbox
-          v-model="userSettings.showScore"
+          v-model="settings.showScore"
           name="showScore"
           label="Show game score"
         />
 
         <checkbox
-          v-model="userSettings.showTimer"
+          v-model="settings.showTimer"
           name="showTimer"
           label="Show game timer"
         />
 
         <checkbox
-          v-model="userSettings.autoplayWhenClicked"
+          v-model="settings.autoplayWhenClicked"
           name="autoplayWhenClicked"
           label="Autoplay cards when clicked"
         />
       </div>
-
-      <div class="settings__info">Changes to variation will be applied during the next deal.</div>
     </div>
 
     <div
       v-else-if="activeSection === 'Appearance'"
       class="settings__content">
-      <gallery v-model="userSettings.backfaceId" />
+      <gallery v-model="settings.backfaceId" />
     </div>
 
     <div
@@ -61,13 +59,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
-import { mapActions, mapState } from 'vuex';
-import Checkbox from '@/components/Checkbox';
-import Gallery from '@/components/Gallery';
-import Modal from '@/components/Modal';
-import ModalNav from '@/components/ModalNav';
-import RadioGroup from '@/components/RadioGroup';
+import { defineComponent, ref, watch } from 'vue'
+import Checkbox from '@/components/Checkbox.vue'
+import Gallery from '@/components/Gallery.vue'
+import Modal from '@/components/Modal.vue'
+import ModalNav from '@/components/ModalNav.vue'
+import RadioGroup from '@/components/RadioGroup.vue'
+import { storeToRefs } from 'pinia'
+import { useStore } from '@/store/main'
 
 export default defineComponent({
   name: 'SettingsContainer',
@@ -78,28 +77,21 @@ export default defineComponent({
     ModalNav,
     RadioGroup
   },
-  computed: {
-    ...mapState(['settings'])
-  },
-  methods: {
-    ...mapActions('settings', ['updateSettings', 'toggleDialog'])
-  },
-  watch: {
-    userSettings: {
-      handler() {
-        this.updateSettings(this.userSettings);
-      },
-      deep: true
-    }
-  },
-  data() {
+  setup() {
+    const store = useStore()
+    const { settings } = storeToRefs(store)
+    const { updateSettings, toggleDialog } = store
+    const sections = ['Game', 'Appearance', 'About']
+    const activeSection = ref('Game')
+
+    watch(() => store.settings, updateSettings, { deep: true })
+
     return {
-      userSettings: {
-        ...this.$store.state.settings
-      },
-      sections: ['Game', 'Appearance', 'About'],
-      activeSection: 'Game'
-    };
+      settings,
+      sections,
+      activeSection,
+      toggleDialog
+    }
   }
 });
 </script>

@@ -1,5 +1,3 @@
-import ICard from './ICard'
+import { ICard } from './ICard'
 
-export default interface IRule {
-  (parent: ICard, child: ICard): boolean
-}
+export type IRule = (baseCard: ICard, newCard?: ICard) => boolean
