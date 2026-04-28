@@ -3,8 +3,8 @@ import getScreenCoordinates from '../getScreenCoordinates'
 import DOMRect from './__helpers__/domRect'
 
 describe('getScreenCoordinates()', () => {
-  const left: number = 20
-  const top: number = 30
+  const left = 20
+  const top = 30
 
   beforeAll(() => {
     // https://github.com/jsdom/jsdom/issues/653

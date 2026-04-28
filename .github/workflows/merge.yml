@@ -16,10 +16,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
         with:
-          node-version: 14
+          node-version: 20
       - name: Install npm dependencies
         run: yarn
       # - name: Run linter
@@ -29,14 +29,14 @@ jobs:
       - name: Report coverage
         run: yarn codecov
       - name: Upload bundle artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v6
         with:
           name: dist
           path: dist
       - name: Build app
         run: yarn build
       - name: Upload app artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v6
         with:
           name: dist
           path: dist
@@ -45,7 +45,7 @@ jobs:
   #   needs: build
   #   runs-on: ubuntu-latest
   #   steps:
-  #     - uses: actions/checkout@v2
+  #     - uses: actions/checkout@v6
   #     - uses: TriPSs/conventional-changelog-action@v3
   #       with:
   #         github-token: ${{ secrets.GH_TOKEN }}
@@ -59,13 +59,13 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v6
         with:
           persist-credentials: false
       - name: Pull latest
         run: git pull origin main
       - name: Download bundle artifact
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v6
         with:
           name: dist
           path: dist

@@ -15,8 +15,8 @@ describe('Stopwatch', () => {
 
   describe('getTimeElapsed()', () => {
     it('should equal two seconds when 2000 milliseconds have passed', () => {
-      const elapsed: number = 2000
-      let time: number = 0
+      const elapsed = 2000
+      let time = 0
 
       vi
         .spyOn(Date, 'now')
