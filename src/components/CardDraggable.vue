@@ -87,9 +87,6 @@
 <script lang="ts" setup>
 import {
   computed,
-  defineExpose,
-  defineProps,
-  defineEmits,
   onMounted,
   onUnmounted,
   ref,

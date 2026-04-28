@@ -31,14 +31,14 @@ describe('Hint: getMoveableCardHints', () => {
     tableau: {
       [laneSpace.id]: laneSpace
     },
-    regular: {
+    cards: {
       [sixOfDiamonds.id]: sixOfDiamonds,
       [sevenOfClubs.id]: sevenOfClubs,
       [sevenOfSpades.id]: sevenOfSpades,
       [aceOfHearts.id]: aceOfHearts,
       [kingOfSpades.id]: kingOfSpades
     },
-    unrevealedCount: 52
+
   })
   let hints: string[][]
 

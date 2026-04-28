@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
-import { shallowMount } from '@vue/test-utils'
+import { mount } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
 import { nextTick } from 'vue'
 import { useStore } from '@/store/main'
@@ -7,6 +7,7 @@ import { createCard } from '@/models/Card'
 import { Suits } from '@/constants'
 import CardDraggable from '@/components/CardDraggable.vue'
 import CardContainer from '../CardContainer.vue'
+import { Hotspot } from '@/types/Hotspot'
 
 describe('CardContainer', () => {
   let pinia: ReturnType<typeof createPinia>
@@ -23,7 +24,7 @@ describe('CardContainer', () => {
   }
 
   function mountCard(card = makeCard(), props: Record<string, unknown> = {}) {
-    return shallowMount(CardContainer, {
+    return mount(CardContainer, {
       global: { plugins: [pinia] },
       props: { card, ...props }
     })
@@ -33,9 +34,9 @@ describe('CardContainer', () => {
    * Mounts a card and ensures the stubbed CardDraggable has a no-op `getHotspot`
    * so the `draggableRef.value?.getHotspot()` call in onExternalCardDrag resolves safely.
    */
-  function mountCardWithHotspotStub(card = makeCard(), hotspotReturn: unknown = undefined, props: Record<string, unknown> = {}) {
+  function mountCardWithHotspotStub(card = makeCard(), hotspotReturn: Hotspot | undefined = undefined, props: Record<string, unknown> = {}) {
     const wrapper = mountCard(card, props)
-    wrapper.findComponent(CardDraggable).vm.getHotspot = vi.fn(() => hotspotReturn)
+    vi.spyOn(wrapper.findComponent(CardDraggable).vm, 'getHotspot').mockReturnValue(hotspotReturn)
     return wrapper
   }
 
@@ -90,11 +91,11 @@ describe('CardContainer', () => {
     })
   })
 
-  describe('drag-start event', () => {
+  describe('dragStart event', () => {
     it('sets store.draggedCardId to the card id', async () => {
       const card = makeCard()
       const wrapper = mountCard(card)
-      await emitFromDraggable(wrapper, 'drag-start')
+      await emitFromDraggable(wrapper, 'dragStart')
       expect(store.draggedCardId).toBe(card.id)
     })
 
@@ -102,17 +103,17 @@ describe('CardContainer', () => {
       const card = makeCard()
       store.selectedCardId = 'some-other-id'
       const wrapper = mountCard(card)
-      await emitFromDraggable(wrapper, 'drag-start')
+      await emitFromDraggable(wrapper, 'dragStart')
       expect(store.selectedCardId).toBeUndefined()
     })
   })
 
-  describe('drag-end event', () => {
+  describe('dragEnd event', () => {
     it('clears all selections', async () => {
       const card = makeCard()
       store.selectedCardId = 'some-other-id'
       const wrapper = mountCard(card)
-      await emitFromDraggable(wrapper, 'drag-end')
+      await emitFromDraggable(wrapper, 'dragEnd')
       expect(store.selectedCardId).toBeUndefined()
     })
   })
@@ -130,7 +131,7 @@ describe('CardContainer', () => {
       const card = makeCard()
       const targetCard = makeCard()
       const box = { top: 0, left: 0, right: 10, bottom: 10, width: 10, height: 10 }
-      store.hotspots = [{ card: targetCard, highlightSpot: { top: 200, left: 200, right: 300, bottom: 300, width: 100, height: 100 }, dropSpot: box }]
+      store.hotspots = [{ card: targetCard, highlightSpot: { top: 200, left: 200, right: 300, bottom: 300 }, dropSpot: box }]
       const wrapper = mountCard(card)
       await emitFromDraggable(wrapper, 'drag', box)
       expect(store.hoveredCardId).toBeUndefined()
@@ -218,7 +219,7 @@ describe('CardContainer', () => {
       const card = makeCard()
       store.cards[card.id] = card
       store.draggedCardId = card.id
-      const wrapper = mountCard(card)
+      mountCard(card)
       store.draggedCardId = undefined
       await nextTick()
       expect(store.hotspots).toEqual([])

@@ -65,7 +65,7 @@ describe('GameContainer', () => {
 
   describe('foundations', () => {
     it('renders one lane per foundation suit', () => {
-      const wrapper = mountGame()
+      mountGame()
       const foundationCount = Object.keys(store.foundations).length
       expect(foundationCount).toBe(Object.values(Suits).length)
     })

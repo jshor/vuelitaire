@@ -395,7 +395,7 @@ export const useStore = defineStore('store', {
         if (data) {
           Object.assign(settings, JSON.parse(data))
         }
-      } catch (error) {
+      } catch (_) {
         // do nothing, we ignore the error
       }
 

@@ -10,7 +10,7 @@ import { createDeckState } from './__helpers__/createDeckState'
 describe('Hint: getWorryBackHints', () => {
   const laneSpace1: ICard = createLaneSpace()
   const laneSpace2: ICard = createLaneSpace()
-  const foundationSpace: ICard = createFoundationSpace()
+  const foundationSpace: ICard = createFoundationSpace(Suits.SPADES)
   const unrevealedParent: ICard = createCard({ suit: Suits.SPADES, rank: 11 })
   const untouchedTopCard: ICard = createCard({ suit: Suits.HEARTS, rank: 6 })
   const receivableTopCard: ICard = createCard({ suit: Suits.DIAMONDS, rank: 8 })

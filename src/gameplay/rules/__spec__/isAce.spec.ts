@@ -4,7 +4,7 @@ import { createCard } from '@/models/Card'
 import { isAce } from '../isAce'
 
 describe('Rule: isSequential', () => {
-  const parent: Card = null
+  const parent: Card = null!
 
   it('should return true if the child card is an Ace', () => {
     const child: Card = createCard({ suit: Suits.DIAMONDS, rank: 0 })

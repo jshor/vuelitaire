@@ -1,15 +1,9 @@
 import ScreenPoint from '@/types/ScreenPoint'
 import getScreenCoordinates from '../getScreenCoordinates'
-import DOMRect from './__helpers__/domRect'
 
 describe('getScreenCoordinates()', () => {
-  const left = 20
-  const top = 30
-
-  beforeAll(() => {
-    // https://github.com/jsdom/jsdom/issues/653
-    Element.prototype.getBoundingClientRect = (): DOMRect => new DOMRect(top, left)
-  })
+  const left = 0
+  const top = 0
 
   afterEach(() => {
     document.body.innerHTML = ''

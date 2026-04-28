@@ -1,7 +1,5 @@
 ﻿import { Suits } from '@/constants'
-import { Card } from '@/types/Card'
 import { createCard } from '@/models/Card'
-import { Pair } from '@/types/Pair'
 import { createPair } from '@/models/Pair'
 import { cardMove } from '../cardMove'
 import { generateDeckState } from './__helpers__/generateDeckState'

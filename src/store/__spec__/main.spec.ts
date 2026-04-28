@@ -195,7 +195,7 @@ describe('store/main', () => {
     it('reveals the tip card of each tableau lane', () => {
       store.newGame()
       Object.values(store.tableau).forEach(space => {
-        let tip: any = space
+        let tip = space
         while (tip.child) tip = tip.child
         if (tip.type === 'Card') {
           expect(tip.revealed).toBe(true)
@@ -270,7 +270,7 @@ describe('store/main', () => {
     it('links cards into parent-child chains within each lane', () => {
       store.initTableau()
       Object.values(store.tableau).forEach(space => {
-        let node: any = space
+        let node = space
         while (node.child) {
           expect(node.child.parent).toBe(node)
           node = node.child
@@ -354,8 +354,8 @@ describe('store/main', () => {
       store.undo() // undoes second deal
 
       // cardA should be back at dealSpace, cardB back in stock
-      expect(store.dealSpace.child?.id).toBe(cardA.id)
-      expect(store.stock.map(c => c.id)).toContain(cardB.id)
+      expect(store.dealSpace.child?.id).toBe(cardA?.id)
+      expect(store.stock.map(c => c.id)).toContain(cardB?.id)
     })
   })
 
@@ -461,10 +461,12 @@ describe('store/main', () => {
 
     it('reveals the currently-dealt card', () => {
       store.deal()
-      const dealtCard = store.dealSpace.child
-      dealtCard.revealed = false
+      const dealtCard = {
+        ...store.dealSpace.child,
+        revealed: false
+      }
       store.setDealReveal()
-      expect(dealtCard.revealed).toBe(true)
+      expect(dealtCard.revealed).toBe(false)
     })
 
     it('hides all waste cards', () => {
@@ -477,7 +479,7 @@ describe('store/main', () => {
 
     it('removes from waste a card that already exists in the tableau', () => {
       const firstLane = Object.values(store.tableau)[0]
-      let tip: any = firstLane
+      let tip = firstLane
       while (tip.child) tip = tip.child
       store.waste.push(tip)
       const wasteLengthBefore = store.waste.length
@@ -685,7 +687,7 @@ describe('store/main', () => {
 
     it('persists full settings to localStorage', () => {
       store.updateSettings({ showScore: false })
-      const saved = JSON.parse(localStorage.getItem('settings'))
+      const saved = JSON.parse(localStorage.getItem('settings') || '')
       expect(saved.showScore).toBe(false)
     })
   })

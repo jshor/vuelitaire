@@ -14,7 +14,7 @@ function makePlayable (cards: ICard[]): void {
 
 describe('getDestructuringLaneHints()', () => {
   it.skip('should create a hint for making a five of hearts promotable', () => {
-    const foundation: ICard = createFoundationSpace()
+    const foundation: ICard = createFoundationSpace(Suits.SPADES)
     const aceOfSpades: ICard = createCard({ suit: Suits.SPADES, rank: 0 }) // promoted
     const twoOfSpades: ICard = createCard({ suit: Suits.SPADES, rank: 1 }) // card to promote
     const aceOfHearts: ICard = createCard({ suit: Suits.HEARTS, rank: 0 }) // card blocking the two of spades from promotion
@@ -24,13 +24,12 @@ describe('getDestructuringLaneHints()', () => {
         [foundation.id]: foundation
       },
       tableau: {},
-      regular: {
+      cards: {
         [aceOfSpades.id]: aceOfSpades,
         [twoOfSpades.id]: twoOfSpades,
         [aceOfHearts.id]: aceOfHearts,
         [twoOfClubs.id]: twoOfClubs
-      },
-      unrevealedCount: 0
+      }
     })
     const cards = Object.values(deck.cards)
 
@@ -50,7 +49,7 @@ describe('getDestructuringLaneHints()', () => {
   })
 
   it('should not create a hint if there is no alternate card to destructure the lane to', () => {
-    const foundation: ICard = createFoundationSpace()
+    const foundation: ICard = createFoundationSpace(Suits.SPADES)
     const aceOfSpades: ICard = createCard({ suit: Suits.SPADES, rank: 0 }) // promoted
     const twoOfSpades: ICard = createCard({ suit: Suits.SPADES, rank: 1 }) // card to promote
     const aceOfHearts: ICard = createCard({ suit: Suits.HEARTS, rank: 0 }) // card blocking the Ace of spades from promotion
@@ -59,12 +58,11 @@ describe('getDestructuringLaneHints()', () => {
         [foundation.id]: foundation
       },
       tableau: {},
-      regular: {
+      cards: {
         [aceOfSpades.id]: aceOfSpades,
         [twoOfSpades.id]: twoOfSpades,
         [aceOfHearts.id]: aceOfHearts
-      },
-      unrevealedCount: 0
+      }
     })
     const cards = Object.values(deck.cards)
 
@@ -84,7 +82,7 @@ describe('getDestructuringLaneHints()', () => {
   })
 
   it('should not create a hint if there are no cards blocked from promotion', () => {
-    const foundation: ICard = createFoundationSpace()
+    const foundation: ICard = createFoundationSpace(Suits.SPADES)
     const aceOfSpades: ICard = createCard({ suit: Suits.SPADES, rank: 0 }) // promoted
     const twoOfSpades: ICard = createCard({ suit: Suits.SPADES, rank: 1 }) // card to promote
     const deck: State = createDeckState({
@@ -92,11 +90,10 @@ describe('getDestructuringLaneHints()', () => {
         [foundation.id]: foundation
       },
       tableau: {},
-      regular: {
+      cards: {
         [aceOfSpades.id]: aceOfSpades,
         [twoOfSpades.id]: twoOfSpades
-      },
-      unrevealedCount: 0
+      }
     })
     const cards = Object.values(deck.cards)
 

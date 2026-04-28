@@ -10,7 +10,12 @@ export default [
     rules: {
       'vue/multi-word-component-names': 'off',
       'no-debugger': 'warn',
-      'no-unreachable': 'warn'
+      'no-unreachable': 'warn',
+      '@typescript-eslint/no-unused-vars': ['error', {
+        'args': 'none',
+        'caughtErrorsIgnorePattern': '^_',
+        'destructuredArrayIgnorePattern': '^_',
+      }]
     }
   },
   {

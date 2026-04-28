@@ -4,7 +4,7 @@ import { createCard } from '@/models/Card'
 import { hasAlternatingColor } from '../hasAlternatingColor'
 
 describe('Rule: hasAlternatingColor', () => {
-  function testRule (parentSuit, childSuit, value) {
+  function testRule (parentSuit: string, childSuit: string, value: boolean) {
     it(`should return true if the child card's suit is ${parentSuit} and the parent's suit is ${childSuit}`, () => {
       const parent: Card = createCard({ suit: parentSuit })
       const child: Card = createCard({ suit: childSuit })

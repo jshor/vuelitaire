@@ -31,7 +31,11 @@ const confettiEnd = ref(Infinity)
 const isVisible = computed(() => props.isActive && !isComplete.value)
 
 watch(() => props.isActive, isActive => {
-  isActive ? animateConfetti() : end()
+  if (isActive) {
+    animateConfetti()
+  } else {
+    end()
+  }
 }, {
   immediate: true
 })

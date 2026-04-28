@@ -5,15 +5,16 @@ import { createPinia, setActivePinia } from 'pinia'
 import { createCard } from '@/models/Card'
 import { Suits } from '@/constants'
 import CardDraggable from '../CardDraggable.vue'
+import { Hotspot } from '@/types/Hotspot'
 
 vi.mock('@/utils/overrideAnimation', () => ({
   overrideAnimation: (cb: () => void) => cb()
 }))
 
-const mockGetLargest = vi.fn(() => undefined)
+const mockGetLargest = vi.fn((): Hotspot | undefined => undefined)
 
 vi.mock('@/utils/getLargestOverlappingCard', () => ({
-  getLargestOverlappingCard: (...args) => mockGetLargest(...args)
+  getLargestOverlappingCard: (...args: Parameters<typeof mockGetLargest>) => mockGetLargest(...args)
 }))
 
 function makeCard(overrides: Parameters<typeof createCard>[0] = {}) {
@@ -348,6 +349,10 @@ describe('CardDraggable', () => {
       screenY: number
       pageX: number
       pageY: number
+      force = 0
+      radiusX = 0
+      radiusY = 0
+      rotationAngle = 0
       constructor(init: { identifier: number; target: EventTarget; clientX?: number; clientY?: number; screenX?: number; screenY?: number; pageX?: number; pageY?: number }) {
         this.identifier = init.identifier
         this.target = init.target

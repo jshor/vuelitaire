@@ -7,7 +7,7 @@ import { getDealableCards } from '../getDealableCards'
 describe('getDealableCards()', () => {
   const stock = Array(9)
     .fill(null)
-    .map(() => createCard(Suits.DIAMONDS, 1))
+    .map(() => createCard({ suit: Suits.DIAMONDS, rank: 1 }))
 
   const getDeckState = (state: { waste?: Card[]; stock?: Card[]; dealCount?: number } = {}): State => {
     const { dealCount = 1, ...rest } = state
@@ -23,8 +23,8 @@ describe('getDealableCards()', () => {
   describe('when the deal count is 1', () => {
     it('should return a list of all of the cards, including ones in the waste', () => {
       const waste = [
-        createCard(Suits.DIAMONDS, 1),
-        createCard(Suits.DIAMONDS, 1)
+        createCard({ suit: Suits.DIAMONDS, rank: 1 }),
+        createCard({ suit: Suits.DIAMONDS, rank: 1 })
       ]
       const result = getDealableCards(getDeckState({ waste }))
 
@@ -48,7 +48,7 @@ describe('getDealableCards()', () => {
 
     it('should return the first card in the stock, regardless of whether its count divides dealCount', () => {
       const result = getDealableCards(getDeckState({
-        stock: stock.concat(createCard(Suits.DIAMONDS, 1)), // 10 cards, not divisible by 3
+        stock: stock.concat(createCard({ suit: Suits.DIAMONDS, rank: 1 })), // 10 cards, not divisible by 3
         dealCount: 3
       }))
 
@@ -58,7 +58,7 @@ describe('getDealableCards()', () => {
     it('should contain viable waste cards (when returned to the stock)', () => {
       const waste = Array(6)
         .fill(null)
-        .map(() => createCard(Suits.DIAMONDS, 1))
+        .map(() => createCard({ suit: Suits.DIAMONDS, rank: 1 }))
 
       const result = getDealableCards(getDeckState({ waste }))
 

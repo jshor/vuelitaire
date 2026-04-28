@@ -16,11 +16,11 @@ describe('Lane creation', () => {
       tableau: {
         [space.id]: space
       },
-      regular: {
+      cards: {
         [kingOfHearts.id]: kingOfHearts,
         [kingOfSpades.id]: kingOfSpades
       },
-      unrevealedCount: 52
+
     })
     const cards = Object.values(deck.cards)
 
@@ -44,10 +44,10 @@ describe('Lane creation', () => {
         [space1.id]: space1,
         [space2.id]: space2
       },
-      regular: {
+      cards: {
         [kingOfHearts.id]: kingOfHearts
       },
-      unrevealedCount: 52
+
     })
     const cards = Object.values(deck.cards)
 
@@ -72,11 +72,11 @@ describe('Lane creation', () => {
         [space1.id]: space1,
         [space2.id]: space2
       },
-      regular: {
+      cards: {
         [kingOfHearts.id]: kingOfHearts,
         [kingOfSpades.id]: kingOfSpades
       },
-      unrevealedCount: 52
+
     })
     const cards = Object.values(deck.cards)
 
@@ -101,11 +101,11 @@ describe('Lane creation', () => {
       tableau: {
         [space.id]: space
       },
-      regular: {
+      cards: {
         [kingOfHearts.id]: kingOfHearts,
         [kingOfSpades.id]: kingOfSpades
       },
-      unrevealedCount: 52
+
     })
     const cards = Object.values(deck.cards)
 
@@ -129,11 +129,11 @@ describe('Lane creation', () => {
       tableau: {
         [space.id]: space
       },
-      regular: {
+      cards: {
         [kingOfHearts.id]: kingOfHearts,
         [queenOfSpades.id]: queenOfSpades
       },
-      unrevealedCount: 52
+
     })
     const cards = Object.values(deck.cards)
 
@@ -157,11 +157,11 @@ describe('Lane creation', () => {
       tableau: {
         [space.id]: space
       },
-      regular: {
+      cards: {
         [kingOfHearts.id]: kingOfHearts,
         [queenOfSpades.id]: queenOfSpades
       },
-      unrevealedCount: 52
+
     })
     const cards = Object.values(deck.cards)
 

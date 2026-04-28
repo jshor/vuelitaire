@@ -2,12 +2,12 @@
   <div class="radio-group">
     <div
       v-for="data in values"
-      :key="data.value">
+      :key="data.value as string">
       <input
         :name="name"
         :checked="data.value === modelValue"
         :id="`${name}_${data.value}`"
-        @change="$emit('input', data.value)"
+        @change="$emit('update:modelValue', data.value)"
         type="radio"
       />
       <label

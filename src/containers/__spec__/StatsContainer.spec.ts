@@ -50,7 +50,7 @@ describe('StatsContainer', () => {
   /** Retrieves the 'tick' handler registered on the mock emitter. */
   function getTickHandler(): (elapsed: number) => void {
     const call = mockInstance.emitter.on.mock.calls.find(
-      ([event]: [string]) => event === 'tick'
+      ([event]: string[]) => event === 'tick'
     )
     return call?.[1]
   }

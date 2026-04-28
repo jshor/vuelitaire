@@ -12,12 +12,10 @@
     "forceConsistentCasingInFileNames": true,
     "useDefineForClassFields": true,
     "sourceMap": true,
-    "baseUrl": ".",
     "paths": {
-      "@/*": [
-        "src/*"
-      ]
+      "@/*": ["./src/*"]
     },
+    "types": ["vitest/globals"],
     "lib": [
       "ESNext",
       "DOM",
@@ -25,16 +23,12 @@
     ]
   },
   "include": [
+    "src/**/*.",
     "src/**/*.ts",
-    "src/**/*.tsx",
-    "src/**/*.vue",
-    "vite.config.ts",
-    "eslint.config.ts"
+    "src/**/*.vue"
   ],
   "exclude": [
-    "node_modules",
-    "src/**/*.spec.ts",
-    "src/**/__spec__/*"
+    "node_modules"
   ]
 }
 

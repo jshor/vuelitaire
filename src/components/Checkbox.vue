@@ -5,7 +5,7 @@
       :value="modelValue"
       :checked="modelValue"
       :id="id"
-      @change="$emit('input', $event.target.checked)"
+      @change="onChange"
       type="checkbox"
     />
     <label
@@ -17,7 +17,11 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, withDefaults, defineProps } from 'vue'
+import { computed } from 'vue'
+
+const emit = defineEmits<{
+  (e: 'update:modelValue', value: boolean): void
+}>()
 
 const props = withDefaults(defineProps<{
   label?: string
@@ -28,6 +32,11 @@ const props = withDefaults(defineProps<{
 })
 
 const id = computed(() => `${props.name}_${props.modelValue}`)
+
+function onChange(event: Event) {
+  const target = event.target as HTMLInputElement
+  emit('update:modelValue', target.checked)
+}
 </script>
 
 <style lang="scss">

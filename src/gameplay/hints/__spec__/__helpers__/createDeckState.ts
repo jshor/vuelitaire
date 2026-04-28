@@ -4,10 +4,9 @@ import { State } from '@/store/state'
 export const createDeckState = (cards: Partial<State> = {
   foundations: {},
   tableau: {},
-  regular: {},
-  unrevealedCount: 52
+  cards: {}
 }): State => ({
-  cards: cards.regular ?? {},
+  cards: cards.cards ?? {},
   tableau: cards.tableau ?? {},
   foundations: cards.foundations ?? {},
   stock: [],

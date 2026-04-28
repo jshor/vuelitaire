@@ -1,5 +1,4 @@
 import { ICard } from "@/interfaces/ICard"
-import { IHint } from "@/interfaces/IHint"
 import { createDealSpace } from "@/models/DealSpace"
 import { createSettings } from "@/models/Settings"
 import { Card } from "@/types/Card"

@@ -6,9 +6,6 @@ export default defineConfig({
   plugins: [vue()],
   test: {
     environment: 'jsdom',
-    typecheck: {
-      tsconfig: './tsconfig.vitest.json'
-    },
     globals: true,
     coverage: {
       exclude: ['**/__helpers__/**'],

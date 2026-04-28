@@ -4,10 +4,10 @@ import { createCard } from '@/models/Card'
 import { getLineage } from '../getLineage'
 
 describe('getLineage()', () => {
-  const cardA: Card = createCard(Suits.DIAMONDS, 1)
-  const cardB: Card = createCard(Suits.DIAMONDS, 1)
-  const cardC: Card = createCard(Suits.DIAMONDS, 1)
-  const cardD: Card = createCard(Suits.DIAMONDS, 1)
+  const cardA: Card = createCard({ suit: Suits.DIAMONDS, rank: 1 })
+  const cardB: Card = createCard({ suit: Suits.DIAMONDS, rank: 1 })
+  const cardC: Card = createCard({ suit: Suits.DIAMONDS, rank: 1 })
+  const cardD: Card = createCard({ suit: Suits.DIAMONDS, rank: 1 })
 
   cardA.child = cardB
   cardB.child = cardC

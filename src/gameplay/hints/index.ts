@@ -4,7 +4,7 @@ import { getLaneCreationHints } from '@/gameplay/hints/getLaneCreationHints'
 import { getMoveableCardHints } from '@/gameplay/hints/getMoveableCardHints'
 import { getWorryBackHints } from '@/gameplay/hints/getWorryBackHints'
 import { ICard } from '@/interfaces/ICard'
-import { state, State } from '@/store/state'
+import { State } from '@/store/state'
 import { getLineage } from '@/utils/getLineage'
 
 export function generateHints (deck: State, allowWorryBackHints = false): string[][] {
