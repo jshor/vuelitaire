@@ -431,6 +431,6 @@ export const useStore = defineStore('store', {
      */
     computeBonus (secondsElapsed: number): void {
       this.points = Math.max(this.points + bonus(secondsElapsed), 0)
-    },
+    }
   }
 })

@@ -41,6 +41,7 @@ export function state (): State {
     teleportation: undefined,
     selectedCardId: undefined,
     draggedCardId: undefined,
+    hoveredCardId: undefined,
     errorCardId: undefined,
     dealSpace: createDealSpace(),
     isAutoplaying: false,

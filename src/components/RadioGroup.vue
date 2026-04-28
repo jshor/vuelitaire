@@ -20,17 +20,13 @@
 </template>
 
 <script lang="ts" generic="T" setup>
-import { defineProps } from 'vue'
-
 defineProps<{
   name: string
   values: {
     label: string
-    // value: T
-    value: any // TODO
+    value: T
   }[]
-  // modelValue: T
-  modelValue: any // TODO
+  modelValue: T
 }>()
 </script>
 

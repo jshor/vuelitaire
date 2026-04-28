@@ -96,13 +96,13 @@ describe('store/main', () => {
     it('returns false when a tableau entry has a child', () => {
       const space = createLaneSpace()
       space.child = createCard()
-      store.tableau[space.id] = space as any
+      store.tableau[space.id] = space
       expect(store.isComplete).toBe(false)
     })
 
     it('returns true when all tableau entries have no children and dealSpace is empty', () => {
       const space = createLaneSpace()
-      store.tableau[space.id] = space as any
+      store.tableau[space.id] = space
       expect(store.isComplete).toBe(true)
     })
   })
@@ -381,11 +381,11 @@ describe('store/main', () => {
       const toParent = createLaneSpace()
 
       store.cards[card.id] = card
-      store.cards[fromParent.id] = fromParent as any
-      store.cards[toParent.id] = toParent as any
+      store.cards[fromParent.id] = fromParent
+      store.cards[toParent.id] = toParent
 
-      card.parent = fromParent as any
-      fromParent.child = card as any
+      card.parent = fromParent
+      fromParent.child = card
 
       store.undoStack.push({
         type: MoveType.MOVE,
@@ -420,7 +420,7 @@ describe('store/main', () => {
       const parent = createLaneSpace()
       const card = createCard()
 
-      store.cards[parent.id] = parent as any
+      store.cards[parent.id] = parent
       store.cards[card.id] = card
 
       store.unmoveCard({
@@ -441,7 +441,7 @@ describe('store/main', () => {
       const parent = createLaneSpace()
       const card = createCard({ revealed: true })
 
-      store.cards[parent.id] = parent as any
+      store.cards[parent.id] = parent
       store.cards[card.id] = card
 
       store.unmoveCard({
@@ -497,10 +497,10 @@ describe('store/main', () => {
       fromParent = createLaneSpace()
       toParent = createLaneSpace()
       store.cards[card.id] = card
-      store.cards[fromParent.id] = fromParent as any
-      store.cards[toParent.id] = toParent as any
-      card.parent = fromParent as any
-      fromParent.child = card as any
+      store.cards[fromParent.id] = fromParent
+      store.cards[toParent.id] = toParent
+      card.parent = fromParent
+      fromParent.child = card
     })
 
     it('does nothing when the next parent is the same as the current parent', () => {
@@ -621,7 +621,7 @@ describe('store/main', () => {
     beforeEach(() => store.newGame())
 
     it('returns early when isComplete is true', async () => {
-      Object.values(store.tableau).forEach(s => { (s as any).child = undefined })
+      Object.values(store.tableau).forEach(s => { (s).child = undefined })
       store.dealSpace.child = undefined
       const spy = vi.spyOn(store, 'moveCard')
       await store.autoplayGame()

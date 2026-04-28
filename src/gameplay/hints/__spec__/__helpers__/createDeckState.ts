@@ -1,14 +1,7 @@
 import { createSettings } from '@/models/Settings'
 import { State } from '@/store/state'
 
-interface DeckCards {
-  foundations?: Record<string, any>
-  tableau?: Record<string, any>
-  regular?: Record<string, any>
-  unrevealedCount?: number
-}
-
-export const createDeckState = (cards: DeckCards = {
+export const createDeckState = (cards: Partial<State> = {
   foundations: {},
   tableau: {},
   regular: {},

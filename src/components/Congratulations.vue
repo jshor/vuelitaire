@@ -12,7 +12,7 @@
 
 <script lang="ts" setup>
 import confetti from 'canvas-confetti'
-import { watch, ref, computed, defineProps } from 'vue'
+import { watch, ref, computed } from 'vue'
 
 const props = defineProps<{
   isActive: boolean
