@@ -1,11 +1,20 @@
 <template>
   <div class="app">
-    <div class="app__game" @click="clearSelections">
+    <div class="app__game"  :class="{
+      'app__game--paused': isPaused
+    }" @click="clearSelections">
       <game-container />
       <congratulations :is-active="isComplete" @end="newGame" />
     </div>
     <div class="app__actions">
-      <stats-container />
+      <stats
+        :points="points"
+        :time-elapsed="seconds"
+        :is-paused="isPaused"
+      />
+      <button @click="newGame">new game</button>
+      <button @click="start" v-if="isPaused">resume</button>
+      <button @click="stop" v-else>pause</button>
       <button @click="undo" :disabled="!canUndo">Undo</button>
       <button @click="revealHint">revealHint</button>
       <button @click="autoplayGame" :disabled="!canAutocomplete">autoplayGame</button>
@@ -15,11 +24,11 @@
 
 <script lang="ts">
 import { storeToRefs } from 'pinia'
-import { defineComponent } from 'vue'
+import { computed, defineComponent } from 'vue'
 import { useStore } from './store/main'
 import GameContainer from './containers/GameContainer.vue'
-import StatsContainer from './containers/StatsContainer.vue'
 import Congratulations from './components/Congratulations.vue'
+import Stats from './components/Stats.vue'
 import { overrideAnimation } from './utils/overrideAnimation'
 
 export default defineComponent({
@@ -27,12 +36,13 @@ export default defineComponent({
   components: {
     Congratulations,
     GameContainer,
-    StatsContainer
+    Stats
   },
   setup () {
     const store = useStore()
-    const { canUndo, canAutocomplete, isComplete } = storeToRefs(store)
-    const { undo, deal, revealHint, clearSelections, autoplayGame, newGame } = store
+    const { canUndo, canAutocomplete, isComplete, seconds, points } = storeToRefs(store)
+    const { undo, deal, revealHint, clearSelections, autoplayGame, newGame, start, stop } = store
+    const isPaused = computed(() => store.isStopped && !store.isComplete)
 
     if (!Object.keys(store.cards).length) {
       newGame()
@@ -59,13 +69,17 @@ export default defineComponent({
       canUndo,
       canAutocomplete,
       isComplete,
+      isPaused,
+      seconds,
+      points,
       newGame,
       undo,
       deal,
       revealHint,
       clearSelections,
-      autoplayGame
-
+      autoplayGame,
+      start,
+      stop
     }
   }
 })
@@ -90,9 +104,14 @@ export default defineComponent({
   flex-direction: column;
   max-width: 100vmin;
   width: 100%;
+  transform: filter var(--animation-speed);
 
   &__game {
     flex: 1;
+
+    &--paused {
+      filter: blur(1vmin);
+    }
   }
 }
 

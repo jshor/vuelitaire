@@ -8,6 +8,7 @@ import { Settings } from "@/types/Settings"
 import { Teleportation } from "@/types/Teleportation"
 
 export type State = {
+  hints: string[][]
   stock: Card[] // all cards in the stock pile
   waste: Card[] // all cards in the waste pile
   cards: Record<string, ICard> // all cards in the entire game
@@ -22,15 +23,22 @@ export type State = {
   dealSpace: ICard
   isAutoplaying: boolean
   isUndoing: boolean
+  isStopped: boolean
   undoStack: Move[]
   settings: Settings
   points: number
-  hints: string[][]
+  /** Total number of seconds elapsed during gameplay. */
+  seconds: number
+  /** Number of seconds to offset the timer by. */
+  offset: number
+  /** Timestamp of the last time a time penalty was applied. */
+  lastDeductionTime: number
   currentHintIndex: number
 }
 
 export function state (): State {
   return {
+    hints: [],
     stock: [],
     waste: [],
     cards: {},
@@ -45,10 +53,13 @@ export function state (): State {
     dealSpace: createDealSpace(),
     isAutoplaying: false,
     isUndoing: false,
+    isStopped: false,
     undoStack: [],
     settings: createSettings(),
     points: 0,
-    hints: [],
+    seconds: 0,
+    offset: 0,
+    lastDeductionTime: 0,
     currentHintIndex: -1
   }
 }

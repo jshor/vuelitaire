@@ -637,6 +637,7 @@ describe('store/main', () => {
     })
 
     it('calls moveCard with the last 2-card hint when autocomplete is possible', async () => {
+      vi.useFakeTimers()
       store.stock = []
       store.waste = []
       Object.values(store.cards).forEach(c => { c.revealed = true })
@@ -646,6 +647,8 @@ describe('store/main', () => {
       ])
       const spy = vi.spyOn(store, 'moveCard')
       await store.autoplayGame()
+      vi.runAllTimers()
+      vi.useRealTimers()
       expect(spy).toHaveBeenCalledWith('src2', 'dst2')
     })
 
@@ -689,6 +692,142 @@ describe('store/main', () => {
       store.updateSettings({ showScore: false })
       const saved = JSON.parse(localStorage.getItem('settings') || '')
       expect(saved.showScore).toBe(false)
+    })
+  })
+
+  describe('start()', () => {
+    beforeEach(() => {
+      vi.stubGlobal('requestAnimationFrame', vi.fn())
+    })
+
+    afterEach(() => {
+      vi.unstubAllGlobals()
+    })
+
+    it('does nothing when isStopped is already false', () => {
+      store.isStopped = false
+      const tickSpy = vi.spyOn(store, 'tick')
+      store.start()
+      expect(tickSpy).not.toHaveBeenCalled()
+    })
+
+    it('sets isStopped to false and calls tick() when stopped', () => {
+      store.isStopped = true
+      const tickSpy = vi.spyOn(store, 'tick').mockImplementation(() => {})
+      store.start()
+      expect(store.isStopped).toBe(false)
+      expect(tickSpy).toHaveBeenCalled()
+    })
+  })
+
+  describe('stop()', () => {
+    it('sets isStopped to true', () => {
+      store.isStopped = false
+      store.stop()
+      expect(store.isStopped).toBe(true)
+    })
+
+    it('saves the current seconds value to offset', () => {
+      store.seconds = 42
+      store.stop()
+      expect(store.offset).toBe(42)
+    })
+  })
+
+  describe('tick()', () => {
+    let rafSpy: ReturnType<typeof vi.fn>
+
+    beforeEach(() => {
+      rafSpy = vi.fn()
+      vi.stubGlobal('requestAnimationFrame', rafSpy)
+      store.isStopped = false
+      store.seconds = 0
+      store.offset = 0
+      store.lastDeductionTime = 0
+      store.points = 100
+    })
+
+    afterEach(() => {
+      vi.unstubAllGlobals()
+    })
+
+    it('returns early and skips requestAnimationFrame when isStopped is true', () => {
+      store.isStopped = true
+      store.tick(Date.now() - 1000)
+      expect(rafSpy).not.toHaveBeenCalled()
+    })
+
+    it('updates seconds based on elapsed time', () => {
+      const now = Date.now()
+      vi.spyOn(Date, 'now').mockReturnValue(now)
+      store.offset = 0
+      store.tick(now - 5000)
+      expect(store.seconds).toBe(5)
+    })
+
+    it('accounts for offset when updating seconds', () => {
+      const now = Date.now()
+      vi.spyOn(Date, 'now').mockReturnValue(now)
+      store.offset = 10
+      store.tick(now - 3000)
+      expect(store.seconds).toBe(13)
+    })
+
+    it('does not update seconds when lastTickTime equals now', () => {
+      const now = Date.now()
+      vi.spyOn(Date, 'now').mockReturnValue(now)
+      store.seconds = 7
+      store.tick(now)
+      expect(store.seconds).toBe(7)
+    })
+
+    it('calls deductByEpoch(1) when an epoch has elapsed', () => {
+      const now = Date.now()
+      vi.spyOn(Date, 'now').mockReturnValue(now)
+      const deductSpy = vi.spyOn(store, 'deductByEpoch')
+      store.seconds = Scoring.TIME_PENALTY_MS
+      store.lastDeductionTime = 0
+      store.tick(now) // no time update; 0 + TIME_PENALTY_MS <= TIME_PENALTY_MS → true
+      expect(deductSpy).toHaveBeenCalledWith(1)
+    })
+
+    it('updates lastDeductionTime to current seconds after deducting', () => {
+      const now = Date.now()
+      vi.spyOn(Date, 'now').mockReturnValue(now)
+      store.seconds = Scoring.TIME_PENALTY_MS
+      store.lastDeductionTime = 0
+      store.tick(now)
+      expect(store.lastDeductionTime).toBe(Scoring.TIME_PENALTY_MS)
+    })
+
+    it('does not call deductByEpoch before the epoch threshold', () => {
+      const now = Date.now()
+      vi.spyOn(Date, 'now').mockReturnValue(now)
+      const deductSpy = vi.spyOn(store, 'deductByEpoch')
+      store.seconds = Scoring.TIME_PENALTY_MS - 1
+      store.lastDeductionTime = 0
+      store.tick(now)
+      expect(deductSpy).not.toHaveBeenCalled()
+    })
+
+    it('calls stop() and computeBonus() when isComplete', () => {
+      const now = Date.now()
+      vi.spyOn(Date, 'now').mockReturnValue(now)
+      store.dealSpace.child = undefined
+      store.tableau = {}
+      store.seconds = 60
+      const stopSpy = vi.spyOn(store, 'stop')
+      const bonusSpy = vi.spyOn(store, 'computeBonus')
+      store.tick(now)
+      expect(stopSpy).toHaveBeenCalled()
+      expect(bonusSpy).toHaveBeenCalledWith(60)
+    })
+
+    it('schedules the next frame via requestAnimationFrame', () => {
+      const now = Date.now()
+      vi.spyOn(Date, 'now').mockReturnValue(now)
+      store.tick(now)
+      expect(rafSpy).toHaveBeenCalled()
     })
   })
 

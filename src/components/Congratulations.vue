@@ -1,12 +1,14 @@
 <template>
-  <div class="congratulations" v-show="isVisible">
-    <div class="congratulations__text">you won!</div>
-    <div class="congratulations__end"
-      :class="{
-        'congratulations__end--visible': canEnd
-      }"
+  <div>
+    <div class="congratulations" v-show="isVisible">
+      <div class="congratulations__text">you won!</div>
+      <div class="congratulations__end"
+        :class="{
+          'congratulations__end--visible': canEnd
+        }"
 
-    @click="$emit('end')">Deal again?</div>
+      @click="$emit('end')">Deal again?</div>
+    </div>
   </div>
 </template>
 
@@ -32,6 +34,7 @@ const isVisible = computed(() => props.isActive && !isComplete.value)
 
 watch(() => props.isActive, isActive => {
   if (isActive) {
+    confettiEnd.value = Date.now() + (15 * 1000000)
     animateConfetti()
   } else {
     end()

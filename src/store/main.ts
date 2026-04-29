@@ -13,7 +13,6 @@ import { Settings } from '@/types/Settings'
 import { Scoring, Suits } from '@/constants'
 import { generateHints } from '@/gameplay/hints'
 import { getLineage } from '@/utils/getLineage'
-import { bonus } from '@/gameplay/scoring'
 
 export const useStore = defineStore('store', {
   state,
@@ -34,9 +33,9 @@ export const useStore = defineStore('store', {
       return false
     },
 
-    /** True if the game is complete. */
+    /** True if the game is complete (nothing left in the tableau). */
     isComplete(state: State): boolean {
-      return !state.dealSpace.child && Object
+      return !this.dealSpace.child && Object
         .values(state.tableau)
         .every(tableau => !tableau.child)
     },
@@ -56,17 +55,20 @@ export const useStore = defineStore('store', {
      * Starts a new game.
      */
     newGame() {
+      this.stop()
       this.cards = {}
       this.stock = []
       this.waste = []
       this.tableau = {}
       this.foundations = {}
       this.points = 0
+      this.offset = 0
       this.undoStack = []
       this.clearSelections()
       this.createStock()
       this.initTableau()
       this.initFoundations()
+      this.start()
     },
 
     /**
@@ -132,6 +134,74 @@ export const useStore = defineStore('store', {
 
         this.cards[foundation.id] = foundation
         this.foundations[foundation.id] = foundation
+      }
+    },
+
+    /**
+     * Starts the game timer.
+     */
+    start() {
+      if (this.isStopped) {
+        this.isStopped = false
+        this.tick()
+      }
+    },
+
+    /**
+     * Ticks the game timer, applying time penalties and bonuses as necessary.
+     */
+    tick(lastTickTime = Date.now()) {
+      if (this.isStopped) return
+
+      if (lastTickTime < Date.now()) {
+        // compute the number of seconds elapsed since the last tick, plus any offset from pausing
+        this.seconds = this.offset + Math.ceil((Date.now() - lastTickTime) / 1000)
+      }
+
+      if (this.lastDeductionTime + Scoring.TIME_PENALTY_MS <= this.seconds) {
+        this.deductByEpoch(1)
+        this.lastDeductionTime = this.seconds
+      }
+
+      if (this.isComplete) {
+        // the game is won - apply the bonus and stop the timer
+        this.stop()
+        this.computeBonus(this.seconds)
+      }
+
+      requestAnimationFrame(this.tick.bind(this, lastTickTime))
+    },
+
+    /**
+     * Stops the game timer.
+     */
+    stop() {
+      this.isStopped = true
+      this.offset = this.seconds
+    },
+
+    /**
+     * Adds the given number of points to the current score.
+     * Use a negative value to deduct points.
+     */
+    applyPoints(points: number) {
+      this.points = Math.max(this.points + points, 0)
+    },
+
+    /**
+     * Applies a time penalty for the given number of elapsed scoring epochs.
+     */
+    deductByEpoch(epochs: number) {
+      this.applyPoints(epochs * Scoring.TIME_PENALTY_POINTS)
+    },
+
+    /**
+     * Applies a completion bonus based on elapsed seconds.
+     * No bonus is awarded for completions under 30 seconds.
+     */
+    computeBonus(seconds: number) {
+      if (seconds >= 30) {
+        this.applyPoints(Math.ceil((20000 / seconds) * 35))
       }
     },
 
@@ -380,7 +450,9 @@ export const useStore = defineStore('store', {
         return
       }
 
-      this.moveCard(sourceId, targetId)
+      setTimeout(() => {
+        this.moveCard(sourceId, targetId)
+      })
     },
 
     /**
@@ -415,22 +487,6 @@ export const useStore = defineStore('store', {
      */
     toggleDialog (showDialog: boolean): void {
       this.updateSettings({ showDialog })
-    },
-
-    /**
-     * Deducts points according to the number of given epochs.
-     *
-     * @see {@link Scoring.TIME_PENALTY_POINTS | `TIME_PENALTY_POINTS`} for the number of seconds in one epoch.
-     */
-    deductByEpoch (epochs: number): void {
-      this.points = Math.max(this.points + epochs * Scoring.TIME_PENALTY_POINTS, 0)
-    },
-
-    /**
-     * Computes the bonus awarded to the player based on seconds elapsed.
-     */
-    computeBonus (secondsElapsed: number): void {
-      this.points = Math.max(this.points + bonus(secondsElapsed), 0)
     }
   }
 })
