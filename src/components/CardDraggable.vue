@@ -271,14 +271,15 @@ function onDragStart ({ x, y }: Point) {
 function onDrag ({ x, y }: Point) {
   if (!isDragStarted || !cardRef.value) return
 
-  isDragging.value = true
   coords.value.x = x
   coords.value.y = y
 
-  const getDelta = (c: 'x' | 'y') => Math.abs(coords.value[c] - offset[c])
+  const getDelta = (c: 'x' | 'y') => Math.abs(coords.value[c] - (offset[c] + origin[c]))
   const boundingBox = cardRef.value.getBoundingClientRect()
 
   if (getDelta('x') + getDelta('y') >= 1) {
+    isDragging.value = true
+
     overrideAnimation(() => {
       // sufficient movement has been made to consider this a valid dragging operation
       if (!hasEmittedDragStart) {
