@@ -10,9 +10,9 @@ import {IHint} from '@/interfaces/IHint'
  * @param { type State } gameState - current state of the deck
  * @returns {string[][]} list of hint pairs
  */
-export const getLaneCreationHints: IHint = (allCards: ICard[], playableCards: ICard[], gameState: State): string[][] => {
+export const getLaneCreationHints: IHint = (state: State, playableCards: ICard[]): string[][] => {
   const openSpaces = Object
-    .values(gameState.tableau)
+    .values(state.tableau)
     .filter((card: ICard): boolean => !card.child)
 
   const availableKings = playableCards.filter((card: ICard): boolean => {

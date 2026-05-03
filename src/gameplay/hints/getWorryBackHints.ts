@@ -14,21 +14,21 @@ import { getLineage } from '@/utils/getLineage'
  * @param { type State } gameState - current state of the deck
  * @returns {string[][]} list of hint pairs
  */
-export const getWorryBackHints: IHint = (allCards: ICard[], playableCards: ICard[], gameState: State): string[][] => {
+export const getWorryBackHints: IHint = (state: State): string[][] => {
   // compute all tableaux top cards that haven't been touched by the user yet
   const untouchedTopCards = Object
-    .values(gameState.tableau)
+    .values(state.tableau)
     .map((card) => getLineage(card).slice(-2).shift()) // get the second-to-last card
     .filter((card) => !card?.revealed || card?.type === 'LaneSpace')
     .map((card) => card?.child)
     .filter((card) => !!card) as Card[]
 
   // get all cards that can be used for moving
-  const moveableCards = getDealableCards(gameState).concat(untouchedTopCards)
+  const moveableCards = getDealableCards(state).concat(untouchedTopCards)
 
   const promotedCards = Object
     // start with finding the Foundation spaces
-    .values(gameState.foundations)
+    .values(state.foundations)
     // then get the top (visible) card of each foundation pile
     .map((card) => getLineage(card).pop())
 

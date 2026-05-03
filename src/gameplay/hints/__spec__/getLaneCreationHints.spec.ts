@@ -22,9 +22,7 @@ describe('Lane creation', () => {
       },
 
     })
-    const cards = Object.values(deck.cards)
-
-    const hints: string[][] = getLaneCreationHints(cards, [kingOfHearts, kingOfSpades], deck)
+    const hints: string[][] = getLaneCreationHints(deck, [kingOfHearts, kingOfSpades])
 
     expect(hints).toEqual(
       expect.arrayContaining([
@@ -49,9 +47,7 @@ describe('Lane creation', () => {
       },
 
     })
-    const cards = Object.values(deck.cards)
-
-    const hints: string[][] = getLaneCreationHints(cards, [kingOfHearts], deck)
+    const hints: string[][] = getLaneCreationHints(deck, [kingOfHearts])
 
     expect(hints).toEqual(
       expect.arrayContaining([
@@ -78,9 +74,7 @@ describe('Lane creation', () => {
       },
 
     })
-    const cards = Object.values(deck.cards)
-
-    const hints: string[][] = getLaneCreationHints(cards, [kingOfHearts, kingOfSpades], deck)
+    const hints: string[][] = getLaneCreationHints(deck, [kingOfHearts, kingOfSpades])
 
     expect(hints).toEqual(
       expect.arrayContaining([
@@ -107,11 +101,9 @@ describe('Lane creation', () => {
       },
 
     })
-    const cards = Object.values(deck.cards)
-
     space.child = kingOfSpades
 
-    const hints: string[][] = getLaneCreationHints(cards, [kingOfHearts, kingOfSpades], deck)
+    const hints: string[][] = getLaneCreationHints(deck, [kingOfHearts, kingOfSpades])
 
     expect(hints).not.toEqual(
       expect.arrayContaining([
@@ -135,11 +127,9 @@ describe('Lane creation', () => {
       },
 
     })
-    const cards = Object.values(deck.cards)
-
     kingOfHearts.child = queenOfSpades
 
-    const hints: string[][] = getLaneCreationHints(cards, [kingOfHearts, queenOfSpades], deck)
+    const hints: string[][] = getLaneCreationHints(deck, [kingOfHearts, queenOfSpades])
 
     expect(hints).not.toEqual(
       expect.arrayContaining([
@@ -163,9 +153,7 @@ describe('Lane creation', () => {
       },
 
     })
-    const cards = Object.values(deck.cards)
-
-    const hints: string[][] = getLaneCreationHints(cards, [kingOfHearts, queenOfSpades], deck)
+    const hints: string[][] = getLaneCreationHints(deck, [kingOfHearts, queenOfSpades])
 
     expect(hints).not.toEqual(
       expect.arrayContaining([

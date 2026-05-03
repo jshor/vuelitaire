@@ -32,7 +32,8 @@
         <div v-if="isFoundary && isDealable" />
         <empty-space v-else-if="isFoundary" />
         <template v-else>
-          <card-back />
+          <!-- cards with rank less than 0 are placeholders and do not have backs -->
+          <card-back v-show="card.rank >= 0" />
           <card-front :suit="card.suit" :rank="card.rank" />
         </template>
         <card-highlight v-if="isHighlighted" />
@@ -69,7 +70,7 @@
             ref="cardRef"
             @click="onClick"
           >
-            <card-back />
+            <card-back v-show="card.rank >= 0" />
             <card-front :suit="card.suit" :rank="card.rank" />
             <card-highlight v-if="isHighlighted" />
           </div>
@@ -133,7 +134,8 @@ const childRef = ref<HTMLElement>()
 const coords = ref({ x: 200, y: 200 })
 const style = computed<StyleValue>(() => ({
   left: `${coords.value.x - offset.x}px`,
-  top: `${ coords.value.y - offset.y}px`
+  top: `${ coords.value.y - offset.y}px`,
+  zIndex: 1
 }))
 const isHighlighted = computed(() => {
   return props.isSelected || hotspot.value?.card.id === props.card.id
@@ -315,23 +317,23 @@ async function onDragEnd () {
     return
   }
 
-  isAnimating.value = true
+    isAnimating.value = true
 
-  if (hotspot.value) {
-    // the termination of the drag operation landed on a hotspot
-    const bbox = hotspot.value.dropSpot
+    if (hotspot.value) {
+      // the termination of the drag operation landed on a hotspot
+      const bbox = hotspot.value.dropSpot
 
-    // compute remaining coordinates for the card to animate onto that hotspot
-    coords.value.x = bbox.left
-    coords.value.y = bbox.top
-  } else {
-    // the card will be returned back to its original location
-    coords.value.x = origin.x
-    coords.value.y = origin.y
-  }
+      // compute remaining coordinates for the card to animate onto that hotspot
+      coords.value.x = bbox.left
+      coords.value.y = bbox.top
+    } else {
+      // the card will be returned back to its original location
+      coords.value.x = origin.x
+      coords.value.y = origin.y
+    }
 
-  // reset the offset coordinates of the card
-  offset = { x: 0, y: 0 }
+    // reset the offset coordinates of the card
+    offset = { x: 0, y: 0 }
 }
 
 /**

@@ -39,7 +39,7 @@ describe('getDestructuringLaneHints()', () => {
     twoOfSpades.child = aceOfHearts
     aceOfSpades.promoted = true
 
-    const hints: string[][] = getDestructuringLaneHints(cards, cards, deck)
+    const hints: string[][] = getDestructuringLaneHints(deck, cards)
 
     expect(hints).toEqual(
       expect.arrayContaining([
@@ -72,7 +72,7 @@ describe('getDestructuringLaneHints()', () => {
     twoOfSpades.child = aceOfHearts
     aceOfSpades.promoted = true
 
-    const hints: string[][] = getDestructuringLaneHints(cards, cards, deck)
+    const hints: string[][] = getDestructuringLaneHints(deck, cards)
 
     expect(hints).not.toEqual(
       expect.arrayContaining([
@@ -102,7 +102,7 @@ describe('getDestructuringLaneHints()', () => {
     foundation.child = aceOfSpades
     aceOfSpades.promoted = true
 
-    const hints: string[][] = getDestructuringLaneHints(cards, cards, deck)
+    const hints: string[][] = getDestructuringLaneHints(deck, cards)
 
     expect(hints).toHaveLength(0)
   })

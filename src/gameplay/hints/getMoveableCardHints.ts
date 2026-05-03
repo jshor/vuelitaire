@@ -13,13 +13,8 @@ import {IHint} from '@/interfaces/IHint'
  * @param {boolean} ignoreRank - whether to ignore the rank of the card's current parent
  * @returns {string[][]} list of hint pairs
  */
-export const getMoveableCardHints: IHint = (
-  allCards: ICard[],
-  playableCards: ICard[],
-  gameState: State,
-  ignoreRank = false
-): string[][] => {
-  const potentialTargets = allCards.filter((card) => card.revealed && !card.child)
+export const getMoveableCardHints: IHint = (state: State, playableCards: ICard[], ignoreRank = false): string[][] => {
+  const potentialTargets = playableCards.filter((card) => !card.child)
 
   /**
    * Returns the parent card, or an empty object if child is an orphan.
@@ -29,7 +24,7 @@ export const getMoveableCardHints: IHint = (
    * @returns {boolean}
    */
   const hasRankingParent = (child: ICard, target: ICard): boolean => {
-    const parent = allCards.find((c) => c.child === child && c.revealed)
+    const parent = playableCards.find((c) => c.child === child && c.revealed)
 
     if (parent) {
       return parent.rank !== target.rank

@@ -1,3 +1,4 @@
+import { createDealSpace } from '@/models/DealSpace'
 import { createSettings } from '@/models/Settings'
 import { State } from '@/store/state'
 
@@ -10,7 +11,8 @@ export const createDeckState = (cards: Partial<State> = {
   tableau: cards.tableau ?? {},
   foundations: cards.foundations ?? {},
   stock: [],
-  waste: [],
+  dealIndex: -1,
+  dealSpace: createDealSpace(),
   settings: createSettings(),
 } as unknown as State)
 

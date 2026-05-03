@@ -12,7 +12,6 @@ import { createSettings } from '@/models/Settings'
 import { Settings } from '@/types/Settings'
 import { Scoring, Suits } from '@/constants'
 import { generateHints } from '@/gameplay/hints'
-import { getLineage } from '@/utils/getLineage'
 
 export const useStore = defineStore('store', {
   state,
@@ -24,8 +23,8 @@ export const useStore = defineStore('store', {
 
     /** True if the game can be autocompleted. */
     canAutocomplete(state: State): boolean {
-      if (state.stock.length + state.waste.length === 0) {
-        return !state.dealSpace.child && Object
+      if (state.stock.length === 0) {
+        return Object
           .values(state.cards)
           .every(card => card.revealed)
       }
@@ -35,7 +34,9 @@ export const useStore = defineStore('store', {
 
     /** True if the game is complete (nothing left in the tableau). */
     isComplete(state: State): boolean {
-      return !this.dealSpace.child && Object
+      if (state.dealSpace.child) return false
+
+      return Object
         .values(state.tableau)
         .every(tableau => !tableau.child)
     },
@@ -58,11 +59,11 @@ export const useStore = defineStore('store', {
       this.stop()
       this.cards = {}
       this.stock = []
-      this.waste = []
       this.tableau = {}
       this.foundations = {}
       this.points = 0
       this.offset = 0
+      this.dealIndex = -1
       this.undoStack = []
       this.clearSelections()
       this.createStock()
@@ -77,7 +78,7 @@ export const useStore = defineStore('store', {
     createStock () {
       const createSuit = (suit: string): Card[] => Array(13)
         .fill(null)
-        .map((_, rank: number): Card => createCard({ suit, rank }))
+        .map((_, rank: number): Card => createCard({ suit, rank, revealed: true }))
 
       const stock: Card[] = [
         ...createSuit(Suits.SPADES),
@@ -119,6 +120,7 @@ export const useStore = defineStore('store', {
             card.parent = parent
             parent = card
             card.index = index++
+            card.revealed = false
           })
 
         parent.revealed = true
@@ -251,6 +253,14 @@ export const useStore = defineStore('store', {
     unmoveCard(move: Move<MoveType.MOVE>) {
       this.clearSelections()
       this.isUndoing = true
+
+      if (move.fromId === this.dealSpace.id) {
+        this.dealIndex++
+        // set a temporary placeholder card to maintain indices
+        this.stock.splice(this.dealIndex, 0, createCard({ rank: -1, revealed: true }))
+        this.setDeal()
+      }
+
       this.moveCard(move.cardId, move.fromId)
       this.cards[move.fromId].revealed = !move.revealed
     },
@@ -260,105 +270,50 @@ export const useStore = defineStore('store', {
      * Resets the stock pile once there are no cards left to deal.
      */
     deal() {
-      let parent: ICard | undefined = this.dealSpace.child
-      const wastedCardIds: string[] = []
+      const removePlaceholder = () => {
+        const jokerIndex = this.stock.findIndex(card => card.rank === -1)
 
-      if (this.stock.length === 0 && !parent) {
-        // all cards dealt - reset the stock with the waste pile
-        this.stock = this.waste
-        this.waste = []
-      }
-
-      while (parent) {
-        const wastedCard = parent.child
-
-        if (wastedCard) {
-          // orphan the child from the dealt lineage
-          parent.child = undefined
-          wastedCard.parent = undefined
-        }
-
-        // move the card to the waste pile
-        this.waste.unshift(parent)
-        wastedCardIds.push(parent.id)
-        parent = wastedCard
-      }
-
-      parent = this.dealSpace
-
-      for (let i = 0; i < this.settings.dealCount; i++) {
-        if (parent) {
-          const stockCard = this.stock.pop()
-
-          if (stockCard) {
-            stockCard.parent = parent
-          }
-
-          parent.child = stockCard
-          parent = parent.child
+        if (jokerIndex !== -1) {
+          this.stock.splice(jokerIndex, 1)
+          removePlaceholder()
         }
       }
 
-      this.undoStack.push({ type: MoveType.DEAL, wastedCardIds })
-      this.setDealReveal()
-      this.clearSelections()
+      removePlaceholder()
+
+      if (this.dealIndex >= this.stock.length) {
+        this.dealIndex = -1
+      }
+
+      this.dealIndex += this.settings.dealCount
+
+      this.setDeal()
+      this.undoStack.push({
+        type: MoveType.DEAL,
+        index: this.dealIndex - this.settings.dealCount
+      })
     },
 
     /**
      * Undo of the last deal.
      */
     undeal(move: Move<MoveType.DEAL>) {
-      let parent: ICard | undefined = this.dealSpace
-
-      // return all currently-dealt cards to the stock
-      while (parent) {
-        const stockCard: Card | undefined = parent.child
-
-        if (stockCard) {
-          // orphan the child from the dealt lineage
-          parent.child = undefined
-          stockCard.parent = undefined
-
-          // move the card back to the stock pile
-          this.stock.push(stockCard)
-        }
-
-        parent = stockCard
-      }
-
-      // start over, with the deal space being the new parent
-      parent = this.dealSpace
-      parent.child = undefined
-
-      // fetch the cards out of the waste pile
-      for (let i = 0; i < move.wastedCardIds.length; i++) {
-        const wastedCard = this.cards[move.wastedCardIds[i]]
-
-        // have the parent adopt the previously-wasted card
-        parent.child = wastedCard
-        wastedCard.parent = parent
-        wastedCard.child = undefined
-        parent = wastedCard
-      }
-
-      this.setDealReveal()
-      this.clearSelections()
+      this.dealIndex = move.index
+      this.setDeal()
     },
 
     /**
      * Ensures that the only stock/waste cards revealed are ones dealt.
      */
-    setDealReveal() {
-      const cardIdsInPlay = [
-        ...Object.values(this.tableau).map(getLineage),
-        ...Object.values(this.foundations).map(getLineage)
-      ].flat().map(card => card.id)
+    setDeal() {
+      this.clearSelections()
 
-      this.waste = this.waste.filter(card => !cardIdsInPlay.includes(card.id))
-      this.stock = this.stock.filter(card => !cardIdsInPlay.includes(card.id))
-      this.waste.forEach(card => card.revealed = false)
-      this.stock.forEach(card => card.revealed = false)
-      getLineage(this.dealSpace).forEach(card => card.revealed = true)
+      if (this.stock[this.dealIndex]) {
+        this.dealSpace.child = this.stock[this.dealIndex]
+        this.stock[this.dealIndex].parent = this.dealSpace
+      } else {
+        this.dealSpace.child = undefined
+      }
     },
 
     /**
@@ -399,8 +354,14 @@ export const useStore = defineStore('store', {
           })
         }
 
-          this.cards[currentParentId].revealed = true
-          this.cards[currentParentId].child = undefined
+        this.cards[currentParentId].revealed = true
+        this.cards[currentParentId].child = undefined
+      }
+
+      if (this.isUndoing) {
+        this.restoreToStock(cardId, nextParentId)
+      } else {
+        this.removeFromStock(cardId)
       }
 
       this.cards[cardId].parent = this.cards[nextParentId]
@@ -410,6 +371,35 @@ export const useStore = defineStore('store', {
 
       if (this.isAutoplaying) {
         this.autoplayGame()
+      }
+    },
+
+    /**
+     * Returns the given card to the stock if being moved back into it.
+     */
+    restoreToStock(cardId: string, nextParentId: string) {
+      if (nextParentId === this.dealSpace.id) {
+        this.stock[this.dealIndex] = this.cards[cardId] // restore card to stock
+        this.cards[this.stock[this.dealIndex].id] = this.stock[this.dealIndex]
+        this.dealSpace.child = this.stock[this.dealIndex]
+      }
+    },
+
+    /**
+     * Removes the given card out of the stock if being moved out of it.
+     */
+    removeFromStock(cardId: string) {
+      const stockIndex = this.stock.findIndex(card => card.id === cardId)
+
+      if (stockIndex !== -1) {
+        // add a placeholder card to maintain indices
+        this.stock[stockIndex] = createCard({ suit: Suits.CLUBS, rank: -1, revealed: true })
+        this.cards[this.stock[stockIndex].id] = this.stock[stockIndex]
+        this.dealSpace.child = this.stock[stockIndex]
+
+        // then go back one index to account for the removed card
+        this.dealIndex--
+        this.setDeal()
       }
     },
 

@@ -10,6 +10,9 @@ export const Scoring = {
   TIME_PENALTY_POINTS: -2
 }
 
+/** Number of cards displayed when dealing from the stock. */
+export const DEALT_CARDS_DISPLAYED = 3
+
 export const CardBacks = {
   A1: {
     background: 'linear-gradient(135deg, #184e68 0%,#57ca85 100%)',

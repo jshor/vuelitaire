@@ -10,7 +10,6 @@ import { Teleportation } from "@/types/Teleportation"
 export type State = {
   hints: string[][]
   stock: Card[] // all cards in the stock pile
-  waste: Card[] // all cards in the waste pile
   cards: Record<string, ICard> // all cards in the entire game
   tableau: Record<string, ICard> // all cards in the tableau
   foundations: Record<string, ICard> // all cards in the foundations piles
@@ -34,13 +33,13 @@ export type State = {
   /** Timestamp of the last time a time penalty was applied. */
   lastDeductionTime: number
   currentHintIndex: number
+  dealIndex: number
 }
 
 export function state (): State {
   return {
     hints: [],
     stock: [],
-    waste: [],
     cards: {},
     tableau: {},
     foundations: {},
@@ -60,6 +59,7 @@ export function state (): State {
     seconds: 0,
     offset: 0,
     lastDeductionTime: 0,
-    currentHintIndex: -1
+    currentHintIndex: -1,
+    dealIndex: -1
   }
 }

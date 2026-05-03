@@ -6,7 +6,7 @@ import { Suits } from '@/constants'
 import CardBack from '@/components/CardBack.vue'
 import CardHighlight from '@/components/CardHighlight.vue'
 import EmptySpace from '@/components/EmptySpace.vue'
-import GameContainer from '../GameContainer.vue'
+import GameContainer from '../DeckContainer.vue'
 
 vi.mock('@/utils/overrideAnimation', () => ({
   overrideAnimation: (cb: () => void) => cb()
@@ -58,7 +58,7 @@ describe('GameContainer', () => {
     it('calls store.deal() when the stock lane is clicked', async () => {
       const dealSpy = vi.spyOn(store, 'deal')
       const wrapper = mountGame()
-      await wrapper.find('.game__lane').trigger('click')
+      await wrapper.find('.deck__dealer').trigger('click')
       expect(dealSpy).toHaveBeenCalled()
     })
   })

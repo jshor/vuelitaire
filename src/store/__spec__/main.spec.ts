@@ -24,7 +24,6 @@ describe('store/main', () => {
   describe('initial state', () => {
     it('initializes with empty arrays and zeroed counters', () => {
       expect(store.stock).toEqual([])
-      expect(store.waste).toEqual([])
       expect(store.cards).toEqual({})
       expect(store.tableau).toEqual({})
       expect(store.foundations).toEqual({})
@@ -52,7 +51,7 @@ describe('store/main', () => {
     })
 
     it('returns true when undoStack has items', () => {
-      store.undoStack.push({ type: MoveType.DEAL, wastedCardIds: [] })
+      store.undoStack.push({ type: MoveType.DEAL, index: 0 })
       expect(store.canUndo).toBe(true)
     })
   })
@@ -63,13 +62,9 @@ describe('store/main', () => {
       expect(store.canAutocomplete).toBe(false)
     })
 
-    it('returns false when waste has cards', () => {
-      store.waste.push(createCard())
-      expect(store.canAutocomplete).toBe(false)
-    })
-
-    it('returns false when dealSpace has a child', () => {
-      store.dealSpace.child = createCard()
+    it('returns false when cards have been dealt (dealIndex >= 0)', () => {
+      store.newGame()
+      store.deal() // advances dealIndex to >= 0
       expect(store.canAutocomplete).toBe(false)
     })
 
@@ -159,7 +154,7 @@ describe('store/main', () => {
   describe('newGame()', () => {
     it('resets points and undoStack', () => {
       store.points = 500
-      store.undoStack.push({ type: MoveType.DEAL, wastedCardIds: [] })
+      store.undoStack.push({ type: MoveType.DEAL, index: 0 })
       store.newGame()
       expect(store.points).toBe(0)
       expect(store.undoStack).toHaveLength(0)
@@ -282,35 +277,34 @@ describe('store/main', () => {
   describe('deal()', () => {
     beforeEach(() => store.newGame())
 
-    it('moves one card from stock to dealSpace with default dealCount=1', () => {
-      const stockBefore = store.stock.length
+    it('advances dealIndex by 1 and sets dealSpace.child', () => {
+      const indexBefore = store.dealIndex
       store.deal()
-      expect(store.stock).toHaveLength(stockBefore - 1)
+      expect(store.dealIndex).toBe(indexBefore + 1)
       expect(store.dealSpace.child).toBeDefined()
     })
 
-    it('deals dealCount=3 cards from the stock', () => {
+    it('advances dealIndex by dealCount=3', () => {
       store.settings.dealCount = 3
-      const stockBefore = store.stock.length
+      const indexBefore = store.dealIndex
       store.deal()
-      expect(store.stock).toHaveLength(stockBefore - 3)
+      expect(store.dealIndex).toBe(indexBefore + 3)
     })
 
-    it('moves the current dealt card to waste before dealing the next', () => {
+    it('keeps the previously dealt card accessible in stock while dealing the next', () => {
       store.deal()
       const firstDealtId = store.dealSpace.child?.id
       store.deal()
-      expect(store.waste.map(c => c.id)).toContain(firstDealtId)
+      expect(store.stock.map(c => c.id)).toContain(firstDealtId)
     })
 
-    it('resets stock from waste when stock is empty and nothing is dealt, then deals from it', () => {
-      const card = createCard()
-      store.stock = []
-      store.waste = [card]
+    it('resets dealIndex when exhausted, then deals from start', () => {
+      // exhaust the stock by setting dealIndex past its length
+      store.dealIndex = store.stock.length
       store.deal()
-      // waste is moved to stock, then dealCount cards are dealt from stock
-      expect(store.waste).toHaveLength(0)
-      expect(store.dealSpace.child?.id).toBe(card.id)
+      // dealIndex was >= stock.length so it reset to -1, then incremented by dealCount
+      expect(store.dealIndex).toBe(store.settings.dealCount - 1)
+      expect(store.dealSpace.child).toBeDefined()
     })
 
     it('pushes a DEAL move onto undoStack', () => {
@@ -321,15 +315,6 @@ describe('store/main', () => {
     it('sets the dealt card parent to the deal space', () => {
       store.deal()
       expect(store.dealSpace.child?.parent).toBe(store.dealSpace)
-    })
-
-    it('deals fewer cards than dealCount when stock runs out mid-deal', () => {
-      store.settings.dealCount = 3
-      store.stock = [createCard(), createCard()] // only 2 cards available
-      store.deal()
-      // dealSpace gets a 2-card chain, stock is empty
-      expect(store.stock).toHaveLength(0)
-      expect(store.dealSpace.child).toBeDefined()
     })
   })
 
@@ -456,35 +441,24 @@ describe('store/main', () => {
     })
   })
 
-  describe('setDealReveal()', () => {
+  describe('setDeal()', () => {
     beforeEach(() => store.newGame())
 
-    it('reveals the currently-dealt card', () => {
+    it('sets dealSpace.child to stock[dealIndex] after a deal', () => {
       store.deal()
-      const dealtCard = {
-        ...store.dealSpace.child,
-        revealed: false
-      }
-      store.setDealReveal()
-      expect(dealtCard.revealed).toBe(false)
+      expect(store.dealSpace.child?.id).toBe(store.stock[store.dealIndex]?.id)
     })
 
-    it('hides all waste cards', () => {
+    it('clears dealSpace.child when dealIndex is -1', () => {
       store.deal()
-      store.deal() // second deal moves first dealt card to waste
-      store.waste.forEach(c => (c.revealed = true))
-      store.setDealReveal()
-      store.waste.forEach(c => expect(c.revealed).toBe(false))
+      store.dealIndex = -1
+      store.setDeal()
+      expect(store.dealSpace.child).toBeUndefined()
     })
 
-    it('removes from waste a card that already exists in the tableau', () => {
-      const firstLane = Object.values(store.tableau)[0]
-      let tip = firstLane
-      while (tip.child) tip = tip.child
-      store.waste.push(tip)
-      const wasteLengthBefore = store.waste.length
-      store.setDealReveal()
-      expect(store.waste.length).toBeLessThan(wasteLengthBefore)
+    it('sets the parent of the dealt card to the dealSpace', () => {
+      store.deal()
+      expect(store.dealSpace.child?.parent).toBe(store.dealSpace)
     })
   })
 
@@ -639,7 +613,7 @@ describe('store/main', () => {
     it('calls moveCard with the last 2-card hint when autocomplete is possible', async () => {
       vi.useFakeTimers()
       store.stock = []
-      store.waste = []
+      store.dealIndex = -1
       Object.values(store.cards).forEach(c => { c.revealed = true })
       vi.spyOn(hintsModule, 'generateHints').mockReturnValue([
         ['src1', 'dst1'],
@@ -654,7 +628,7 @@ describe('store/main', () => {
 
     it('does not call moveCard when no 2-item hints are available', async () => {
       store.stock = []
-      store.waste = []
+      store.dealIndex = -1
       Object.values(store.cards).forEach(c => { c.revealed = true })
       vi.spyOn(hintsModule, 'generateHints').mockReturnValue([])
       const spy = vi.spyOn(store, 'moveCard')

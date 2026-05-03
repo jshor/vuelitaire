@@ -11,7 +11,7 @@ type CardMove = {
 
 type DealMove = {
   type: MoveType.DEAL
-  wastedCardIds: string[]
+  index: number
 }
 
 export type Move<T = MoveType> =

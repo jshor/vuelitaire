@@ -11,15 +11,15 @@ import {getLineage} from '@/utils/getLineage'
  * @param { type State } gameState - current state of the deck
  * @returns {string[][]} list of hint pairs
  */
-export const getDestructuringLaneHints: IHint = (allCards: ICard[], p: ICard[], gameState: State): string[][] => {
+export const getDestructuringLaneHints: IHint = (state: State, playableCards: ICard[]): string[][] => {
   return Object
     // start with finding the Foundation spaces
-    .values(gameState.foundations)
+    .values(state.foundations)
     // then get the top (visible) card of each foundation pile
     .map((card: ICard) => getLineage(card).pop())
     // select the card with the next rank to be placed onto the top of each Foundation pile
     .map((card) => {
-      return card && allCards
+      return card && playableCards
         .find((c: ICard): boolean => {
           return c.rank === card.rank + 1 && c.suit === card.suit
         })
@@ -29,7 +29,7 @@ export const getDestructuringLaneHints: IHint = (allCards: ICard[], p: ICard[], 
     // find a card that it can be moved to
     .map((card) => [
       card,
-      allCards.find((c: ICard): boolean => c.canAcceptCard(card as ICard | undefined))
+      playableCards.find((c: ICard): boolean => c.canAcceptCard(card as ICard | undefined))
     ])
     .map(([card, target]) => card && target && [card.id, target.id])
     .filter(list => !!list) as string[][]

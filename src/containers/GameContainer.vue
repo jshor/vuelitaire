@@ -4,20 +4,12 @@
       <div class="game__top">
         <div class="game__foundations">
           <!-- deal card -->
-          <div class="game__lane" @click="deal">
-            <card-back v-if="hasStockCards" />
-            <empty-space v-else>
-              <empty-stock-icon />
-            </empty-space>
-            <card-highlight v-if="isDealHint" />
-          </div>
-
-          <!-- dealt pile -->
-          <div class="game__lane game__lane--dealt">
-            <card-container :card="dealSpace" is-foundary is-dealable is-revealed :is-selectable="false" />
+          <div class="game__lane">
+            <deck-container />
           </div>
 
           <!-- empty space (4 foundations + 1 deal card + 1 dealt pile + 1 empty space) = 7 lanes -->
+          <div class="game__lane" />
           <div class="game__lane" />
 
           <!-- foundations pile (4) -->
@@ -47,25 +39,14 @@
 </template>
 
 <script lang="ts" setup>
-import CardBack from '@/components/CardBack.vue'
-import EmptySpace from '@/components/EmptySpace.vue'
-import CardHighlight from '@/components/CardHighlight.vue'
-import EmptyStockIcon from '@/components/EmptyStockIcon.vue'
 import CardContainer from './CardContainer.vue'
+import DeckContainer from './DeckContainer.vue'
 import { useStore } from '@/store/main'
 import { storeToRefs } from 'pinia'
-import { computed } from 'vue'
 import Foundation from '@/components/Foundation.vue'
-import { overrideAnimation } from '@/utils/overrideAnimation'
 
 const store = useStore()
-const { tableau, hasStockCards, foundations, dealSpace } = storeToRefs(store)
-const isDealHint = computed(() => store.currentHint.some(hint => hint.includes('DEAL_CARD')))
-
-/** Deals a new card. */
-function deal() {
-  overrideAnimation(() => store.deal())
-}
+const { tableau, foundations } = storeToRefs(store)
 </script>
 
 <style lang="scss">

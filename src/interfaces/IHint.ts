@@ -1,6 +1,6 @@
-import { ICard } from './ICard'
 import { State } from '../store/state'
+import { ICard } from './ICard'
 
 export interface IHint {
-  (allCards: ICard[], playableCards: ICard[], gameState: State, ignoreRank?: boolean): string[][]
+  (state: State, playableCards: ICard[], ignoreRank?: boolean): string[][]
 }

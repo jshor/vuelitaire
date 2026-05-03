@@ -2,6 +2,7 @@
 import { State } from '@/store/state'
 import { Card } from '@/types/Card'
 import { createCard } from '@/models/Card'
+import { createDealSpace } from '@/models/DealSpace'
 import { getDealableCards } from '../getDealableCards'
 
 describe('getDealableCards()', () => {
@@ -9,31 +10,26 @@ describe('getDealableCards()', () => {
     .fill(null)
     .map(() => createCard({ suit: Suits.DIAMONDS, rank: 1 }))
 
-  const getDeckState = (state: { waste?: Card[]; stock?: Card[]; dealCount?: number } = {}): State => {
+  const getDeckState = (state: { stock?: Card[]; dealCount?: number } = {}): State => {
     const { dealCount = 1, ...rest } = state
     return {
       cards: {},
       stock,
-      waste: [],
+      dealIndex: -1,
+      dealSpace: createDealSpace(),
       settings: { dealCount },
       ...rest,
     } as unknown as State
   }
 
   describe('when the deal count is 1', () => {
-    it('should return a list of all of the cards, including ones in the waste', () => {
-      const waste = [
-        createCard({ suit: Suits.DIAMONDS, rank: 1 }),
-        createCard({ suit: Suits.DIAMONDS, rank: 1 })
-      ]
-      const result = getDealableCards(getDeckState({ waste }))
+    it('should return a list of all of the cards in the stock', () => {
+      const result = getDealableCards(getDeckState())
 
-      expect.assertions(stock.length + waste.length)
-      stock
-        .concat(waste)
-        .forEach((card) => {
-          expect(result).toContain(card)
-        })
+      expect.assertions(stock.length)
+      stock.forEach((card) => {
+        expect(result).toContain(card)
+      })
     })
   })
 
@@ -55,15 +51,16 @@ describe('getDealableCards()', () => {
       expect(result).toContain(stock[0])
     })
 
-    it('should contain viable waste cards (when returned to the stock)', () => {
-      const waste = Array(6)
-        .fill(null)
-        .map(() => createCard({ suit: Suits.DIAMONDS, rank: 1 }))
+    it('should contain every third card from the reversed stock (when cycling back)', () => {
+      const result = getDealableCards(getDeckState({ dealCount: 3 }))
 
-      const result = getDealableCards(getDeckState({ waste }))
-
-      expect(result).toContain(waste[2])
-      expect(result).toContain(waste[5])
+      // reversed stock: [stock[8], stock[7], ..., stock[0]]
+      // every 3rd position (index 2, 5, 8) plus last gives stock[6], stock[3], stock[0]
+      expect(result).toContain(stock[0])
+      expect(result).toContain(stock[3])
+      expect(result).toContain(stock[6])
+      expect(result).not.toContain(stock[1])
+      expect(result).not.toContain(stock[2])
     })
   })
 })

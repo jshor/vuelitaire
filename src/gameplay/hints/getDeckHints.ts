@@ -13,10 +13,12 @@ import { getMoveableCardHints } from './getMoveableCardHints'
  * @param { type State } gameState - current state of the deck
  * @returns {string[][]} list of hint pairs
  */
-export const getDeckHints: IHint = (allCards: ICard[], playableCards: ICard[], gameState: State): string[][] => {
-  const dealableCards: ICard[] = getDealableCards(gameState)
-  const targetCards: ICard[]  = allCards.filter((card) => !card.child)
-  const hints: string[][] = getMoveableCardHints(targetCards, dealableCards, gameState, true)
+export const getDeckHints: IHint = (state: State, playableCards: ICard[]): string[][] => {
+  const dealableCards: ICard[] = getDealableCards(state)
+
+  if (dealableCards.length === 0) return []
+
+  const hints: string[][] = getMoveableCardHints(state, playableCards.concat(dealableCards), true)
 
   return hints.length > 0
     ? [['DEAL_CARD']]

@@ -30,9 +30,8 @@ describe('Hint: getDeckHints', () => {
     const deck: State = createDeckState()
 
     deck.stock = stock
-    deck.waste = [aceOfSpades]
 
-    expect(getDeckHints(stock, stock, deck)).toEqual([
+    expect(getDeckHints(deck, [])).toEqual([
       expect.arrayContaining(['DEAL_CARD'])
     ])
   })
@@ -40,15 +39,14 @@ describe('Hint: getDeckHints', () => {
   it('should return an empty array if there are no cards in the waste pile', () => {
     const deck: State = createDeckState()
 
-    expect(getDeckHints(stock, stock, deck)).toEqual([])
+    expect(getDeckHints(deck, [])).toEqual([])
   })
 
   it('should return an empty array if there are no cards that can be moved from the dealt pile', () => {
     const deck: State = createDeckState()
 
-    deck.stock = []
-    deck.waste = [sixOfSpades]
+    deck.stock = [sixOfSpades]
 
-    expect(getDeckHints(stock, stock, deck)).toEqual([])
+    expect(getDeckHints(deck, [])).toEqual([])
   })
 })

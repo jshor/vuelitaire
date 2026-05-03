@@ -1,3 +1,4 @@
+import { DEALT_CARDS_DISPLAYED } from '@/constants'
 import { getDeckHints } from '@/gameplay/hints/getDeckHints'
 import { getDestructuringLaneHints } from '@/gameplay/hints/getDestructuringLaneHints'
 import { getLaneCreationHints } from '@/gameplay/hints/getLaneCreationHints'
@@ -7,46 +8,38 @@ import { ICard } from '@/interfaces/ICard'
 import { State } from '@/store/state'
 import { getLineage } from '@/utils/getLineage'
 
-export function generateHints (deck: State, allowWorryBackHints = false): string[][] {
+export function generateHints (state: State, allowWorryBackHints = false): string[][] {
   // list of cards from the dealt pile which are "stuck" under other cards
-  const stuckCards = getLineage(deck.dealSpace)
-    .slice(0, -1)
-    .concat(
-      Object
-        .values(deck.tableau)
-        .filter(({ revealed }) => !revealed)
-    )
+  const unmoveableStockCards = state
+    .stock
+    // the top `DEALT_CARDS_DISPLAYED` cards from the stock are "stuck" under the top-most dealt card
+    .slice(state.dealIndex, DEALT_CARDS_DISPLAYED + state.dealIndex)
+    // allow the top-most dealt card to be moved
+    .filter(card => card.id !== state.dealSpace.child?.id)
 
   // all the cards that can be moved in the current state of the game
-  const allCards: ICard[] = Object
-    .values(deck.cards)
-    .filter(({ id }) => !stuckCards.some(card => card.id === id))
+  const playableCards: ICard[] = Object
+    .values(state.tableau)
+    .map(getLineage)
+    .flat()
+    .filter(({ id }) => !unmoveableStockCards.some(card => card.id === id))
 
-  // list of cards that can be moved without moving any other cards
-  const playableCards: ICard[] = allCards.filter((card) => {
-    return card.parent && !card.promoted && card.revealed && !stuckCards.some(c => c.id === card.id)
-  })
-
-  if (deck.dealSpace.child) {
+  if (state.dealSpace.child) {
     // add the top card of the dealt pile, if one
-    const topCard = getLineage(deck.dealSpace.child).pop()
-
-    if (topCard) {
-      playableCards.concat(topCard)
-    }
+    playableCards.concat(state.dealSpace.child)
   }
 
   // generate basic hints
   let hints: string[][] = [
-    ...getMoveableCardHints(allCards, playableCards, deck),
-    ...getLaneCreationHints(allCards, playableCards, deck),
-    ...getDeckHints(allCards, playableCards, deck)
+    ...getMoveableCardHints(state, playableCards),
+    ...getLaneCreationHints(state, playableCards),
+    ...getDeckHints(state, playableCards)
   ]
 
   // if there were no hints available, try the "desperate" hints
   if (hints.length === 0 || allowWorryBackHints) {
-    hints = hints.concat(getDestructuringLaneHints(allCards, playableCards, deck))
-    hints = hints.concat(getWorryBackHints(allCards, playableCards, deck))
+    hints = hints.concat(getDestructuringLaneHints(state, playableCards))
+    hints = hints.concat(getWorryBackHints(state, playableCards))
   }
 
   return hints

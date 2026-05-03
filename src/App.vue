@@ -41,11 +41,23 @@ export default defineComponent({
   setup () {
     const store = useStore()
     const { canUndo, canAutocomplete, isComplete, seconds, points } = storeToRefs(store)
-    const { undo, deal, revealHint, clearSelections, autoplayGame, newGame, start, stop } = store
+    const { clearSelections, autoplayGame, newGame, start, stop } = store
     const isPaused = computed(() => store.isStopped && !store.isComplete)
 
     if (!Object.keys(store.cards).length) {
       newGame()
+    }
+
+    function undo() {
+      overrideAnimation(() => {
+        store.undo()
+      })
+    }
+
+    function revealHint() {
+      overrideAnimation(() => {
+        store.revealHint()
+      })
     }
 
     // set animation speed
@@ -74,7 +86,6 @@ export default defineComponent({
       points,
       newGame,
       undo,
-      deal,
       revealHint,
       clearSelections,
       autoplayGame,
@@ -87,7 +98,7 @@ export default defineComponent({
 
 <style lang="scss">
 :root {
-  --animation-speed: 1000ms;
+  --animation-speed: 250ms;
   --card-width: 10vmin;
   --card-height: 14vmin;
   --card-fanning-space: 2vmin;
