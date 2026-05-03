@@ -89,9 +89,14 @@ describe('CardDraggable', () => {
       expect(wrapper.find('.card').classes()).toContain('card--foundary')
     })
 
-    it('applies card--fannable class when isFannable is true', () => {
-      const wrapper = mountDraggable({ isFannable: true })
-      expect(wrapper.find('.card').classes()).toContain('card--fannable')
+    it('applies card--fannable-mid class when isFannable is true and card is not revealed', () => {
+      const wrapper = mountDraggable({ isFannable: true, card: makeCard({ revealed: false }) })
+      expect(wrapper.find('.card').classes()).toContain('card--fannable-mid')
+    })
+
+    it('applies card--fannable-full class when isFannable is true and card is revealed', () => {
+      const wrapper = mountDraggable({ isFannable: true, card: makeCard({ revealed: true }) })
+      expect(wrapper.find('.card').classes()).toContain('card--fannable-full')
     })
 
     it('applies card--dealable class when isDealable is true', () => {

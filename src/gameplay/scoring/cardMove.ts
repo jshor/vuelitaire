@@ -44,7 +44,7 @@ function getPointsFromPlay (card: Card, target: Card): number {
   if (target.promoted) {
     // 10 points for each card moved to a foundation pile
 
-    if (card.parent && !card.parent.revealed) {
+    if (card.parent) {
       // +5 points for the parent that will be revealed from this move
       return 15
     }

@@ -31,7 +31,7 @@
       <use xlink:href="#S" height="90" width="90" transform="translate(839,640)scale(1,0.972)rotate(20)translate(-45,-45)"/>
       <use xlink:href="#S" height="90" width="90" transform="translate(795,749)scale(1,0.972)rotate(20)translate(-45,-45)"/>
    </symbol>
-   <rect width="239" height="335" x="-119.5" y="-167.5" rx="12" ry="12" fill="white" stroke="black"/>
+   <rect width="239" height="335" x="-119.5" y="-167.5" fill="white"/>
    <use width="164.8" height="260.8" x="-82.4" y="-130.4" xlink:href="#SK1"/>
    <use transform="rotate(180)" width="164.8" height="260.8" x="-82.4" y="-130.4" xlink:href="#SK1"/>
    <use width="164.8" height="260.8" x="-82.4" y="-130.4" xlink:href="#SK2"/>

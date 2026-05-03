@@ -1,0 +1,66 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`CardFront snapshots > renders 7 of hearts 1`] = `
+"<div class="card-front card-front card-front--red">
+  <div class="card-front__top">
+    <div class="card-front__rank">7</div>
+    <div class="card-front__suit">♥</div>
+  </div>
+  <div class="card-front__desktop card-front__desktop--hearts-7"></div>
+  <div class="card-front__mobile">
+    <div class="card-front__peasant">♥</div>
+  </div>
+</div>"
+`;
+
+exports[`CardFront snapshots > renders ace of spades 1`] = `
+"<div class="card-front card-front card-front--black">
+  <div class="card-front__top">
+    <div class="card-front__rank">A</div>
+    <div class="card-front__suit">♠</div>
+  </div>
+  <div class="card-front__desktop card-front__desktop--spades-1"></div>
+  <div class="card-front__mobile">
+    <div class="card-front__peasant">♠</div>
+  </div>
+</div>"
+`;
+
+exports[`CardFront snapshots > renders jack of clubs 1`] = `
+"<div class="card-front card-front card-front--black">
+  <div class="card-front__top">
+    <div class="card-front__rank">J</div>
+    <div class="card-front__suit">♣</div>
+  </div>
+  <div class="card-front__desktop card-front__desktop--clubs-11"></div>
+  <div class="card-front__mobile">
+    <div class="card-front__royal card-front__royal--clubs-11"></div>
+  </div>
+</div>"
+`;
+
+exports[`CardFront snapshots > renders king of hearts 1`] = `
+"<div class="card-front card-front card-front--red">
+  <div class="card-front__top">
+    <div class="card-front__rank">K</div>
+    <div class="card-front__suit">♥</div>
+  </div>
+  <div class="card-front__desktop card-front__desktop--hearts-13"></div>
+  <div class="card-front__mobile">
+    <div class="card-front__royal card-front__royal--hearts-12"></div>
+  </div>
+</div>"
+`;
+
+exports[`CardFront snapshots > renders queen of diamonds 1`] = `
+"<div class="card-front card-front card-front--red">
+  <div class="card-front__top">
+    <div class="card-front__rank">Q</div>
+    <div class="card-front__suit">♦</div>
+  </div>
+  <div class="card-front__desktop card-front__desktop--diamonds-12"></div>
+  <div class="card-front__mobile">
+    <div class="card-front__royal card-front__royal--diamonds-11"></div>
+  </div>
+</div>"
+`;

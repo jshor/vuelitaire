@@ -9,11 +9,15 @@ import { IRule } from '@/interfaces/IRule'
  * @returns {boolean}
  */
 export const isBuildable: IRule = (parent: Card, child?: Card) => {
-  if (!child || parent.child || parent.id === child.id) {
+  if (!child || child.type !== 'Card') {
     return false
   }
 
-  if (parent.parent?.type === 'DealSpace') {
+  if (parent.child || parent.id === child.id) {
+    return false
+  }
+
+  if (!parent.parent || parent.parent.type === 'DealSpace') {
     return false
   }
 

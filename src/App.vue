@@ -99,9 +99,16 @@ export default defineComponent({
 <style lang="scss">
 :root {
   --animation-speed: 250ms;
-  --card-width: 10vmin;
-  --card-height: 14vmin;
-  --card-fanning-space: 2vmin;
+  --card-width: 12vmin;
+  --card-height: calc(var(--card-width) * 1.4);
+  --card-fanning-space: 5vmin;
+  --card-border-radius: 0.5vmin;
+}
+
+@media (min-width: 960px) {
+  :root {
+    --card-fanning-space: 4vmin;
+  }
 }
 
 #app {
@@ -110,18 +117,35 @@ export default defineComponent({
 }
 
 .app {
+  padding: 0 1vmin;
+  box-sizing: border-box;
   height: 100vh;
-  display: flex;
   flex-direction: column;
   max-width: 100vmin;
   width: 100%;
   transform: filter var(--animation-speed);
 
   &__game {
-    flex: 1;
+    width: 100%;
+    height: 100%;
 
     &--paused {
       filter: blur(1vmin);
+    }
+  }
+
+  &__actions {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    gap: 0.5vmin;
+    padding: 0.5vmin;
+
+    @media (max-width: 480px) {
+      flex-direction: column;
     }
   }
 }

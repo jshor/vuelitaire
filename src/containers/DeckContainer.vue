@@ -23,7 +23,7 @@
       </div>
     </div>
 
-    <div class="deck__dealer" @click="deal">
+    <div class="deck__dealer" @click="deal" @touchend="deal">
       <empty-space v-if="dealIndex === stock.length - 1">
         <empty-stock-icon />
       </empty-space>

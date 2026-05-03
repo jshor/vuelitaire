@@ -6,7 +6,8 @@
     :class="{
       'card--animate': isAnimating,
       'card--foundary': isFoundary,
-      'card--fannable': isFannable,
+      'card--fannable-mid': isFannable && !card.revealed,
+      'card--fannable-full': isFannable && card.revealed,
       'card--dealable': isDealable,
       'card--error': hasError
     }"
@@ -29,7 +30,7 @@
         ref="cardRef"
         @click="onClick"
       >
-        <div v-if="isFoundary && isDealable" />
+        <div v-if="(isFoundary && isDealable) || !card.suit" />
         <empty-space v-else-if="isFoundary" />
         <template v-else>
           <!-- cards with rank less than 0 are placeholders and do not have backs -->
@@ -53,7 +54,8 @@
         :class="{
           'card--animate': isAnimating,
           'card--draggable': isDragging,
-          'card--fannable': isFannable
+          'card--fannable-mid': isFannable && !card.revealed,
+          'card--fannable-full': isFannable && card.revealed,
         }"
         :key="card.id"
         @transitionend="onAnimationEnd"
@@ -448,7 +450,11 @@ async function onTeleportation(teleportation?: Teleportation) {
     left: 0;
   }
 
-  &--fannable > .card__child {
+  &--fannable-mid > .card__child {
+    top: calc(var(--card-fanning-space) / 2);
+  }
+
+  &--fannable-full > .card__child {
     top: var(--card-fanning-space);
   }
 
