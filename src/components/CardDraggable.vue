@@ -103,7 +103,6 @@ import { type Card as CardType } from '@/types/Card'
 import { Hotspot } from '@/types/Hotspot'
 import { Teleportation } from '@/types/Teleportation'
 import { getLargestOverlappingCard } from '@/utils/getLargestOverlappingCard'
-import { Point } from '@/types/Point'
 import { overrideAnimation } from '@/utils/overrideAnimation'
 
 const props = defineProps<{
@@ -252,7 +251,7 @@ function onShakeEnd() {
 /**
  * User-dragging start event handler.
  */
-function onDragStart ({ x, y }: Point) {
+function onDragStart ({ x, y }: { x: number, y: number }) {
   if (isDragStarted || !cardRef.value) return
 
   isDragStarted = true
@@ -270,7 +269,7 @@ function onDragStart ({ x, y }: Point) {
 /**
  * User-dragging movement event handler.
  */
-function onDrag ({ x, y }: Point) {
+function onDrag ({ x, y }: { x: number, y: number }) {
   if (!isDragStarted || !cardRef.value) return
 
   coords.value.x = x

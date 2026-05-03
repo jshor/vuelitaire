@@ -1,4 +1,4 @@
-import { ICard } from '@/interfaces/ICard'
+import { Card } from '@/types/Card'
 import { State } from '@/store/state'
 import { Pair } from '@/types/Pair'
 
@@ -6,11 +6,11 @@ import { Pair } from '@/types/Pair'
  * Computes points to deduct for reversing a card move.
  *
  * @private
- * @param {ICard} card
- * @param {ICard} target
+ * @param {Card} card
+ * @param {Card} target
  * @returns {number} negative points
  */
-function getPointsFromUndo (card: ICard, target: ICard): number {
+function getPointsFromUndo (card: Card, target: Card): number {
   if (!target) {
     // no target: the card is being returned to the waste (i.e., via undo)
 
@@ -36,11 +36,11 @@ function getPointsFromUndo (card: ICard, target: ICard): number {
  * Computes the points to award for playing a card.
  *
  * @private
- * @param {ICard} card
- * @param {ICard} target
+ * @param {Card} card
+ * @param {Card} target
  * @returns {number} negative points
  */
-function getPointsFromPlay (card: ICard, target: ICard): number {
+function getPointsFromPlay (card: Card, target: Card): number {
   if (target.promoted) {
     // 10 points for each card moved to a foundation pile
 
@@ -73,5 +73,5 @@ export function cardMove (move: Pair, gameState: State): number {
   if (!card) {
     return 0
   }
-  return getPointsFromUndo(card, target as ICard) || getPointsFromPlay(card, target as ICard)
+  return getPointsFromUndo(card, target as Card) || getPointsFromPlay(card, target as Card)
 }

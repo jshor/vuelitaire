@@ -1,15 +1,15 @@
-import { ICard } from '@/interfaces/ICard'
+import { Card } from '@/types/Card'
 import { IRule } from '@/interfaces/IRule'
 
 /**
  * Determines if the parent and child have matching suits.
  *
  * @remarks This rule is skipped (i.e., returns `true`) if the parent is promoted.
- * @param {ICard} parent
- * @param {ICard} child
+ * @param {Card} parent
+ * @param {Card} child
  * @returns {boolean}
  */
-export const hasSameSuitAfterPromotion: IRule = (parent: ICard, target?: ICard): boolean => {
+export const hasSameSuitAfterPromotion: IRule = (parent: Card, target?: Card): boolean => {
   if (!parent.promoted) {
     return true // skips this check
   }

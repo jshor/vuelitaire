@@ -4,7 +4,7 @@ import { getDestructuringLaneHints } from '@/gameplay/hints/getDestructuringLane
 import { getLaneCreationHints } from '@/gameplay/hints/getLaneCreationHints'
 import { getMoveableCardHints } from '@/gameplay/hints/getMoveableCardHints'
 import { getWorryBackHints } from '@/gameplay/hints/getWorryBackHints'
-import { ICard } from '@/interfaces/ICard'
+import { Card } from '@/types/Card'
 import { State } from '@/store/state'
 import { getLineage } from '@/utils/getLineage'
 
@@ -18,7 +18,7 @@ export function generateHints (state: State, allowWorryBackHints = false): strin
     .filter(card => card.id !== state.dealSpace.child?.id)
 
   // all the cards that can be moved in the current state of the game
-  const playableCards: ICard[] = Object
+  const playableCards: Card[] = Object
     .values(state.tableau)
     .map(getLineage)
     .flat()

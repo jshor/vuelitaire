@@ -1,4 +1,4 @@
-import {ICard} from '@/interfaces/ICard'
+import {Card} from '@/types/Card'
 import { type State } from '@/store/state'
 import {IHint} from '@/interfaces/IHint'
 
@@ -7,13 +7,13 @@ import {IHint} from '@/interfaces/IHint'
  *
  * @remarks This does not count moves where a King can be moved onto an empty `LaneSpace`.
  *
- * @param {ICard[]} allCards - all cards in the game
- * @param {ICard[]} playableCards - cards that can be moved around by the user
+ * @param {Card[]} allCards - all cards in the game
+ * @param {Card[]} playableCards - cards that can be moved around by the user
  * @param { type State } gameState - current state of the deck
  * @param {boolean} ignoreRank - whether to ignore the rank of the card's current parent
  * @returns {string[][]} list of hint pairs
  */
-export const getMoveableCardHints: IHint = (state: State, playableCards: ICard[], ignoreRank = false): string[][] => {
+export const getMoveableCardHints: IHint = (state: State, playableCards: Card[], ignoreRank = false): string[][] => {
   const potentialTargets = playableCards.filter((card) => !card.child)
 
   /**
@@ -23,7 +23,7 @@ export const getMoveableCardHints: IHint = (state: State, playableCards: ICard[]
    * @param {Card} child
    * @returns {boolean}
    */
-  const hasRankingParent = (child: ICard, target: ICard): boolean => {
+  const hasRankingParent = (child: Card, target: Card): boolean => {
     const parent = playableCards.find((c) => c.child === child && c.revealed)
 
     if (parent) {
@@ -33,15 +33,15 @@ export const getMoveableCardHints: IHint = (state: State, playableCards: ICard[]
   }
 
   return potentialTargets
-    .reduce((hints: ICard[][], target: ICard): ICard[][] => [
+    .reduce((hints: Card[][], target: Card): Card[][] => [
       ...hints,
       ...playableCards
         // for each card, check if the target card can accept the moveable one
-        .filter((card: ICard): boolean => target.canAcceptCard(card))
+        .filter((card: Card): boolean => target.canAcceptCard(card))
         // omit promotions (which cannot happen in tableau lanes),
         // a parent whose rank matches unless ranks are ignored
-        .filter((card: ICard): boolean => hasRankingParent(card, target) || target.promoted || ignoreRank)
-        .map((card: ICard): [ICard, ICard] => [card, target])
+        .filter((card: Card): boolean => hasRankingParent(card, target) || target.promoted || ignoreRank)
+        .map((card: Card): [Card, Card] => [card, target])
     ], [])
     .sort(([_, target]): number => target?.promoted ? 1 : -1) // promotions should be displayed first
     .map(([card, target]): string[] => [card.id, target.id])

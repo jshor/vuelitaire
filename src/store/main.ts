@@ -1,10 +1,7 @@
 import { defineStore } from 'pinia'
 import { shuffle } from 'lodash-es'
 import { Card } from '@/types/Card'
-import { createLaneSpace } from '@/models/LaneSpace'
-import { ICard } from '@/interfaces/ICard'
 import { createCard } from '@/models/Card'
-import { createFoundationSpace } from '@/models/FoundationSpace'
 import { State, state } from './state'
 import { MoveType } from '@/types/enums/MoveType'
 import { Move } from '@/types/Move'
@@ -12,6 +9,10 @@ import { createSettings } from '@/models/Settings'
 import { Settings } from '@/types/Settings'
 import { Scoring, Suits } from '@/constants'
 import { generateHints } from '@/gameplay/hints'
+import { isBuildable } from '@/gameplay/rules/isBuildable'
+import { isKing } from '@/gameplay/rules/isKing'
+import { hasSameSuitAfterPromotion } from '@/gameplay/rules/hasSameSuitAfterPromotion'
+import { isAce } from '@/gameplay/rules/isAce'
 
 export const useStore = defineStore('store', {
   state,
@@ -99,10 +100,12 @@ export const useStore = defineStore('store', {
      * Initializes the tableau.
      */
     initTableau () {
-      let index = 0 // temp
-
       for (let i = 1; i <= 7; i++) {
-        let parent: ICard = createLaneSpace()
+        let parent: Card = createCard({
+          revealed: true,
+          rules: [isBuildable, isKing],
+          type: 'LaneSpace'
+        })
 
         // add the lane space to the list of cards
         this.cards[parent.id] = parent
@@ -119,7 +122,6 @@ export const useStore = defineStore('store', {
             parent.child = card
             card.parent = parent
             parent = card
-            card.index = index++
             card.revealed = false
           })
 
@@ -132,7 +134,13 @@ export const useStore = defineStore('store', {
      */
     initFoundations() {
       for (let i = 0; i < Object.values(Suits).length; i++) {
-        const foundation = createFoundationSpace(Object.values(Suits)[i])
+        const foundation = createCard({
+          suit: Object.values(Suits)[i],
+          promoted: true,
+          revealed: true,
+          rules: [isBuildable, isAce, hasSameSuitAfterPromotion],
+          type: 'FoundationSpace'
+        })
 
         this.cards[foundation.id] = foundation
         this.foundations[foundation.id] = foundation

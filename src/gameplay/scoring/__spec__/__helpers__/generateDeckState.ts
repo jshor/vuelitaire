@@ -1,8 +1,7 @@
-import { ICard } from '@/interfaces/ICard'
-import { ICardsMap } from '@/interfaces/ICardsMap'
+import { Card } from '@/types/Card'
 import { State } from '@/store/state'
 
-export const generateDeckState = (regular: ICardsMap<ICard>): State => ({
+export const generateDeckState = (regular: Record<string, Card>): State => ({
   cards: regular,
   tableau: {},
   foundations: {},

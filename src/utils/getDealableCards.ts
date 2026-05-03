@@ -1,5 +1,5 @@
 import { DEALT_CARDS_DISPLAYED } from '@/constants'
-import { ICard } from '@/interfaces/ICard'
+import { Card } from '@/types/Card'
 import { State } from '@/store/state'
 
 /**
@@ -20,11 +20,11 @@ export function getDealableCards ({ stock, settings, dealIndex, dealSpace }: Sta
     // allow the top-most dealt card to be moved
     .filter(card => card.id !== dealSpace.child?.id)
 
-  const deckCards: ICard[] = [...stock]
+  const deckCards: Card[] = [...stock]
     .reverse()
     .filter(card => !unmoveableStockCards.some(c => c.id === card.id))
 
-  return deckCards.filter((c: ICard, index: number): boolean => {
+  return deckCards.filter((c: Card, index: number): boolean => {
     return (index + settings.dealCount + 1) % settings.dealCount === 0 || index === deckCards.length - 1
   })
 }

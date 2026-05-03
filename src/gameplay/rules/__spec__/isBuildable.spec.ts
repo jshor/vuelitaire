@@ -1,13 +1,22 @@
 ﻿import { Suits } from '@/constants'
 import { Card } from '@/types/Card'
 import { createCard } from '@/models/Card'
-import { createFoundationSpace } from '@/models/FoundationSpace'
-import { createLaneSpace } from '@/models/LaneSpace'
 import { isBuildable } from '../isBuildable'
+import { isKing } from '../isKing'
+import { hasSameSuitAfterPromotion } from '../hasSameSuitAfterPromotion'
+import { isAce } from '../isAce'
 
 describe('Rule: isBuildable', () => {
   let parent: Card
   let child: Card
+
+  function createLaneSpace() {
+    return createCard({
+      revealed: true,
+      rules: [isBuildable, isKing],
+      type: 'LaneSpace'
+    })
+  }
 
   beforeEach(() => {
     parent = createCard({ suit: Suits.CLUBS, rank: 0 })
@@ -33,7 +42,13 @@ describe('Rule: isBuildable', () => {
   })
 
   it('should return true when the target card has no parent of itself but is a Foundation', () => {
-    expect(isBuildable(createFoundationSpace(Suits.CLUBS), child)).toEqual(false)
+    expect(isBuildable(createCard({
+      suit: Suits.CLUBS,
+      promoted: true,
+      revealed: true,
+      rules: [isBuildable, isAce, hasSameSuitAfterPromotion],
+      type: 'FoundationSpace'
+    }), child)).toEqual(false)
   })
 
   it('should return true when the target card has no parent of itself but is a Tableau lane', () => {

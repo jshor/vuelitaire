@@ -1,15 +1,15 @@
 import { Suits } from '@/constants'
-import { ICard } from '@/interfaces/ICard'
+import { Card } from '@/types/Card'
 import { IRule } from '@/interfaces/IRule'
 
 /**
  * Determines if the parent and child have opposite colors.
  *
- * @param {ICard} parent
- * @param {ICard} child
+ * @param {Card} parent
+ * @param {Card} child
  * @returns {boolean}
  */
-export const hasAlternatingColor: IRule = (parent: ICard, child?: ICard): boolean => {
+export const hasAlternatingColor: IRule = (parent: Card, child?: Card): boolean => {
   const isRed = (s?: string): boolean => !!s && [Suits.DIAMONDS, Suits.HEARTS].includes(s)
   const isBlk = (s?: string): boolean => !!s && [Suits.CLUBS, Suits.SPADES].includes(s)
 

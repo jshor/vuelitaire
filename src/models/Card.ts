@@ -14,10 +14,7 @@ export function createCard(defaultProps: Partial<Card> = {}): Card {
     child: undefined,
     parent: undefined,
     promoted: false,
-    revealed: false,
-    animationIndex: 0,
-    index: 0,
-    hasError: false,
+    revealed: true,
     rules: [isBuildable, hasAlternatingColorBeforePromotion, hasSameSuitAfterPromotion, isSequential],
 
     canAcceptCard (target?: Card) {

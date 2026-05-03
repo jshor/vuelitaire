@@ -1,4 +1,4 @@
-import { createDealSpace } from '@/models/DealSpace'
+import { createCard } from '@/models/Card'
 import { createSettings } from '@/models/Settings'
 import { State } from '@/store/state'
 
@@ -12,7 +12,11 @@ export const createDeckState = (cards: Partial<State> = {
   foundations: cards.foundations ?? {},
   stock: [],
   dealIndex: -1,
-  dealSpace: createDealSpace(),
+  dealSpace: createCard({
+    type: 'DealSpace',
+    revealed: true,
+    rules: [() => false] // do not accept any cards
+  }),
   settings: createSettings(),
 } as unknown as State)
 

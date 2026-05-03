@@ -1,14 +1,14 @@
-import { ICard } from '@/interfaces/ICard'
+import { Card } from '@/types/Card'
 import { IRule } from '@/interfaces/IRule'
 
 /**
  * Determines whether or not the parent card is eligible to receive the child.
  *
- * @param {ICard} parent
- * @param {ICard} child
+ * @param {Card} parent
+ * @param {Card} child
  * @returns {boolean}
  */
-export const isBuildable: IRule = (parent: ICard, child?: ICard) => {
+export const isBuildable: IRule = (parent: Card, child?: Card) => {
   if (!child || parent.child || parent.id === child.id) {
     return false
   }

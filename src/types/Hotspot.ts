@@ -1,8 +1,8 @@
 import { BoundingBox } from "./BoundingBox"
-import { ICard } from "@/interfaces/ICard"
+import { Card } from "@/types/Card"
 
 export type Hotspot = {
-  card: ICard
+  card: Card
   highlightSpot: BoundingBox
   dropSpot: BoundingBox
 }

@@ -4,7 +4,7 @@
       <div
         class="pile-card"
         v-for="(card, k) in stock"
-        :key="card.index"
+        :key="k"
         :style="{
           left: dealIndex < stock.length && dealIndex >= k
             ? `calc(${getLeft(k) - 1} * var(--card-fanning-space) + var(--card-width) + var(--card-fanning-space))`

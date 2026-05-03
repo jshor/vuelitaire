@@ -1,4 +1,4 @@
-import {ICard} from '@/interfaces/ICard'
+import {Card} from '@/types/Card'
 import {getLineage} from './getLineage'
 
 /**
@@ -8,7 +8,7 @@ import {getLineage} from './getLineage'
  * @param {String} targetId
  * @returns {Boolean}
  */
-export function isDescendant (card: ICard, targetId: string): boolean {
+export function isDescendant (card: Card, targetId: string): boolean {
   return getLineage(card)
     .map(({ id }) => id)
     .includes(targetId)

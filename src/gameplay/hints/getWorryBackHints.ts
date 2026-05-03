@@ -1,16 +1,15 @@
 import { hasAlternatingColor } from '@/gameplay/rules/hasAlternatingColor'
-import { ICard } from '@/interfaces/ICard'
+import { Card } from '@/types/Card'
 import { State } from '@/store/state'
 import { IHint } from '@/interfaces/IHint'
-import { Card } from '@/types/Card'
 import { getDealableCards } from '@/utils/getDealableCards'
 import { getLineage } from '@/utils/getLineage'
 
 /**
  * Finds all promoted cards that, when moved, will allow the playing of an untouched card.
  *
- * @param {ICard[]} allCards - all cards in the game
- * @param {ICard[]} playableCards - cards that can be moved around by the user
+ * @param {Card[]} allCards - all cards in the game
+ * @param {Card[]} playableCards - cards that can be moved around by the user
  * @param { type State } gameState - current state of the deck
  * @returns {string[][]} list of hint pairs
  */
@@ -36,10 +35,10 @@ export const getWorryBackHints: IHint = (state: State): string[][] => {
    * Determines if card A is one rank below card B.
    *
    * @private
-   * @param {ICard} a
-   * @param {ICard} a
+   * @param {Card} a
+   * @param {Card} a
    */
-  const isRanking = (a: ICard, b: ICard): boolean => a.rank === b.rank + 1
+  const isRanking = (a: Card, b: Card): boolean => a.rank === b.rank + 1
 
   return promotedCards
     // find all promoted cards for which this rule will apply to

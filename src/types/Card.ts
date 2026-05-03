@@ -1,6 +1,23 @@
-import type { ICard } from '@/interfaces/ICard'
+import type { IRule } from '@/interfaces/IRule'
 
-export type Card = ICard & {
+export type Card = {
+  type: 'Card' | 'FoundationSpace' | 'LaneSpace' | 'DealSpace'
+
   id: string
-  hasError: boolean
+
+  child: Card | undefined
+
+  parent: Card | undefined
+
+  promoted: boolean
+
+  revealed: boolean
+
+  suit: string
+
+  rank: number
+
+  rules: IRule[]
+
+  canAcceptCard: (this: Card, card?: Card) => boolean
 }

@@ -3,11 +3,20 @@ import { useStore } from '../main'
 import { MoveType } from '@/types/enums/MoveType'
 import { Suits, Scoring } from '@/constants'
 import { createCard } from '@/models/Card'
-import { createLaneSpace } from '@/models/LaneSpace'
 import * as hintsModule from '@/gameplay/hints'
+import { isKing } from '@/gameplay/rules/isKing'
+import { isBuildable } from '@/gameplay/rules/isBuildable'
 
 describe('store/main', () => {
   let store: ReturnType<typeof useStore>
+
+  function createLaneSpace() {
+    return createCard({
+      revealed: true,
+      rules: [isBuildable, isKing],
+      type: 'LaneSpace'
+    })
+  }
 
   beforeEach(() => {
     setActivePinia(createPinia())
@@ -18,8 +27,6 @@ describe('store/main', () => {
   afterEach(() => {
     vi.restoreAllMocks()
   })
-
-  // ── state.ts ──────────────────────────────────────────────────────────────
 
   describe('initial state', () => {
     it('initializes with empty arrays and zeroed counters', () => {

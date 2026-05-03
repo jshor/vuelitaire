@@ -1,3 +1,3 @@
-import { ICard } from './ICard'
+import { Card } from '@/types/Card'
 
-export type IRule = (baseCard: ICard, newCard?: ICard) => boolean
+export type IRule = (baseCard: Card, newCard?: Card) => boolean

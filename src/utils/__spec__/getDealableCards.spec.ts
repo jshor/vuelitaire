@@ -2,7 +2,6 @@
 import { State } from '@/store/state'
 import { Card } from '@/types/Card'
 import { createCard } from '@/models/Card'
-import { createDealSpace } from '@/models/DealSpace'
 import { getDealableCards } from '../getDealableCards'
 
 describe('getDealableCards()', () => {
@@ -16,7 +15,11 @@ describe('getDealableCards()', () => {
       cards: {},
       stock,
       dealIndex: -1,
-      dealSpace: createDealSpace(),
+      dealSpace: createCard({
+        type: 'DealSpace',
+        revealed: true,
+        rules: [() => false] // do not accept any cards
+      }),
       settings: { dealCount },
       ...rest,
     } as unknown as State

@@ -1,25 +1,24 @@
-import { ICard } from "@/interfaces/ICard"
-import { createDealSpace } from "@/models/DealSpace"
-import { createSettings } from "@/models/Settings"
 import { Card } from "@/types/Card"
+import { createSettings } from "@/models/Settings"
 import { Hotspot } from "@/types/Hotspot"
 import { Move } from "@/types/Move"
 import { Settings } from "@/types/Settings"
 import { Teleportation } from "@/types/Teleportation"
+import { createCard } from "@/models/Card"
 
 export type State = {
   hints: string[][]
   stock: Card[] // all cards in the stock pile
-  cards: Record<string, ICard> // all cards in the entire game
-  tableau: Record<string, ICard> // all cards in the tableau
-  foundations: Record<string, ICard> // all cards in the foundations piles
+  cards: Record<string, Card> // all cards in the entire game
+  tableau: Record<string, Card> // all cards in the tableau
+  foundations: Record<string, Card> // all cards in the foundations piles
   hotspots: Hotspot[]
   teleportation?: Teleportation
   draggedCardId?: string // the ID of the actively-dragged card
   hoveredCardId?: string // the ID of the card whose actively-dragged card is hovering over.
   selectedCardId?: string // the ID of the card that was selected by the user
   errorCardId?: string // the ID of the card with an error
-  dealSpace: ICard
+  dealSpace: Card
   isAutoplaying: boolean
   isUndoing: boolean
   isStopped: boolean
@@ -49,7 +48,11 @@ export function state (): State {
     draggedCardId: undefined,
     hoveredCardId: undefined,
     errorCardId: undefined,
-    dealSpace: createDealSpace(),
+    dealSpace: createCard({
+      type: 'DealSpace',
+      revealed: true,
+      rules: [() => false] // do not accept any cards
+    }),
     isAutoplaying: false,
     isUndoing: false,
     isStopped: false,
