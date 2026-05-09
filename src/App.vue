@@ -6,19 +6,22 @@
       <game-container />
       <congratulations :is-active="isComplete" @end="newGame" />
     </div>
-    <div class="app__actions">
-      <stats
-        :points="points"
-        :time-elapsed="seconds"
-        :is-paused="isPaused"
-      />
-      <button @click="newGame">new game</button>
-      <button @click="start" v-if="isPaused">resume</button>
-      <button @click="stop" v-else>pause</button>
-      <button @click="undo" :disabled="!canUndo">Undo</button>
-      <button @click="revealHint">revealHint</button>
-      <button @click="autoplayGame" :disabled="!canAutocomplete">autoplayGame</button>
-    </div>
+    <action-bar>
+      <template #stats>
+        <stats
+          :points="points"
+          :time-elapsed="seconds"
+          :is-paused="isPaused"
+        />
+      </template>
+
+      <action-button @click="newGame" @touchstart="autoplayGame">Deal</action-button>
+      <action-button @click="start" v-if="isPaused">Resume</action-button>
+      <action-button @click="stop" v-else>Pause</action-button>
+      <action-button @click="undo" :disabled="!canUndo">Undo</action-button>
+      <action-button @click="revealHint">Hint</action-button>
+      <action-button @click="autoplayGame" v-if="canAutocomplete">Autoplay</action-button>
+    </action-bar>
   </div>
 </template>
 
@@ -28,6 +31,8 @@ import { computed, defineComponent } from 'vue'
 import { useStore } from './store/main'
 import GameContainer from './containers/GameContainer.vue'
 import Congratulations from './components/Congratulations.vue'
+import ActionBar from './components/ActionBar.vue'
+import ActionButton from './components/ActionButton.vue'
 import Stats from './components/Stats.vue'
 import { overrideAnimation } from './utils/overrideAnimation'
 
@@ -36,7 +41,9 @@ export default defineComponent({
   components: {
     Congratulations,
     GameContainer,
-    Stats
+    Stats,
+    ActionBar,
+    ActionButton
   },
   setup () {
     const store = useStore()
@@ -124,6 +131,7 @@ export default defineComponent({
   max-width: 100vmin;
   width: 100%;
   transform: filter var(--animation-speed);
+  touch-action: none;
 
   &__game {
     width: 100%;
@@ -133,34 +141,19 @@ export default defineComponent({
       filter: blur(1vmin);
     }
   }
-
-  &__actions {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    display: flex;
-    justify-content: center;
-    gap: 0.5vmin;
-    padding: 0.5vmin;
-
-    @media (max-width: 480px) {
-      flex-direction: column;
-    }
-  }
 }
 
 body {
   user-select: none;
   padding: 0;
   margin: 0;
+  overflow: hidden;
 }
 
 body, html {
   height: 100%;
   padding: 0;
   margin: 0;
-  touch-action: none;
   user-select: none;
 }
 

@@ -30,7 +30,10 @@ const score = computed(() => props.points.toLocaleString())
 .stats {
   font-family: "Segoe UI", Helvetica, Arial, system-ui, sans-serif;
   font-size: 1rem;
-  padding: 0.5rem;
+  padding: 0.5vmin 1vmin;
+  height: 100%;
+  display: flex;
+  align-items: center;
   color: #fff;
   text-shadow: 1px 1px 1px #000;
 

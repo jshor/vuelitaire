@@ -19,7 +19,7 @@
             class="game__lane"
           >
             <foundation :suit="card.suit" />
-            <card-container :card="card" is-foundary :is-selectable="false" />
+            <card-container :card="card" is-foundary :is-draggable="false" />
           </div>
         </div>
       </div>
@@ -31,7 +31,7 @@
           :key="key"
           class="game__lane"
         >
-          <card-container :card="card" is-foundary is-fannable :is-selectable="false" />
+          <card-container :card="card" is-foundary is-fannable :is-draggable="false" />
         </div>
       </div>
     </div>

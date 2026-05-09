@@ -23,8 +23,8 @@
       </div>
     </div>
 
-    <div class="deck__dealer" @click="deal" @touchend="deal">
-      <empty-space v-if="dealIndex === stock.length - 1">
+    <div class="deck__dealer" @click="deal">
+      <empty-space v-if="dealIndex === stock.length - 1 || stock.length === 0">
         <empty-stock-icon />
       </empty-space>
       <card-back v-else />

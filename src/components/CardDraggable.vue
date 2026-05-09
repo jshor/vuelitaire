@@ -30,7 +30,8 @@
         ref="cardRef"
         @click="onClick"
       >
-        <div v-if="(isFoundary && isDealable) || !card.suit" />
+        <!-- TODO: this logic is too complicated, simplify -->
+        <div v-if="((isFoundary && isDealable) || !card.suit) && card.type !== 'LaneSpace'" />
         <empty-space v-else-if="isFoundary" />
         <template v-else>
           <!-- cards with rank less than 0 are placeholders and do not have backs -->
@@ -107,16 +108,19 @@ import { Teleportation } from '@/types/Teleportation'
 import { getLargestOverlappingCard } from '@/utils/getLargestOverlappingCard'
 import { overrideAnimation } from '@/utils/overrideAnimation'
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   card: CardType
   isFoundary?: boolean
   isFannable?: boolean
   isDealable?: boolean
   isSelected?: boolean
+  isDraggable?: boolean
   hasError?: boolean
   hotspots: Hotspot[]
   teleportation?: Teleportation
-}>()
+}>(), {
+  isDraggable: true
+})
 
 let offset = { x: 0, y: 0 }
 let origin = { x: 0, y: 0 }
@@ -195,17 +199,16 @@ function onTouchMove($event: TouchEvent) {
 }
 
 function onTouchEnd($event: TouchEvent) {
+  if (!isTouched) return
+
   $event.stopPropagation()
   $event.preventDefault()
 
-  if (!isTouched) return
-
-  if (isDragging.value) {
-    onDragEnd()
-  } else {
+  if (!isDragging.value) {
     emit('autoplay')
   }
 
+  onDragEnd()
   isTouched = false
 }
 
@@ -254,7 +257,7 @@ function onShakeEnd() {
  * User-dragging start event handler.
  */
 function onDragStart ({ x, y }: { x: number, y: number }) {
-  if (isDragStarted || !cardRef.value) return
+  if (isDragStarted || !cardRef.value || !props.isDraggable) return
 
   isDragStarted = true
   hasEmittedDragStart = false
@@ -318,23 +321,23 @@ async function onDragEnd () {
     return
   }
 
-    isAnimating.value = true
+  isAnimating.value = true
 
-    if (hotspot.value) {
-      // the termination of the drag operation landed on a hotspot
-      const bbox = hotspot.value.dropSpot
+  if (hotspot.value) {
+    // the termination of the drag operation landed on a hotspot
+    const bbox = hotspot.value.dropSpot
 
-      // compute remaining coordinates for the card to animate onto that hotspot
-      coords.value.x = bbox.left
-      coords.value.y = bbox.top
-    } else {
-      // the card will be returned back to its original location
-      coords.value.x = origin.x
-      coords.value.y = origin.y
-    }
+    // compute remaining coordinates for the card to animate onto that hotspot
+    coords.value.x = bbox.left
+    coords.value.y = bbox.top
+  } else {
+    // the card will be returned back to its original location
+    coords.value.x = origin.x
+    coords.value.y = origin.y
+  }
 
-    // reset the offset coordinates of the card
-    offset = { x: 0, y: 0 }
+  // reset the offset coordinates of the card
+  offset = { x: 0, y: 0 }
 }
 
 /**
