@@ -1,16 +1,22 @@
 <template>
-  <div class="stats" :class="{
-    'stats--paused': isPaused
-  }">
-    <i class="fas fa-chalkboard" />&nbsp;{{ score }}
-    &middot;
-    <i class="fas fa-stopwatch" />&nbsp;{{ clock }}
+  <div class="stats">
+    <FontAwesomeIcon :icon="faChalkboard" />&nbsp;{{ score }}
+    <span class="stats__middot">&middot;</span>
+    <span
+      class="stats__time"
+      :class="{
+        'stats__time--paused': isPaused
+      }">
+      <FontAwesomeIcon :icon="faStopwatch" />&nbsp;{{ clock }}
+    </span>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { computed } from 'vue'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { formatClock } from '@/utils/formatClock'
+import { faChalkboard, faStopwatch } from '@fortawesome/free-solid-svg-icons'
 
 const props = withDefaults(defineProps<{
   timeElapsed?: number
@@ -37,9 +43,15 @@ const score = computed(() => props.points.toLocaleString())
   color: #fff;
   text-shadow: 1px 1px 1px #000;
 
-  &--paused {
-    color: #f00;
-    animation: blinker 1s linear infinite;
+  &__middot {
+    margin: 0 0.5vmin;
+  }
+
+  &__time {
+    &--paused {
+      color: #f00;
+      animation: blinker 1s linear infinite;
+    }
   }
 }
 

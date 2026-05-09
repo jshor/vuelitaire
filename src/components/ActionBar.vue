@@ -25,10 +25,10 @@
   &__actions {
     display: flex;
     padding: 0.5vmin;
+  }
 
-    @media (max-width: 480px) {
-      flex-direction: column;
-    }
+  @media (max-width: 480px) {
+    flex-direction: column;
   }
 }
 </style>

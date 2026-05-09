@@ -18,6 +18,9 @@
     "typecheck": "vue-tsc --noEmit"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^7.2.0",
+    "@fortawesome/free-solid-svg-icons": "^7.2.0",
+    "@fortawesome/vue-fontawesome": "^3.2.0",
     "canvas-confetti": "^1.9.4",
     "eventemitter3": "^5.0.4",
     "lodash-es": "^4.18.1",

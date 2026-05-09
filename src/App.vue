@@ -15,12 +15,12 @@
         />
       </template>
 
-      <action-button @click="newGame" @touchstart="autoplayGame">Deal</action-button>
-      <action-button @click="start" v-if="isPaused">Resume</action-button>
-      <action-button @click="stop" v-else>Pause</action-button>
-      <action-button @click="undo" :disabled="!canUndo">Undo</action-button>
-      <action-button @click="revealHint">Hint</action-button>
-      <action-button @click="autoplayGame" v-if="canAutocomplete">Autoplay</action-button>
+      <action-button @click="newGame" :icon="faLayerGroup" :disabled="isPaused">Deal</action-button>
+      <action-button @click="start" v-if="isPaused" :icon="faPlay">Resume</action-button>
+      <action-button @click="stop" v-else :icon="faPause">Pause</action-button>
+      <action-button @click="undo" :disabled="!canUndo" :icon="faReply">Undo</action-button>
+      <action-button @click="revealHint" :disabled="!canShowHints" :icon="faLightbulb">Hint</action-button>
+      <action-button @click="autoplayGame" v-if="canAutocomplete" :icon="faMagicWandSparkles">Autoplay</action-button>
     </action-bar>
   </div>
 </template>
@@ -28,6 +28,7 @@
 <script lang="ts">
 import { storeToRefs } from 'pinia'
 import { computed, defineComponent } from 'vue'
+import { faLightbulb, faMagicWandSparkles, faReply, faPause, faPlay, faLayerGroup } from '@fortawesome/free-solid-svg-icons'
 import { useStore } from './store/main'
 import GameContainer from './containers/GameContainer.vue'
 import Congratulations from './components/Congratulations.vue'
@@ -47,7 +48,7 @@ export default defineComponent({
   },
   setup () {
     const store = useStore()
-    const { canUndo, canAutocomplete, isComplete, seconds, points } = storeToRefs(store)
+    const { canUndo, canShowHints, canAutocomplete, isComplete, seconds, points } = storeToRefs(store)
     const { clearSelections, autoplayGame, newGame, start, stop } = store
     const isPaused = computed(() => store.isStopped && !store.isComplete)
 
@@ -85,7 +86,10 @@ export default defineComponent({
     })
 
     return {
+      faMagicWandSparkles, faReply, faPause, faPlay, faLayerGroup,
+      faLightbulb,
       canUndo,
+      canShowHints,
       canAutocomplete,
       isComplete,
       isPaused,
