@@ -448,7 +448,6 @@ async function onTeleportation(teleportation?: Teleportation) {
 
   &__child {
     position: absolute;
-    height: 100%;
     top: 0;
     left: 0;
   }

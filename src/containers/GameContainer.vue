@@ -1,91 +1,85 @@
 <template>
-  <div class="game">
-    <div class="game">
-      <div class="game__top">
-        <div class="game__foundations">
-          <!-- deal card -->
-          <div class="game__lane">
-            <deck-container />
-          </div>
+  <game
+    :is-complete="isComplete"
+    :is-paused="isPaused"
+    @end="$emit('end')"
+  >
+    <template #dealer>
+      <deck-container />
+    </template>
 
-          <!-- empty space (4 foundations + 1 deal card + 1 dealt pile + 1 empty space) = 7 lanes -->
-          <div class="game__lane" />
-          <div class="game__lane" />
+    <template #foundations>
+      <!-- foundations piles (4) -->
+      <lane
+        v-for="(card, key) in foundations"
+        :key="key"
+      >
+        <foundation :suit="card.suit" />
+        <card-container :card="card" is-foundary :is-draggable="false" />
+      </lane>
+    </template>
 
-          <!-- foundations pile (4) -->
-          <div
-            v-for="(card, key) in foundations"
-            :key="key"
-            class="game__lane"
-          >
-            <foundation :suit="card.suit" />
-            <card-container :card="card" is-foundary :is-draggable="false" />
-          </div>
-        </div>
-      </div>
+    <template #tableau>
+      <!-- tableau piles (7) -->
+      <lane
+        v-for="(card, key) in tableau"
+        :key="key"
+      >
+        <card-container :card="card" is-foundary is-fannable :is-draggable="false" />
+      </lane>
+    </template>
 
-      <!-- tableau -->
-      <div class="game__tableau">
-        <div
-          v-for="(card, key) in tableau"
-          :key="key"
-          class="game__lane"
-        >
-          <card-container :card="card" is-foundary is-fannable :is-draggable="false" />
-        </div>
-      </div>
-    </div>
-  </div>
+    <!-- points/clock -->
+    <template #stats>
+      <stats
+        :points="points"
+        :time-elapsed="seconds"
+        :is-paused="isPaused"
+      />
+    </template>
+
+    <!-- action buttons -->
+    <template #actions>
+      <action-button @click="newGame" :icon="faLayerGroup" :disabled="isPaused">Deal</action-button>
+      <action-button @click="start" v-if="isPaused" :icon="faPlay">Resume</action-button>
+      <action-button @click="stop" v-else :icon="faPause">Pause</action-button>
+      <action-button @click="undo" :disabled="!canUndo" :icon="faReply">Undo</action-button>
+      <action-button @click="revealHint" :disabled="!canShowHints" :icon="faLightbulb">Hint</action-button>
+      <action-button @click="autoplayGame" v-if="canAutocomplete" :icon="faMagicWandSparkles">Autoplay</action-button>
+    </template>
+  </game>
 </template>
 
 <script lang="ts" setup>
-import CardContainer from './CardContainer.vue'
-import DeckContainer from './DeckContainer.vue'
+import { computed } from 'vue'
+import { faLightbulb, faMagicWandSparkles, faReply, faPause, faPlay, faLayerGroup } from '@fortawesome/free-solid-svg-icons'
 import { useStore } from '@/store/main'
 import { storeToRefs } from 'pinia'
+import CardContainer from './CardContainer.vue'
+import DeckContainer from './DeckContainer.vue'
+import ActionButton from '@/components/ActionButton.vue'
+import Stats from '@/components/Stats.vue'
 import Foundation from '@/components/Foundation.vue'
+import Lane from '@/components/Lane.vue'
+import Game from '@/components/Game.vue'
+import { overrideAnimation } from '@/utils/overrideAnimation'
 
 const store = useStore()
-const { tableau, foundations } = storeToRefs(store)
-</script>
+const { tableau, foundations, isComplete, canUndo, canShowHints, canAutocomplete, seconds, points } = storeToRefs(store)
+const { newGame, start, stop, autoplayGame } = store
+const isPaused = computed(() => store.isStopped && !store.isComplete)
 
-<style lang="scss">
-.game {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-
-  &__top {
-    flex: 1;
-    display: flex;
-    padding: 4vmin 0;
-  }
-
-  &__foundations {
-    flex: 1;
-    display: flex;
-    justify-content: flex-end;
-    justify-content: space-around;
-  }
-
-  &__tableau {
-    flex: 1;
-    display: flex;
-    justify-content: flex-end;
-    width: 100%;
-    justify-content: space-around;
-  }
-
-  &__lane {
-    display: flex;
-    box-sizing: border-box;
-    width: var(--card-width);
-    flex-direction: column;
-    position: relative;
-
-    &--dealt {
-      left: calc(-1 * var(--card-fanning-space));
-    }
-  }
+/** Undo the last move. */
+function undo() {
+  overrideAnimation(() => {
+    store.undo()
+  })
 }
-</style>
+
+/** Reveals a hint for the next possible move. */
+function revealHint() {
+  overrideAnimation(() => {
+    store.revealHint()
+  })
+}
+</script>

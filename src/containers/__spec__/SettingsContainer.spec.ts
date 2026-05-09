@@ -1,15 +1,20 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
-import { shallowMount } from '@vue/test-utils'
+import { mount } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
 import { nextTick } from 'vue'
 import { useStore } from '@/store/main'
-import Gallery from '@/components/Gallery.vue'
-import RadioGroup from '@/components/RadioGroup.vue'
-import Checkbox from '@/components/Checkbox.vue'
-import ModalNav from '@/components/ModalNav.vue'
-import SettingsContainer from '../SettingsContainer.vue'
+import ActionButton from '@/components/ActionButton.vue'
+import Stats from '@/components/Stats.vue'
+import Game from '@/components/Game.vue'
+import GameContainer from '../GameContainer.vue'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
-describe('SettingsContainer', () => {
+vi.mock('@/utils/overrideAnimation', () => ({
+  overrideAnimation: (cb: () => void) => cb()
+}))
+vi.mock('canvas-confetti', () => ({ default: vi.fn() }))
+
+describe('GameContainer', () => {
   let pinia: ReturnType<typeof createPinia>
   let store: ReturnType<typeof useStore>
 
@@ -17,81 +22,107 @@ describe('SettingsContainer', () => {
     pinia = createPinia()
     setActivePinia(pinia)
     store = useStore()
-    localStorage.clear()
+    store.newGame()
   })
 
-  function mountSettings() {
-    return shallowMount(SettingsContainer, {
+  function mountGame() {
+    return mount(GameContainer, {
       global: {
         plugins: [pinia],
-        // Stub Modal to render its default slot so inner components are accessible
-        stubs: { Modal: { template: '<div><slot /></div>' } }
+        components: { FontAwesomeIcon },
+        stubs: {
+          CardContainer: true,
+          DeckContainer: true,
+          CardDraggable: true,
+        }
       }
     })
   }
 
-  describe('default section — Game', () => {
-    it('renders the RadioGroup for the draw type', () => {
-      const wrapper = mountSettings()
-      expect(wrapper.findComponent(RadioGroup).exists()).toBe(true)
+  describe('layout', () => {
+    it('renders the Game component', () => {
+      const wrapper = mountGame()
+      expect(wrapper.findComponent(Game).exists()).toBe(true)
     })
 
-    it('renders checkboxes for each preference toggle', () => {
-      const wrapper = mountSettings()
-      expect(wrapper.findAllComponents(Checkbox).length).toBeGreaterThan(0)
+    it('renders Stats component with points and time', () => {
+      const wrapper = mountGame()
+      const stats = wrapper.findComponent(Stats)
+      expect(stats.exists()).toBe(true)
     })
 
-    it('does not render the Gallery in the Game section', () => {
-      const wrapper = mountSettings()
-      expect(wrapper.findComponent(Gallery).exists()).toBe(false)
-    })
-  })
-
-  describe('Appearance section', () => {
-    it('renders the Gallery when the Appearance section is active', async () => {
-      const wrapper = mountSettings()
-      // Trigger section change by emitting from ModalNav instead of accessing vm
-      wrapper.findComponent(ModalNav).vm.$emit('update:modelValue', 'Appearance')
-      await nextTick()
-      expect(wrapper.findComponent(Gallery).exists()).toBe(true)
-    })
-
-    it('hides the RadioGroup when the Appearance section is active', async () => {
-      const wrapper = mountSettings()
-      wrapper.findComponent(ModalNav).vm.$emit('update:modelValue', 'Appearance')
-      await nextTick()
-      expect(wrapper.findComponent(RadioGroup).exists()).toBe(false)
+    it('renders ActionButton components', () => {
+      const wrapper = mountGame()
+      expect(wrapper.findAllComponents(ActionButton).length).toBeGreaterThan(0)
     })
   })
 
-  describe('About section', () => {
-    it('shows "About..." text when the About section is active', async () => {
-      const wrapper = mountSettings()
-      wrapper.findComponent(ModalNav).vm.$emit('update:modelValue', 'About')
-      await nextTick()
-      expect(wrapper.text()).toContain('About')
+  describe('isPaused', () => {
+    it('is false when game is running', () => {
+      const wrapper = mountGame()
+      expect(wrapper.findComponent(Game).props('isPaused')).toBe(false)
+    })
+
+    it('is true when game is stopped', async () => {
+      store.stop()
+      const wrapper = mountGame()
+      expect(wrapper.findComponent(Game).props('isPaused')).toBe(true)
     })
   })
 
-  describe('close event', () => {
-    it('calls store.toggleDialog(false) when ModalNav emits close', async () => {
-      const toggleDialogSpy = vi.spyOn(store, 'toggleDialog')
-      const wrapper = mountSettings()
-      // Use vm.$emit to trigger the Vue component event (not a native DOM event)
-      wrapper.findComponent(ModalNav).vm.$emit('close')
-      await nextTick()
-      expect(toggleDialogSpy).toHaveBeenCalledWith(false)
+  describe('isComplete', () => {
+    it('passes isComplete to Game', () => {
+      const wrapper = mountGame()
+      expect(wrapper.findComponent(Game).props('isComplete')).toBe(false)
     })
   })
 
-  describe('settings watcher', () => {
-    it('calls store.updateSettings when settings change', async () => {
-      const updateSettingsSpy = vi.spyOn(store, 'updateSettings')
-      mountSettings()
-      store.settings.dealCount = 3
+  describe('newGame()', () => {
+    it('calls store.newGame when Deal button is clicked', async () => {
+      const newGameSpy = vi.spyOn(store, 'newGame')
+      const wrapper = mountGame()
+      // Deal button is the first ActionButton
+      await wrapper.findAllComponents(ActionButton)[0].trigger('click')
+      expect(newGameSpy).toHaveBeenCalled()
+    })
+  })
+
+  describe('undo()', () => {
+    it('calls store.undo when Undo button is clicked', async () => {
+      const undoSpy = vi.spyOn(store, 'undo')
+      // Make a deal to enable canUndo (undoStack must be non-empty)
+      store.deal()
+      const wrapper = mountGame()
       await nextTick()
-      await nextTick()
-      expect(updateSettingsSpy).toHaveBeenCalled()
+      const undoBtn = wrapper.findAllComponents(ActionButton).find(b => b.text().includes('Undo'))
+      await undoBtn!.trigger('click')
+      expect(undoSpy).toHaveBeenCalled()
+    })
+  })
+
+  describe('revealHint()', () => {
+    it('calls store.revealHint when Hint button is clicked', async () => {
+      const revealHintSpy = vi.spyOn(store, 'revealHint')
+      const wrapper = mountGame()
+      const hintBtn = wrapper.findAllComponents(ActionButton).find(b => b.text().includes('Hint'))
+      await hintBtn!.trigger('click')
+      expect(revealHintSpy).toHaveBeenCalled()
+    })
+  })
+
+  describe('stop/start', () => {
+    it('shows Pause button when game is running', () => {
+      const wrapper = mountGame()
+      const pauseBtn = wrapper.findAllComponents(ActionButton).find(b => b.text().includes('Pause'))
+      expect(pauseBtn).toBeDefined()
+    })
+
+    it('calls store.stop when Pause button is clicked', async () => {
+      const stopSpy = vi.spyOn(store, 'stop')
+      const wrapper = mountGame()
+      const pauseBtn = wrapper.findAllComponents(ActionButton).find(b => b.text().includes('Pause'))
+      await pauseBtn!.trigger('click')
+      expect(stopSpy).toHaveBeenCalled()
     })
   })
 })

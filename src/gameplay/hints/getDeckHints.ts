@@ -3,6 +3,7 @@ import { State } from '@/store/state'
 import { Card } from '@/types/Card'
 import getMoveableCardHints from './getMoveableCardHints'
 import { getDealableCards } from '@/utils/getDealableCards'
+import { DEAL_CARD_ID } from '@/constants'
 
 /**
  * Returns a list containing a single hint to highlight the dealing card, if a playable card
@@ -19,7 +20,7 @@ export const getDeckHints: IHint = (allCards: Card[], playableCards: Card[], dec
   const hints: string[][] = getMoveableCardHints(targetCards, dealableCards, deckState, true)
 
   return hints.length > 0
-    ? [['DEAL_CARD']]
+    ? [[DEAL_CARD_ID]]
     : []
 }
 

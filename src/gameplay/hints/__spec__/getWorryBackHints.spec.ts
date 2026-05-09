@@ -1,4 +1,4 @@
-﻿import { Suits } from '@/constants'
+import { Suits } from '@/constants'
 import { Card } from '@/types/Card'
 import { State } from '@/store/state'
 import { createCard } from '@/models/Card'

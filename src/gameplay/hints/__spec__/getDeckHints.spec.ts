@@ -1,4 +1,4 @@
-﻿import { Suits } from '@/constants'
+﻿import { DEAL_CARD_ID, Suits } from '@/constants'
 import { Card } from '@/types/Card'
 import { State } from '@/store/state'
 import { createCard } from '@/models/Card'
@@ -39,7 +39,7 @@ describe('Hint: getDeckHints', () => {
     const allCards: Card[] = [foundationSpace]
 
     expect(getDeckHints(allCards, [], deck)).toEqual([
-      expect.arrayContaining(['DEAL_CARD'])
+      expect.arrayContaining([DEAL_CARD_ID])
     ])
   })
 

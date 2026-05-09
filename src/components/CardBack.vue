@@ -1,26 +1,9 @@
 <template>
   <div class="card-back" :style="{
-    background: backface.background
+    background: 'linear-gradient(135deg, #184e68 0%,#57ca85 100%)'
   }">
-    <i :class="`fas fa-${backface.icon}`" />
   </div>
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue';
-import { CardBacks } from '@/constants';
-import { type Backface } from '@/types/Backface';
-
-export default defineComponent({
-  name: 'CardBack',
-  props: {
-    backface: {
-      type: Object as () => Backface,
-      default: () => CardBacks.A1
-    }
-  }
-});
-</script>
 
 <style lang="scss">
 .card-back {

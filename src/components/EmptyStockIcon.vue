@@ -2,14 +2,6 @@
   <div class="empty-stock-icon" />
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
-
-export default defineComponent({
-  name: 'EmptyStockIcon',
-});
-</script>
-
 <style lang="scss">
 .empty-stock-icon {
   display: flex;
