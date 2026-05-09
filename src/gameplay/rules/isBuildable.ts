@@ -17,6 +17,10 @@ export const isBuildable: IRule = (parent: Card, child?: Card) => {
     return false
   }
 
+  if (parent.type === 'FoundationSpace') {
+    return true
+  }
+
   if (!parent.parent || parent.parent.type === 'DealSpace') {
     return false
   }

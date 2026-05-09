@@ -25,7 +25,7 @@ function createFoundationSpace(suit: string): Card {
 }
 
 describe('getDestructuringLaneHints()', () => {
-  it.skip('should create a hint for making a five of hearts promotable', () => {
+  it('should create a hint for making a five of hearts promotable', () => {
     const foundation: Card = createFoundationSpace(Suits.SPADES)
     const aceOfSpades: Card = createCard({ suit: Suits.SPADES, rank: 0 }) // promoted
     const twoOfSpades: Card = createCard({ suit: Suits.SPADES, rank: 1 }) // card to promote
@@ -50,6 +50,8 @@ describe('getDestructuringLaneHints()', () => {
     foundation.child = aceOfSpades
     twoOfSpades.child = aceOfHearts
     aceOfSpades.promoted = true
+    // twoOfClubs needs a parent so isBuildable passes for it as a target
+    twoOfClubs.parent = createCard({ suit: Suits.DIAMONDS, rank: 5 })
 
     const hints: string[][] = getDestructuringLaneHints(deck, cards)
 

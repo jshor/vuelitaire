@@ -82,4 +82,56 @@ describe('Hint: getMoveableCardHints', () => {
       expect.arrayContaining([aceOfHearts.id, foundationSpace.id])
     ]))
   })
+
+  describe('hasRankingParent filtering', () => {
+    it('should include a hint when a card has a parent in the list and parent rank differs from target rank', () => {
+      const parent: Card = createCard({ suit: Suits.CLUBS, rank: 9 })
+      const child: Card = createCard({ suit: Suits.DIAMONDS, rank: 7 })
+      const target: Card = createCard({ suit: Suits.SPADES, rank: 8 })
+
+      parent.revealed = true
+      child.revealed = true
+      target.revealed = true
+      parent.parent = createCard({ suit: Suits.HEARTS, rank: 10 })
+      target.parent = createCard({ suit: Suits.HEARTS, rank: 10 })
+
+      // link parent and child so hasRankingParent can find parent via c.child === child
+      parent.child = child
+      child.parent = parent
+
+      const playableCards: Card[] = [parent, child, target]
+      const state: State = createDeckState()
+      const result = getMoveableCardHints(state, playableCards)
+
+      // parent.rank (9) !== target.rank (8), so hint should be included
+      expect(result).toEqual(expect.arrayContaining([
+        expect.arrayContaining([child.id, target.id])
+      ]))
+    })
+
+    it('should exclude a hint when a card has a parent in the list and parent rank matches target rank', () => {
+      const parent: Card = createCard({ suit: Suits.CLUBS, rank: 8 })
+      const child: Card = createCard({ suit: Suits.DIAMONDS, rank: 7 })
+      const target: Card = createCard({ suit: Suits.SPADES, rank: 8 })
+
+      parent.revealed = true
+      child.revealed = true
+      target.revealed = true
+      parent.parent = createCard({ suit: Suits.HEARTS, rank: 10 })
+      target.parent = createCard({ suit: Suits.HEARTS, rank: 10 })
+
+      // link parent and child so hasRankingParent can find parent via c.child === child
+      parent.child = child
+      child.parent = parent
+
+      const playableCards: Card[] = [parent, child, target]
+      const state: State = createDeckState()
+      const result = getMoveableCardHints(state, playableCards)
+
+      // parent.rank (8) === target.rank (8), so hint should be excluded
+      expect(result).not.toEqual(expect.arrayContaining([
+        expect.arrayContaining([child.id, target.id])
+      ]))
+    })
+  })
 })

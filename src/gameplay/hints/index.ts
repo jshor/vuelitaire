@@ -10,28 +10,34 @@ import { getLineage } from '@/utils/getLineage'
 
 export function generateHints (state: State, allowWorryBackHints = false): string[][] {
   // list of cards from the dealt pile which are "stuck" under other cards
-  const unmoveableStockCards = state
+  const immoveableStockCards = state
     .stock
     // the top `DEALT_CARDS_DISPLAYED` cards from the stock are "stuck" under the top-most dealt card
     .slice(state.dealIndex, DEALT_CARDS_DISPLAYED + state.dealIndex)
-    // allow the top-most dealt card to be moved
-    .filter(card => card.id !== state.dealSpace.child?.id)
 
   // all the cards that can be moved in the current state of the game
   const playableCards: Card[] = Object
+    // get the lineage of each card in the tableau, which will include any cards that can be moved by moving a parent card
     .values(state.tableau)
     .map(getLineage)
     .flat()
-    .filter(({ id }) => !unmoveableStockCards.some(card => card.id === id))
+    .filter(({ id }) => !immoveableStockCards.some(card => card.id === id))
+    // get the top cards of the foundations, including the foundation spaces themselves
+    .concat(
+      Object
+        .values(state.foundations)
+        .map(foundation => getLineage(foundation).pop() || [])
+        .flat()
+    )
 
   if (state.dealSpace.child) {
     // add the top card of the dealt pile, if one
-    playableCards.concat(state.dealSpace.child)
+    playableCards.push(state.dealSpace.child)
   }
 
   // generate basic hints
   let hints: string[][] = [
-    ...getMoveableCardHints(state, playableCards),
+    ...getMoveableCardHints(state, playableCards, false),
     ...getLaneCreationHints(state, playableCards),
     ...getDeckHints(state, playableCards)
   ]

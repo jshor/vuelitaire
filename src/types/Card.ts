@@ -19,5 +19,7 @@ export type Card = {
 
   rules: IRule[]
 
+  toString(): string
+
   canAcceptCard: (this: Card, card?: Card) => boolean
 }

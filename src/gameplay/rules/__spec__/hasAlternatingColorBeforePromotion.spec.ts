@@ -30,4 +30,17 @@ describe('Rule: hasAlternatingColorBeforePromotion', () => {
 
     expect(hasAlternatingColorBeforePromotion(card, target)).toBe(true)
   })
+
+  it('should return true if the parent (first arg) is promoted, regardless of child suit', () => {
+    const card: Card = createCard({ suit: Suits.HEARTS, rank: 0, promoted: true })
+    const target: Card = createCard({ suit: Suits.HEARTS, rank: 1 })
+
+    expect(hasAlternatingColorBeforePromotion(card, target)).toBe(true)
+  })
+
+  it('should return true if the parent is promoted and no child is given', () => {
+    const card: Card = createCard({ suit: Suits.HEARTS, rank: 0, promoted: true })
+
+    expect(hasAlternatingColorBeforePromotion(card, undefined)).toBe(true)
+  })
 })

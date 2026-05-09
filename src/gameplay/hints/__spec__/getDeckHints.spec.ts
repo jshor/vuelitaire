@@ -49,4 +49,19 @@ describe('Hint: getDeckHints', () => {
 
     expect(getDeckHints(deck, [])).toEqual([])
   })
+
+  it('should return an empty array if dealable cards exist but none can be placed anywhere', () => {
+    const twoOfSpades: Card = createCard({ suit: Suits.SPADES, rank: 1 })
+    const threeOfClubs: Card = createCard({ suit: Suits.CLUBS, rank: 2 })
+
+    // Both black cards — neither can be placed on a same-color card
+    twoOfSpades.revealed = true
+    threeOfClubs.revealed = true
+    threeOfClubs.parent = createCard({ suit: Suits.DIAMONDS, rank: 6 })
+
+    const deck: State = createDeckState()
+    deck.stock = [twoOfSpades, threeOfClubs]
+
+    expect(getDeckHints(deck, [])).toEqual([])
+  })
 })

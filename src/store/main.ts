@@ -265,7 +265,7 @@ export const useStore = defineStore('store', {
       if (move.fromId === this.dealSpace.id) {
         this.dealIndex++
         // set a temporary placeholder card to maintain indices
-        this.stock.splice(this.dealIndex, 0, createCard({ rank: -1, revealed: true }))
+        this.stock.splice(this.dealIndex, 0, createCard({ revealed: true }))
         this.setDeal()
       }
 
@@ -401,7 +401,7 @@ export const useStore = defineStore('store', {
 
       if (stockIndex !== -1) {
         // add a placeholder card to maintain indices
-        this.stock[stockIndex] = createCard({ suit: Suits.CLUBS, rank: -1, revealed: true })
+        this.stock[stockIndex] = createCard()
         this.cards[this.stock[stockIndex].id] = this.stock[stockIndex]
         this.dealSpace.child = this.stock[stockIndex]
 

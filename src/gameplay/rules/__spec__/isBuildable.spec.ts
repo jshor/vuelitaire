@@ -48,7 +48,7 @@ describe('Rule: isBuildable', () => {
       revealed: true,
       rules: [isBuildable, isAce, hasSameSuitAfterPromotion],
       type: 'FoundationSpace'
-    }), child)).toEqual(false)
+    }), child)).toEqual(true)
   })
 
   it('should return true when the target card has no parent of itself but is a Tableau lane', () => {

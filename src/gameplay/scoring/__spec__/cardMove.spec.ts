@@ -30,6 +30,8 @@ describe('cardMove()', () => {
 
         expect(cardMove(pair, state)).toEqual(-5)
       })
+
+
     })
 
     it('should return -3 for a card being returned to a parent that is unrevealed', () => {

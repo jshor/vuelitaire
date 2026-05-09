@@ -31,4 +31,26 @@ describe('Rule: isSequential', () => {
 
     expect(isSequential(parent, child)).toEqual(false)
   })
+
+  it('should return false when there is no child card', () => {
+    const parent: Card = createCard({ suit: Suits.DIAMONDS, rank: 3 })
+
+    expect(isSequential(parent, undefined)).toEqual(false)
+  })
+
+  describe('when the parent is promoted', () => {
+    it('should return true if the child rank is exactly one above the parent rank', () => {
+      const parent: Card = createCard({ suit: Suits.DIAMONDS, rank: 3, promoted: true })
+      const child: Card = createCard({ suit: Suits.DIAMONDS, rank: 4 })
+
+      expect(isSequential(parent, child)).toEqual(true)
+    })
+
+    it('should return false if the child rank is not exactly one above the parent rank', () => {
+      const parent: Card = createCard({ suit: Suits.DIAMONDS, rank: 3, promoted: true })
+      const child: Card = createCard({ suit: Suits.DIAMONDS, rank: 2 })
+
+      expect(isSequential(parent, child)).toEqual(false)
+    })
+  })
 })

@@ -24,7 +24,7 @@ export const getMoveableCardHints: IHint = (state: State, playableCards: Card[],
    * @returns {boolean}
    */
   const hasRankingParent = (child: Card, target: Card): boolean => {
-    const parent = playableCards.find((c) => c.child === child && c.revealed)
+    const parent = playableCards.find((c) => c.child === child)
 
     if (parent) {
       return parent.rank !== target.rank

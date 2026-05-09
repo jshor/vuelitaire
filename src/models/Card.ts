@@ -21,6 +21,10 @@ export function createCard(defaultProps: Partial<Card> = {}): Card {
       return this.rules.every(rule => Boolean(rule(this, target)))
     },
 
+    toString() {
+      return `${this.suit}${this.rank}${this.promoted ? ' (promoted)' : ''}`
+    },
+
     ...defaultProps
   }
 
