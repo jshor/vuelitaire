@@ -1,67 +1,84 @@
 ﻿import { Suits } from '@/constants'
-import { State } from '@/store/state'
 import { Card } from '@/types/Card'
+import { State } from '@/store/state'
 import { createCard } from '@/models/Card'
 import { getDeckHints } from '../getDeckHints'
 import { createDeckState } from './__helpers__/createDeckState'
+import { isBuildable } from '@/gameplay/rules/isBuildable'
+import { isAce } from '@/gameplay/rules/isAce'
+import { hasSameSuitAfterPromotion } from '@/gameplay/rules/hasSameSuitAfterPromotion'
+
+function createFoundationSpace (suit: string): Card {
+  return createCard({
+    suit,
+    promoted: true,
+    revealed: true,
+    rules: [isBuildable, isAce, hasSameSuitAfterPromotion],
+    type: 'FoundationSpace'
+  })
+}
 
 describe('Hint: getDeckHints', () => {
-  const aceOfSpades: Card = createCard({ suit: Suits.SPADES, rank: 0 })
-  const twoOfHearts: Card = createCard({ suit: Suits.HEARTS, rank: 1 })
-  const sixOfSpades: Card = createCard({ suit: Suits.SPADES, rank: 6 })
-  const stock: Card[] = [
-    aceOfSpades,
-    twoOfHearts,
-    sixOfSpades
-  ]
+  it('should return the DEAL_CARD hint when a dealable card can be placed on a target', () => {
+    const foundationSpace: Card = createFoundationSpace(Suits.SPADES)
+    const aceOfSpades: Card = createCard({ suit: Suits.SPADES, rank: 0 })
 
-  beforeEach(() => {
-
-    // make the cards playable
     aceOfSpades.revealed = true
-    twoOfHearts.revealed = true
-    sixOfSpades.revealed = true
 
-    // add a parent to make this a legitimate tableaux card
-    twoOfHearts.parent = createCard({ suit: Suits.DIAMONDS, rank: 6 })
-  })
+    const deck: State = createDeckState({
+      foundations: { [foundationSpace.id]: foundationSpace },
+      tableau: {},
+      cards: { [aceOfSpades.id]: aceOfSpades }
+    })
 
-  it('should return the DEAL_CARD hint for a moveable card within the deck', () => {
-    const deck: State = createDeckState()
+    // Put the ace in the stock so getDealableCards returns it
+    deck.stock = [aceOfSpades]
+    deck.dealIndex = -1
+    deck.dealSpace.child = aceOfSpades
 
-    deck.stock = stock
+    const allCards: Card[] = [foundationSpace]
 
-    expect(getDeckHints(deck, [])).toEqual([
+    expect(getDeckHints(allCards, [], deck)).toEqual([
       expect.arrayContaining(['DEAL_CARD'])
     ])
   })
 
-  it('should return an empty array if there are no cards in the waste pile', () => {
-    const deck: State = createDeckState()
+  it('should return an empty array when there are no cards in the stock', () => {
+    const foundationSpace: Card = createFoundationSpace(Suits.HEARTS)
 
-    expect(getDeckHints(deck, [])).toEqual([])
+    const deck: State = createDeckState({
+      foundations: { [foundationSpace.id]: foundationSpace },
+      tableau: {},
+      cards: {}
+    })
+
+    deck.stock = []
+    deck.dealIndex = -1
+
+    const allCards: Card[] = [foundationSpace]
+
+    expect(getDeckHints(allCards, [], deck)).toEqual([])
   })
 
-  it('should return an empty array if there are no cards that can be moved from the dealt pile', () => {
-    const deck: State = createDeckState()
+  it('should return an empty array when no dealable card can be placed on any target', () => {
+    const foundationSpace: Card = createFoundationSpace(Suits.CLUBS)
+    // A six of spades cannot be placed on a foundation space (not an ace)
+    const sixOfSpades: Card = createCard({ suit: Suits.SPADES, rank: 5 })
+
+    sixOfSpades.revealed = true
+
+    const deck: State = createDeckState({
+      foundations: { [foundationSpace.id]: foundationSpace },
+      tableau: {},
+      cards: { [sixOfSpades.id]: sixOfSpades }
+    })
 
     deck.stock = [sixOfSpades]
+    deck.dealIndex = -1
+    deck.dealSpace.child = sixOfSpades
 
-    expect(getDeckHints(deck, [])).toEqual([])
-  })
+    const allCards: Card[] = [foundationSpace]
 
-  it('should return an empty array if dealable cards exist but none can be placed anywhere', () => {
-    const twoOfSpades: Card = createCard({ suit: Suits.SPADES, rank: 1 })
-    const threeOfClubs: Card = createCard({ suit: Suits.CLUBS, rank: 2 })
-
-    // Both black cards — neither can be placed on a same-color card
-    twoOfSpades.revealed = true
-    threeOfClubs.revealed = true
-    threeOfClubs.parent = createCard({ suit: Suits.DIAMONDS, rank: 6 })
-
-    const deck: State = createDeckState()
-    deck.stock = [twoOfSpades, threeOfClubs]
-
-    expect(getDeckHints(deck, [])).toEqual([])
+    expect(getDeckHints(allCards, [], deck)).toEqual([])
   })
 })

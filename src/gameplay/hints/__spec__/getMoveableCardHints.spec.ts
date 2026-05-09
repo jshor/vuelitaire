@@ -64,7 +64,7 @@ describe('Hint: getMoveableCardHints', () => {
   })
 
   beforeEach(() => {
-    hints = getMoveableCardHints(deck, cards)
+    hints = getMoveableCardHints(cards, cards, deck)
   })
 
   it('should generate exactly four hints', () => {
@@ -101,7 +101,7 @@ describe('Hint: getMoveableCardHints', () => {
 
       const playableCards: Card[] = [parent, child, target]
       const state: State = createDeckState()
-      const result = getMoveableCardHints(state, playableCards)
+      const result = getMoveableCardHints(playableCards, playableCards, state)
 
       // parent.rank (9) !== target.rank (8), so hint should be included
       expect(result).toEqual(expect.arrayContaining([
@@ -126,7 +126,7 @@ describe('Hint: getMoveableCardHints', () => {
 
       const playableCards: Card[] = [parent, child, target]
       const state: State = createDeckState()
-      const result = getMoveableCardHints(state, playableCards)
+      const result = getMoveableCardHints(playableCards, playableCards, state)
 
       // parent.rank (8) === target.rank (8), so hint should be excluded
       expect(result).not.toEqual(expect.arrayContaining([

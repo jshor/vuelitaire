@@ -19,7 +19,7 @@ export const useStore = defineStore('store', {
   getters: {
     /** True if a move can be undone. */
      canUndo (state: State): boolean {
-      return state.undoStack.length > 0
+      return state.undoStack.length > 0 && !state.isStopped
     },
 
     /** True if the game can be autocompleted. */
@@ -31,6 +31,11 @@ export const useStore = defineStore('store', {
       }
 
       return false
+    },
+
+    /** True if hints can be shown. */
+    canShowHints(state: State): boolean {
+      return !state.isStopped // && state.hints.length > 0 // TODO: this is probably a useless getter
     },
 
     /** True if the game is complete (nothing left in the tableau). */
@@ -418,8 +423,8 @@ export const useStore = defineStore('store', {
     autoplayCard(cardId: string) {
       this.clearSelections()
 
-      const hint = generateHints(this.$state, true)
-        .reverse() // TODO: most valuable hints are at the end of the list?
+      const hint = generateHints(this.$state)
+        .reverse()
         .find(([ sourceId ]) => {
           return sourceId === cardId
         })

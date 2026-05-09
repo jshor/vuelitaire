@@ -106,12 +106,14 @@ describe('generateHints()', () => {
         [foundationSpace.id]: foundationSpace
       },
       cards: {
-        [aceOfClubs.id]: aceOfClubs
+        [aceOfClubs.id]: aceOfClubs,
+        [foundationSpace.id]: foundationSpace
       }
     })
 
-    // Give dealSpace a child (top of dealt pile)
+    // Give dealSpace a child (top of dealt pile) and link as parent on the ace
     state.dealSpace.child = aceOfClubs
+    aceOfClubs.parent = state.dealSpace
 
     const hints = generateHints(state)
 
@@ -159,8 +161,8 @@ describe('generateHints()', () => {
       }
     })
 
-    const hintsNormal = generateHints(state, false)
-    const hintsWorryBack = generateHints(state, true)
+    const hintsNormal = generateHints(state)
+    const hintsWorryBack = generateHints(state)
 
     // Both calls succeed and return arrays
     expect(Array.isArray(hintsNormal)).toBe(true)

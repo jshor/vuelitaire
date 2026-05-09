@@ -1,6 +1,6 @@
-import {Card} from '@/types/Card'
-import { type State } from '@/store/state'
-import {IHint} from '@/interfaces/IHint'
+import { IHint } from '@/interfaces/IHint'
+import { State } from '@/store/state'
+import { Card } from '@/types/Card'
 
 /**
  * Returns a list of all hints where a card can be moved onto another.
@@ -9,12 +9,17 @@ import {IHint} from '@/interfaces/IHint'
  *
  * @param {Card[]} allCards - all cards in the game
  * @param {Card[]} playableCards - cards that can be moved around by the user
- * @param { type State } gameState - current state of the deck
+ * @param {IDeckState} deckState - current state of the deck
  * @param {boolean} ignoreRank - whether to ignore the rank of the card's current parent
  * @returns {string[][]} list of hint pairs
  */
-export const getMoveableCardHints: IHint = (state: State, playableCards: Card[], ignoreRank = false): string[][] => {
-  const potentialTargets = playableCards.filter((card) => !card.child)
+export const getMoveableCardHints: IHint = (
+  allCards: Card[],
+  playableCards: Card[],
+  deckState: State,
+  ignoreRank: boolean = false
+): string[][] => {
+  const potentialTargets = allCards.filter((card) => card.revealed && (card.parent || card.type === 'FoundationSpace'))
 
   /**
    * Returns the parent card, or an empty object if child is an orphan.
@@ -24,7 +29,7 @@ export const getMoveableCardHints: IHint = (state: State, playableCards: Card[],
    * @returns {boolean}
    */
   const hasRankingParent = (child: Card, target: Card): boolean => {
-    const parent = playableCards.find((c) => c.child === child)
+    const parent = allCards.find((c) => c.child === child && c.revealed)
 
     if (parent) {
       return parent.rank !== target.rank
@@ -43,7 +48,8 @@ export const getMoveableCardHints: IHint = (state: State, playableCards: Card[],
         .filter((card: Card): boolean => hasRankingParent(card, target) || target.promoted || ignoreRank)
         .map((card: Card): [Card, Card] => [card, target])
     ], [])
-    .sort(([_, target]): number => target?.promoted ? 1 : -1) // promotions should be displayed first
-    .map(([card, target]): string[] => [card.id, target.id])
+    .sort(([_, target]: Card[]): number => target.promoted ? 1 : -1) // promotions should be displayed first
+    .map(([card, target]: Card[]): string[] => [card.id, target.id])
 }
 
+export default getMoveableCardHints

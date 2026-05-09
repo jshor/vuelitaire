@@ -53,7 +53,7 @@ describe('getDestructuringLaneHints()', () => {
     // twoOfClubs needs a parent so isBuildable passes for it as a target
     twoOfClubs.parent = createCard({ suit: Suits.DIAMONDS, rank: 5 })
 
-    const hints: string[][] = getDestructuringLaneHints(deck, cards)
+    const hints: string[][] = getDestructuringLaneHints(cards, cards, deck)
 
     expect(hints).toEqual(
       expect.arrayContaining([
@@ -86,7 +86,7 @@ describe('getDestructuringLaneHints()', () => {
     twoOfSpades.child = aceOfHearts
     aceOfSpades.promoted = true
 
-    const hints: string[][] = getDestructuringLaneHints(deck, cards)
+    const hints: string[][] = getDestructuringLaneHints(cards, cards, deck)
 
     expect(hints).not.toEqual(
       expect.arrayContaining([
@@ -116,7 +116,7 @@ describe('getDestructuringLaneHints()', () => {
     foundation.child = aceOfSpades
     aceOfSpades.promoted = true
 
-    const hints: string[][] = getDestructuringLaneHints(deck, cards)
+    const hints: string[][] = getDestructuringLaneHints(cards, cards, deck)
 
     expect(hints).toHaveLength(0)
   })

@@ -1,8 +1,8 @@
-import { Card } from '@/types/Card'
-import { State } from '@/store/state'
 import { IHint } from '@/interfaces/IHint'
+import { State } from '@/store/state'
+import { Card } from '@/types/Card'
+import getMoveableCardHints from './getMoveableCardHints'
 import { getDealableCards } from '@/utils/getDealableCards'
-import { getMoveableCardHints } from './getMoveableCardHints'
 
 /**
  * Returns a list containing a single hint to highlight the dealing card, if a playable card
@@ -10,17 +10,17 @@ import { getMoveableCardHints } from './getMoveableCardHints'
  *
  * @param {Card[]} allCards - all cards in the game
  * @param {Card[]} playableCards - cards that can be moved around by the user
- * @param { type State } gameState - current state of the deck
+ * @param {IDeckState} deckState - current state of the deck
  * @returns {string[][]} list of hint pairs
  */
-export const getDeckHints: IHint = (state: State, playableCards: Card[]): string[][] => {
-  const dealableCards: Card[] = getDealableCards(state)
-
-  if (dealableCards.length === 0) return []
-
-  const hints: string[][] = getMoveableCardHints(state, playableCards.concat(dealableCards), true)
+export const getDeckHints: IHint = (allCards: Card[], playableCards: Card[], deckState: State): string[][] => {
+  const dealableCards: Card[] = getDealableCards(deckState)
+  const targetCards: Card[]  = allCards.filter((card) => !card.child)
+  const hints: string[][] = getMoveableCardHints(targetCards, dealableCards, deckState, true)
 
   return hints.length > 0
     ? [['DEAL_CARD']]
     : []
 }
+
+export default getDeckHints

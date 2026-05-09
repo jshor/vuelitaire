@@ -31,7 +31,7 @@ describe('Lane creation', () => {
       },
 
     })
-    const hints: string[][] = getLaneCreationHints(deck, [kingOfHearts, kingOfSpades])
+    const hints: string[][] = getLaneCreationHints(Object.values(deck.cards), [kingOfHearts, kingOfSpades], deck)
 
     expect(hints).toEqual(
       expect.arrayContaining([
@@ -56,7 +56,7 @@ describe('Lane creation', () => {
       },
 
     })
-    const hints: string[][] = getLaneCreationHints(deck, [kingOfHearts])
+    const hints: string[][] = getLaneCreationHints(Object.values(deck.cards), [kingOfHearts], deck)
 
     expect(hints).toEqual(
       expect.arrayContaining([
@@ -83,7 +83,7 @@ describe('Lane creation', () => {
       },
 
     })
-    const hints: string[][] = getLaneCreationHints(deck, [kingOfHearts, kingOfSpades])
+    const hints: string[][] = getLaneCreationHints(Object.values(deck.cards), [kingOfHearts, kingOfSpades], deck)
 
     expect(hints).toEqual(
       expect.arrayContaining([
@@ -112,7 +112,7 @@ describe('Lane creation', () => {
     })
     space.child = kingOfSpades
 
-    const hints: string[][] = getLaneCreationHints(deck, [kingOfHearts, kingOfSpades])
+    const hints: string[][] = getLaneCreationHints(Object.values(deck.cards), [kingOfHearts, kingOfSpades], deck)
 
     expect(hints).not.toEqual(
       expect.arrayContaining([
@@ -138,7 +138,7 @@ describe('Lane creation', () => {
     })
     kingOfHearts.child = queenOfSpades
 
-    const hints: string[][] = getLaneCreationHints(deck, [kingOfHearts, queenOfSpades])
+    const hints: string[][] = getLaneCreationHints(Object.values(deck.cards), [kingOfHearts, queenOfSpades], deck)
 
     expect(hints).not.toEqual(
       expect.arrayContaining([
@@ -162,7 +162,7 @@ describe('Lane creation', () => {
       },
 
     })
-    const hints: string[][] = getLaneCreationHints(deck, [kingOfHearts, queenOfSpades])
+    const hints: string[][] = getLaneCreationHints(Object.values(deck.cards), [kingOfHearts, queenOfSpades], deck)
 
     expect(hints).not.toEqual(
       expect.arrayContaining([

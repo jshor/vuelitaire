@@ -85,7 +85,7 @@ describe('Hint: getWorryBackHints', () => {
     it('should hint that a card should be worried back if its parent can marry one in the tableaux', () => {
       deck.tableau[untouchedTopCard.id] = untouchedTopCard
 
-      const hints: string[][] = getWorryBackHints(deck, cards)
+      const hints: string[][] = getWorryBackHints(cards, cards, deck)
 
       expect(hints).toEqual(
         expect.arrayContaining([
@@ -100,7 +100,7 @@ describe('Hint: getWorryBackHints', () => {
     it('should hint that a card should be worried back if its parent can marry one in the waste pile', () => {
       deck.stock = [unplayedCard]
 
-      const hints: string[][] = getWorryBackHints(deck, cards)
+      const hints: string[][] = getWorryBackHints(cards, cards, deck)
 
       expect(hints).toEqual(
         expect.arrayContaining([
@@ -115,7 +115,7 @@ describe('Hint: getWorryBackHints', () => {
     it('should hint that a card should be worried back if its parent can marry one in the stock pile', () => {
       deck.stock = [unplayedCard]
 
-      const hints: string[][] = getWorryBackHints(deck, cards)
+      const hints: string[][] = getWorryBackHints(cards, cards, deck)
 
       expect(hints).toEqual(
         expect.arrayContaining([
